@@ -1,7 +1,22 @@
 <resources>
+    <!--title -->
+    <dimen name="title_top_padding">12dp</dimen>
+    <dimen name="title_bottom_padding">12dp</dimen>
+    <dimen name="title_text_margin">40dp</dimen>
+    <dimen name="text_title_size">24sp</dimen>
+    <!-- music fragment -->
+    <dimen name="weather_top_margin">15dp</dimen>
+    <dimen name="weather_right_margin">15dp</dimen>
+    <dimen name="weather_text_size">20sp</dimen>
+    <dimen name="music_type_size">22sp</dimen>
+    <dimen name="music_type_margin">15dp</dimen>
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
+    <!--cd player -->
+    <dimen name="music_cd_diameter">200dp</dimen>
+    <dimen name="cd_progress_diameter">220dp</dimen>
+    <dimen name="progress_width">10dp</dimen>
+    <dimen name="music_name_top_margin">15dp</dimen>
+    <dimen name="music_name_bottom_margin">15dp</dimen>
+    <dimen name="chat_left_margin">30dp</dimen>
+    <dimen name="chat_text_size">18sp</dimen>
 </resources>

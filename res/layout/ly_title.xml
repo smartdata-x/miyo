@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/title_top_padding"
+                android:paddingBottom="@dimen/title_bottom_padding"
+                android:background="@color/app_theme">
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+       <TextView
+               android:id="@+id/title_find_music"
+               style="@style/text_title_style"
+               android:layout_marginRight="@dimen/title_text_margin"
+               android:text="@string/find_music"/>
+        <TextView
+                android:id="@+id/title_my_fm"
+                style="@style/text_title_style"
+                android:text="@string/my_fm"/>
+    </LinearLayout>
+</RelativeLayout>
