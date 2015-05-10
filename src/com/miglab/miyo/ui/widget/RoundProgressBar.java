@@ -79,12 +79,10 @@ public class RoundProgressBar extends View{
 		int percent = (int) ((float) progress / 100);
 		int rest = (int) ((float) progress % 100);
 		float textWidth = paint.measureText(percent + ":" + rest);
-//		if (textIsDisplayable && rest != 0 && style == STROKE) {
-//			canvas.drawText(percent + ":" + rest, center - textWidth/2, center + textSize/2, paint);			
-//		}
-		
+
 		//画圆弧，画圆环的进度
 		paint.setStrokeWidth(roundwidth); //设置圆环的宽度
+		paint.setStrokeCap(Paint.Cap.ROUND);
 		paint.setColor(roundProgressColor); //设置进度的颜色
 		
 		RectF oval = new RectF(center - radius, center - radius, 

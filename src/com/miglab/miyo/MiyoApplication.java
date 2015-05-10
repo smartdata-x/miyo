@@ -16,7 +16,8 @@ import java.util.List;
  */
 public class MiyoApplication extends Application {
     private static MiyoApplication instance;
-    private static List<Activity> activityStack = new ArrayList<>();
+    public static Activity frontActivity;
+    private static List<Activity> activityStack = new ArrayList<Activity>();
     public static MiyoApplication getInstance() {
         return instance;
     }
@@ -25,6 +26,10 @@ public class MiyoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+    }
+
+    public synchronized static void resume(Activity activity) {
+        frontActivity = activity;
     }
 
     public synchronized static void register(Activity activity) {

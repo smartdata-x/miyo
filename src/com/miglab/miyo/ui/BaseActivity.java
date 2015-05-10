@@ -46,6 +46,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        MiyoApplication.resume(this);
     }
 
     public static class UIHandler extends Handler {

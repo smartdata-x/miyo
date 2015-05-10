@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class MainActivity extends FragmentActivity {
     private TextView findMusic;
     private TextView myFM;
     private ViewPager viewPager;
-    private List<Fragment> fragmentList = new ArrayList<>();
+    private List<Fragment> fragmentList = new ArrayList<Fragment>();
 
     private BaseFragment musicFragment,fmFragment,userFragment;
     private FragmentManager fragmentManager;
@@ -42,6 +43,12 @@ public class MainActivity extends FragmentActivity {
         initFragments();
         initViews();
         initTitleColor();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiyoApplication.resume(this);
     }
 
     private void initTitleColor() {

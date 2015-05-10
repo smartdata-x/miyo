@@ -1,6 +1,7 @@
 package com.miglab.miyo.ui;
 
 import android.content.Intent;
+import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 
 

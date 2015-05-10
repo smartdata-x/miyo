@@ -37,6 +37,7 @@
                 android:src="@drawable/loading"/>
 
         <com.miglab.miyo.ui.widget.RoundProgressBar
+                android:id="@+id/cd_progress"
                 android:layout_width="@dimen/cd_progress_diameter"
                 android:layout_height="@dimen/cd_progress_diameter"
                 app:roundWidth="@dimen/progress_width"
