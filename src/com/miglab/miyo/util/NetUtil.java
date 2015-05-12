@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 
 
 /**
@@ -15,7 +14,6 @@ import android.webkit.CookieSyncManager;
  */
 public class NetUtil {
 	public static int netState = -1; // -1:默认值 0:未联网 1:移动网络2G/3G 2:WIFI
-
 	/**
 	 * 判断是否联网
 	 * 
@@ -31,7 +29,6 @@ public class NetUtil {
 		}
 		return true;
 	}
-
 	/**
 	 * wifi检测
 	 * 
@@ -93,9 +90,6 @@ public class NetUtil {
 	 * @return void
 	 */
 	public static void clearCookies(Context context) {
-		@SuppressWarnings("unused")
-		CookieSyncManager cookieSyncMngr = CookieSyncManager
-				.createInstance(context);
 		CookieManager cookieManager = CookieManager.getInstance();
 		cookieManager.removeAllCookie();
 	}

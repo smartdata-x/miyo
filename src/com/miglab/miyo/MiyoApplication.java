@@ -5,6 +5,10 @@ import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.util.SparseArray;
+import com.miglab.miyo.third.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
+import com.miglab.miyo.third.universalimageloader.core.ImageLoaderConfiguration;
+import com.miglab.miyo.third.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,17 @@ public class MiyoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initImageLoader(getApplicationContext());
         instance = this;
+    }
+
+    private void initImageLoader(Context context) {
+        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
+        config.threadPriority(Thread.NORM_PRIORITY - 2);
+        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+        config.tasksProcessingOrder(QueueProcessingType.LIFO);
+        config.writeDebugLogs(); // Remove for release app
+        ImageLoader.getInstance().init(config.build());
     }
 
     public synchronized static void resume(Activity activity) {

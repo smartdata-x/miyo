@@ -106,8 +106,8 @@ public class MainActivity extends FragmentActivity {
     private ViewPager.OnPageChangeListener myPageListener = new ViewPager.OnPageChangeListener(){
         /**
          *
-         * @param position µ±Ç°ÊÓÍ¼Ç°Ãæ Ò»¸öview µÄÎ»ÖÃ
-         * @param positionOffset µ±Ç°ÊÓÍ¼Ç°Ãæ Ò»¸öviewÏà¶ÔÓÚµ±Ç°ÊÓÍ¼µÄÆ«ÒÆÁ¿0-1
+         * @param position å½“å‰è§†å›¾å‰é¢ ä¸€ä¸ªview çš„ä½ç½®
+         * @param positionOffset å½“å‰è§†å›¾å‰é¢ ä¸€ä¸ªviewç›¸å¯¹äºå½“å‰è§†å›¾çš„åç§»é‡0-1
          * @param positionOffsetPixels
          */
         @Override
@@ -161,9 +161,9 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus && !isInit){
-            ((MusicFragment)musicFragment).setBackground();
-            isInit =  true;
-        }
+//        if(hasFocus && !isInit){
+//            ((MusicFragment)musicFragment).setBackground();
+//            isInit =  true;
+//        }
     }
 }

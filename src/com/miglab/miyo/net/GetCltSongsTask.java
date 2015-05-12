@@ -10,11 +10,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * @author 赵龙权
- * @version 创建时间：2015-5-2 下午11:08:11
- * 类说明	红星歌单
- */
 public class GetCltSongsTask extends BaseTask {
 
 	String mTid;//用户id

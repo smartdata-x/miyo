@@ -3,7 +3,7 @@
                 xmlns:app="http://schemas.android.com/apk/res/com.miglab.miyo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#661234">
+                android:background="@color/app_bg">
     <TextView
             android:id="@+id/weather"
             android:layout_width="wrap_content"
@@ -44,6 +44,13 @@
                 app:roundColor="@color/cd_progress_bg"
                 app:roundProgressColor="@color/cd_progress"
                 app:style="STROKE"/>
+            <ImageView
+                    android:id="@+id/cd_palyer"
+                    android:layout_width="@dimen/music_cd_diameter"
+                    android:layout_height="@dimen/music_cd_diameter"
+                    android:background="@drawable/cd_selector"
+                    android:layout_centerInParent="true"
+                    />
     </RelativeLayout>
     <TextView
             android:id="@+id/music_name"

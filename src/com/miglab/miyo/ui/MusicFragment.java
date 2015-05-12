@@ -11,9 +11,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.miglab.miyo.R;
@@ -22,6 +25,9 @@ import com.miglab.miyo.constant.MusicServiceDefine;
 import com.miglab.miyo.control.MusicService;
 import com.miglab.miyo.entity.MusicInfo;
 import com.miglab.miyo.entity.SongInfo;
+import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
+import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
+import com.miglab.miyo.third.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.miglab.miyo.ui.widget.RoundImageView;
 import com.miglab.miyo.ui.widget.RoundProgressBar;
 import com.miglab.miyo.util.DisplayUtil;
@@ -33,9 +39,11 @@ import java.util.ArrayList;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MusicFragment extends BaseFragment {
+public class MusicFragment extends BaseFragment implements View.OnClickListener{
     private RoundImageView iv_cd;
     private RoundProgressBar roundProgressBar;
+    private ImageView iv_cdPlayer;
+    private RelativeLayout ry_cd;
     private TextView tv_songName;
     private TextView tv_songType;
     private PlayerReceiver playerReceiver = null;
@@ -47,6 +55,8 @@ public class MusicFragment extends BaseFragment {
     private int totaltime;
     private boolean isplaying;
 
+    private DisplayImageOptions options;
+
     @Override
     protected void setLayout() {
         resourceID = R.layout.fr_music;
@@ -54,21 +64,46 @@ public class MusicFragment extends BaseFragment {
 
     @Override
     protected void init() {
+        intiViews();
+        rotateAnimation = AnimationUtils.loadAnimation(ac, R.anim.cd_rotate_anim);
+        registerPlayerReceiver();
+        initMusicData();
+        initDisplayImageOptions();
+    }
+
+    private void intiViews() {
         iv_cd = (RoundImageView) vRoot.findViewById(R.id.music_cd);
         roundProgressBar = (RoundProgressBar) vRoot.findViewById(R.id.cd_progress);
         tv_songName = (TextView) vRoot.findViewById(R.id.music_name);
         tv_songType = (TextView) vRoot.findViewById(R.id.music_type);
-        rotateAnimation = AnimationUtils.loadAnimation(ac, R.anim.cd_rotate_anim);
-        registerPlayerReceiver();
-        initMusicData();
+        ry_cd = (RelativeLayout) vRoot.findViewById(R.id.music_player);
+        iv_cdPlayer = (ImageView) vRoot.findViewById(R.id.cd_palyer);
+        iv_cdPlayer.setOnClickListener(this);
     }
 
+    private void initDisplayImageOptions() {
+        options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+         //       .cacheOnDisk(true)
+                .considerExifParams(true)
+                .build();
+    }
 
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @SuppressWarnings("deprecation")
     public void setBackground() {
         Bitmap b = ((BitmapDrawable) (iv_cd).getDrawable()).getBitmap();
-        vRoot.setBackground(new BitmapDrawable(ac.getResources(),DisplayUtil.fastblur(ac, b, 80)));
+        if(Build.VERSION.SDK_INT < 16) {
+            vRoot.setBackgroundDrawable(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
+        }else {
+            vRoot.setBackground(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == ry_cd){
+            Toast.makeText(ac,"hah",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public enum Dimension {
@@ -260,8 +295,22 @@ public class MusicFragment extends BaseFragment {
 
     void setMusicInfo(SongInfo song) {
         if (song != null && !TextUtils.isEmpty(song.url)) {
-            if (!TextUtils.isEmpty(song.name))
+            if (!TextUtils.isEmpty(song.name)) {
                 tv_songName.setText(song.name);
+            }
+            if (song.like == 0){
+                //todo ·ÇºìÐÄ
+            }else if (song.like == 1) {
+                //todo ºìÐÄ
+            }
+            if(!TextUtils.isEmpty(song.pic)) {
+                ImageLoader.getInstance().displayImage(song.pic,iv_cd,options,new SimpleImageLoadingListener(){
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        setBackground();
+                    }
+                });
+            }
         }
     }
 

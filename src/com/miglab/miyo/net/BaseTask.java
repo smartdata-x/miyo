@@ -3,22 +3,16 @@ package com.miglab.miyo.net;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.text.TextUtils;
-import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.constant.ApiDefine;
-import com.miglab.miyo.util.NetUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 //todo
 public class BaseTask extends AsyncTask<Void, Void, Void> {
-
-	protected String TAG = "BaseTask";
 	protected Handler handler;
-	protected boolean canReadCache = false;
 
 	protected void init(Handler handler) {
 		this.handler = handler;
-		TAG = this.getClass().getSimpleName();
 	}
 
 	@Override
@@ -32,22 +26,11 @@ public class BaseTask extends AsyncTask<Void, Void, Void> {
 		}
 
 		try {
-			if (canReadCache) {
-				readCache();
-			}
-
-			if (MiyoApplication.frontActivity != null
-					&& !NetUtil.isNetConnection(MiyoApplication.frontActivity)) {
-				handler.sendEmptyMessage(ApiDefine.NET_OFF);
-				return null;
-			}
-
 			String request = request();
 			if (TextUtils.isEmpty(request)) { // 超时
 				handler.sendEmptyMessage(ApiDefine.ERROR_TIMEOUT);
 				return null;
 			}
-
 			int code = 0;
 			String errorMsg = ApiDefine.ERRORMSG_UNKNOWN;
 			try {
@@ -108,6 +91,4 @@ public class BaseTask extends AsyncTask<Void, Void, Void> {
 		return false;
 	}
 
-	protected void readCache() {
-	}
 }
