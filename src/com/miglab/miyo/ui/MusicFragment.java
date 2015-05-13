@@ -1,20 +1,17 @@
 package com.miglab.miyo.ui;
 
-import android.annotation.TargetApi;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,18 +39,20 @@ import java.util.ArrayList;
 public class MusicFragment extends BaseFragment implements View.OnClickListener{
     private RoundImageView iv_cd;
     private RoundProgressBar roundProgressBar;
-    private ImageView iv_cdPlayer;
+    private ImageView iv_heart;
     private RelativeLayout ry_cd;
     private TextView tv_songName;
     private TextView tv_songType;
     private PlayerReceiver playerReceiver = null;
 
-    private SongInfo songInfo;// ¼ÇÂ¼ÕýÔÚ²¥·ÅµÄ¸èÇúÐÅÏ¢
+    private MusicService  musicService;
+    private SongInfo songInfo;// è®°å½•æ­£åœ¨æ’­æ”¾çš„æ­Œæ›²ä¿¡æ¯
     private Dimension dimension;
 
     private Animation rotateAnimation;
     private int totaltime;
     private boolean isplaying;
+    private int songFlag = 0;// è®°å½•æ”¶è—æœªæ”¶è—çŠ¶æ€ï¼Œ0æ²¡æœ‰æ“ä½œï¼Œ1æ”¶è—æˆåŠŸä¹‹åŽï¼Œ2å–æ¶ˆæ”¶è—æˆåŠŸä¹‹åŽ
 
     private DisplayImageOptions options;
 
@@ -77,8 +76,22 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         tv_songName = (TextView) vRoot.findViewById(R.id.music_name);
         tv_songType = (TextView) vRoot.findViewById(R.id.music_type);
         ry_cd = (RelativeLayout) vRoot.findViewById(R.id.music_player);
-        iv_cdPlayer = (ImageView) vRoot.findViewById(R.id.cd_palyer);
-        iv_cdPlayer.setOnClickListener(this);
+        iv_heart = (ImageView) vRoot.findViewById(R.id.heart_music);
+        setListener(vRoot);
+    }
+
+    private void setListener(View v){
+        if(v instanceof ViewGroup){
+            ViewGroup viewGroup = (ViewGroup) v;
+            if(viewGroup.getChildCount() > 0){
+                for(int i = 0; i < viewGroup.getChildCount(); i++) {
+                    View view =  viewGroup.getChildAt(i);
+                    setListener(view);
+                }
+            }
+        }else{
+            v.setOnClickListener(this);
+        }
     }
 
     private void initDisplayImageOptions() {
@@ -98,22 +111,30 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
             vRoot.setBackground(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
         }
     }
-
+//todo äº‹ä»¶ç›‘å¬
     @Override
     public void onClick(View v) {
-        if(v == ry_cd){
-            Toast.makeText(ac,"hah",Toast.LENGTH_SHORT).show();
+        int id = v.getId();
+        switch (id){
+            case R.id.del_music:
+                delMusic();
+                break;
+            case R.id.heart_music:
+                break;
+            case R.id.play_music:
+                nextMusic();
+                break;
         }
     }
 
+
+
     public enum Dimension {
-        PD_HUAYU(1, "chl", 1, "»ªÓïÁ÷ÐÐ"), PD_OUMEI(2, "chl", 2, "Å·ÃÀ½ðÇú"), PD_YAOGUN(
-                3, "chl", 7, "Ò¡¹örock"),
-
-        XQ_SHILIAN(4, "mm", 1, "Ê§ÁµÁÆÉË"), XQ_CUOZHE(5, "mm", 2, "ÊÜµ½´ìÕÛ"), XQ_ANLIAN(
-                6, "mm", 5, "°µÁµ"),
-
-        GR_HONGXIN(7, "clt", 20, "ÎÒµÄºìÐÇ"); /*GR_TUIJIAN(8, "mhx", 8, "ÍÆ¼öÆ«ºÃ");*/
+        PD_HUAYU(1, "chl", 1, "åŽè¯­æµè¡Œ"), PD_OUMEI(2, "chl", 2, "æ¬§ç¾Žé‡‘æ›²"), PD_YAOGUN(
+                3, "chl", 7, "æ‘‡æ»šrock"),
+        XQ_SHILIAN(4, "mm", 1, "å¤±æ‹ç–—ä¼¤"), XQ_CUOZHE(5, "mm", 2, "å—åˆ°æŒ«æŠ˜"), XQ_ANLIAN(
+                6, "mm", 5, "æš—æ‹"),
+        GR_HONGXIN(7, "clt", 20, "æˆ‘çš„çº¢æ˜Ÿ"); /*GR_TUIJIAN(8, "mhx", 8, "æŽ¨èåå¥½");*/
 
         public int index;
         public String dim;
@@ -153,13 +174,13 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
 
             int commend = bundle.getInt(MusicServiceDefine.PLAY_WHAT);
             if (commend <= 0) {
-                Toast.makeText(ac,"²¥·Å³ö´í",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ac,"æ’­æ”¾å‡ºé”™",Toast.LENGTH_SHORT).show();
                 return;
             }
 
             switch (commend) {
                 case MusicServiceDefine.ALBUN_NULL:
-                    Toast.makeText(ac,"µçÌ¨Ã»ÓÐÒôÀÖ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ac,"ç”µå°æ²¡æœ‰éŸ³ä¹",Toast.LENGTH_SHORT).show();
                     break;
 
                 case MusicServiceDefine.MUSIC_CHANGE:
@@ -173,6 +194,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
 
                         int d = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
                         dimension = Dimension.getDimension(d);
+                        tv_songType.setText(dimension.name);
                     }
                     break;
 
@@ -204,41 +226,48 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     }
 
     private void initMusicData() {
-        if (MusicService.isBackPlaying()) {
-            showPlayingContent();
-        } else {
-            MusicInfo info = null;//(MusicInfo) i.getSerializableExtra("music");
-            if (info != null) {
-                changeAlbum(Dimension.getDimension(info.getDimension(),
-                        info.getSid()));
-            } else {
-                startPlayService();
-            }
+        bindMusicService();
+    }
+
+    /** ä¸‹ä¸€é¦– */
+    private void nextMusic() {
+        musicService.nextMusic();
+    }
+
+    private void delMusic() {
+        if (songInfo != null) {
+            //todo delmusic
+//            new DelSongTask(h, String.valueOf(songInfo.id)).execute();
         }
     }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            musicService = ((MusicService.LocalService)service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+
+
     /**
-     * Æô¶¯ºóÌ¨²¥·Å
+     * å¯åŠ¨åŽå°æ’­æ”¾
      *
      * @throws Exception
      */
-    private void startPlayService() {
+    private void bindMusicService() {
         Intent intent = new Intent(ac, MusicService.class);
         intent.putExtra(MusicServiceDefine.INTENT_ACTION,
                 MusicServiceDefine.ALBUM_START);
-        ac.startService(intent);
+        ac.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    /** Í£Ö¹ºóÌ¨²¥·Å */
-    private void stopPlayService() {
-        Intent intent = new Intent(ac, MusicService.class);
-        intent.putExtra(MusicServiceDefine.INTENT_ACTION,
-                MusicServiceDefine.ACTION_STOP);
-        ac.startService(intent);
-        cancelNotification();
-    }
-
-    /** ÇÐ»»µçÌ¨ */
+    /** åˆ‡æ¢ç”µå° */
     void changeAlbum(Dimension d) {
         Intent intent = new Intent(ac, MusicService.class);
         intent.putExtra(MusicServiceDefine.INTENT_ACTION,
@@ -247,7 +276,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         ac.startService(intent);
     }
 
-    /** ºóÌ¨²¥·ÅÏÔÊ¾ */
+    /** åŽå°æ’­æ”¾æ˜¾ç¤º */
     private void showPlayingContent() {
         Intent intent = new Intent(ac, MusicService.class);
         intent.putExtra(MusicServiceDefine.INTENT_ACTION,
@@ -275,7 +304,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     }
 
 
-    /** ×¢²á¸üÐÂ²¥·Å½ø¶ÈµÄReceiver ÔÚoncreateµÄÊ±ºòµ÷ÓÃ */
+    /** æ³¨å†Œæ›´æ–°æ’­æ”¾è¿›åº¦çš„Receiver åœ¨oncreateçš„æ—¶å€™è°ƒç”¨ */
     private void registerPlayerReceiver() {
         if (playerReceiver == null) {
             IntentFilter filter = new IntentFilter(
@@ -285,7 +314,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         }
     }
 
-    /** ÒÆ³ý×¢²á¸üÐÂ²¥·Å½ø¶ÈµÄReceiver ÍË³ö¸ÃÒ³ÃæÇ°µ÷ÓÃ */
+    /** ç§»é™¤æ³¨å†Œæ›´æ–°æ’­æ”¾è¿›åº¦çš„Receiver é€€å‡ºè¯¥é¡µé¢å‰è°ƒç”¨ */
     private void unRegisterPlayerReceiver() {
         if (playerReceiver != null) {
             ac.unregisterReceiver(playerReceiver);
@@ -299,9 +328,9 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
                 tv_songName.setText(song.name);
             }
             if (song.like == 0){
-                //todo ·ÇºìÐÄ
+                iv_heart.setImageResource(R.drawable.heart_music_selector);
             }else if (song.like == 1) {
-                //todo ºìÐÄ
+                iv_heart.setImageResource(R.drawable.music_menu_dark_heart_sel);
             }
             if(!TextUtils.isEmpty(song.pic)) {
                 ImageLoader.getInstance().displayImage(song.pic,iv_cd,options,new SimpleImageLoadingListener(){
@@ -324,5 +353,6 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     public void onDestroy() {
         super.onDestroy();
         unRegisterPlayerReceiver();
+        ac.unbindService(serviceConnection);
     }
 }

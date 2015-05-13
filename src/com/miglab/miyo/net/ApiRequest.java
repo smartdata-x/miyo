@@ -22,11 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * @author ZhaoLongQuan
- * @version 创建时间：2015-1-28 上午11:28:40
- * 类说明
- */
 public class ApiRequest {
 
 	public static String postRequest(String sURL, Map<String, String> params) {

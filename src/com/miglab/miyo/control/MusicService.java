@@ -2,10 +2,7 @@ package com.miglab.miyo.control;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
+import android.os.*;
 import android.text.TextUtils;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.constant.MessageWhat;
@@ -36,10 +33,21 @@ public class MusicService extends Service implements AudioControllerListener{
     SongInfo mSong;
     boolean isMusicActivityOpen = true;
     private AudioController audioController;
-
+    private final LocalService localService = new LocalService();
+    public class LocalService extends Binder {
+        public MusicService getService() {
+            return MusicService.this;
+        }
+    }
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                doMusic(bundle);
+            }
+        }
+        return localService;
     }
 
 
@@ -57,12 +65,12 @@ public class MusicService extends Service implements AudioControllerListener{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                doMusic(bundle);
-            }
-        }
+//        if (intent != null) {
+//            Bundle bundle = intent.getExtras();
+//            if (bundle != null) {
+//                doMusic(bundle);
+//            }
+//        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -247,7 +255,7 @@ public class MusicService extends Service implements AudioControllerListener{
         }
     }
 
-    void stopMusic() {
+    public void stopMusic() {
         if (player != null && playState > MusicServiceDefine.PLAYER_IDLE) {
             player.Stop();
             playState = MusicServiceDefine.PLAYER_IDLE;
@@ -256,7 +264,7 @@ public class MusicService extends Service implements AudioControllerListener{
         sendBroadCast(MusicServiceDefine.MUSIC_STOP);
     }
 
-    void nextMusic() {
+    public void nextMusic() {
         if (player != null && playState > MusicServiceDefine.PLAYER_IDLE) {
             player.Stop();
         }// ֹͣ

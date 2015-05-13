@@ -6,8 +6,10 @@
     <color name="grey_b7">#b7b7b7</color>
     <color name="app_theme">#556076</color>
     <color name="app_bg">#e6e6e6</color>
-    <color name="title_select">#f5f5f5</color>
-    <color name="title_unselect">#b7bbbc</color>
+    <color name="title_select">#ffffff</color>
+    <color name="title_unselect">#b7bbc2</color>
     <color name="cd_progress_bg">#d1e9f8</color>
     <color name="cd_progress">#a1d2f1</color>
+    <color name="text_grey_color">#555555</color>
+    <color name="chat_view_bg">#30ffffff</color>
 </resources>
