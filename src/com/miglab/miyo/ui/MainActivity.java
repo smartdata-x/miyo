@@ -5,10 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.TextView;
 import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
@@ -44,6 +41,24 @@ public class MainActivity extends FragmentActivity {
         initFragments();
         initViews();
         initTitleColor();
+        setListener();
+    }
+
+    private void setListener() {
+        findMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewPager.setCurrentItem(0,true);
+                findMusic.setSelected(true);
+                myFM.setSelected(false);
+            }
+        });
+        myFM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -113,7 +128,6 @@ public class MainActivity extends FragmentActivity {
          */
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            Log.e("haha---","position="+position+";positionOffset="+positionOffset+";positionOffsetPixels"+positionOffsetPixels);
             if(positionOffsetPixels != 0) {
                 findMusic.setTextColor(getNewColor(positionOffset));
                 myFM.setTextColor(getNewColor(1 - positionOffset));
@@ -157,15 +171,6 @@ public class MainActivity extends FragmentActivity {
         public Object instantiateItem(ViewGroup container, int position) {
             return super.instantiateItem(container, position);
         }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-//        if(hasFocus && !isInit){
-//            ((MusicFragment)musicFragment).setBackground();
-//            isInit =  true;
-//        }
     }
 
     @Override

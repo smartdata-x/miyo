@@ -2,6 +2,8 @@ package com.miglab.miyo.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by fanglei
@@ -203,5 +205,19 @@ public class DisplayUtil {
         }
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
         return (bitmap);
+    }
+
+    public static void setListener(View v,View.OnClickListener listener){
+        if(v instanceof ViewGroup){
+            ViewGroup viewGroup = (ViewGroup) v;
+            if(viewGroup.getChildCount() > 0){
+                for(int i = 0; i < viewGroup.getChildCount(); i++) {
+                    View view =  viewGroup.getChildAt(i);
+                    setListener(view,listener);
+                }
+            }
+        }else{
+            v.setOnClickListener(listener);
+        }
     }
 }

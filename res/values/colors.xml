@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent">#00000000</color>
-    <color name="alph_30">#30000000</color>
+    <color name="alpha_50">#50000000</color>
     <color name="white">#ffffff</color>
     <color name="grey_b7">#b7b7b7</color>
     <color name="app_theme">#556076</color>
@@ -12,4 +12,5 @@
     <color name="cd_progress">#a1d2f1</color>
     <color name="text_grey_color">#555555</color>
     <color name="chat_view_bg">#30ffffff</color>
+    <color name="b9_alpha_white">#b9ffffff</color>
 </resources>

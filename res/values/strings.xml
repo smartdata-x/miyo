@@ -8,5 +8,7 @@
     <string name="my_fm">我的FM</string>
     <string name="weather_cloudy">多云</string>
     <string name="rock_music">摇滚ROCK</string>
+    <string name="login">登录</string>
+    <string name="regist">注册</string>
 
 </resources>

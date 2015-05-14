@@ -20,7 +20,6 @@ import com.miglab.miyo.R;
 import com.miglab.miyo.constant.MessageWhat;
 import com.miglab.miyo.constant.MusicServiceDefine;
 import com.miglab.miyo.control.MusicService;
-import com.miglab.miyo.entity.MusicInfo;
 import com.miglab.miyo.entity.SongInfo;
 import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
@@ -29,7 +28,6 @@ import com.miglab.miyo.ui.widget.RoundImageView;
 import com.miglab.miyo.ui.widget.RoundProgressBar;
 import com.miglab.miyo.util.DisplayUtil;
 
-import java.util.ArrayList;
 
 /**
  * Created by fanglei
@@ -77,21 +75,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         tv_songType = (TextView) vRoot.findViewById(R.id.music_type);
         ry_cd = (RelativeLayout) vRoot.findViewById(R.id.music_player);
         iv_heart = (ImageView) vRoot.findViewById(R.id.heart_music);
-        setListener(vRoot);
-    }
-
-    private void setListener(View v){
-        if(v instanceof ViewGroup){
-            ViewGroup viewGroup = (ViewGroup) v;
-            if(viewGroup.getChildCount() > 0){
-                for(int i = 0; i < viewGroup.getChildCount(); i++) {
-                    View view =  viewGroup.getChildAt(i);
-                    setListener(view);
-                }
-            }
-        }else{
-            v.setOnClickListener(this);
-        }
+        DisplayUtil.setListener(vRoot,this);
     }
 
     private void initDisplayImageOptions() {
@@ -325,7 +309,11 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     void setMusicInfo(SongInfo song) {
         if (song != null && !TextUtils.isEmpty(song.url)) {
             if (!TextUtils.isEmpty(song.name)) {
-                tv_songName.setText(song.name);
+                if(!TextUtils.isEmpty(song.artist)) {
+                    tv_songName.setText(song.artist + "-" + song.name);
+                }else{
+                    tv_songName.setText(song.name);
+                }
             }
             if (song.like == 0){
                 iv_heart.setImageResource(R.drawable.heart_music_selector);

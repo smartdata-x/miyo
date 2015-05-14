@@ -1,12 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res/com.miglab.miyo"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/white"
               android:clickable="true">
-    <com.miglab.miyo.ui.widget.RoundImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/ic_launcher"/>
-
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_layout_height"
+                    android:background="@color/app_theme">
+        <com.miglab.miyo.ui.widget.RoundImageView
+                android:id="@+id/header"
+                android:layout_width="@dimen/head_diameter"
+                android:layout_height="@dimen/head_diameter"
+                android:layout_marginTop="@dimen/head_margin_top"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/loading"
+                app:border_thickness="@dimen/head_border"
+                app:border_color="@color/white"/>
+        <ImageView
+                android:id="@+id/user_photo_click"
+                android:layout_width="@dimen/head_diameter"
+                android:layout_height="@dimen/head_diameter"
+                android:background="@drawable/cd_selector"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/head_margin_top"
+                />
+        <LinearLayout
+                android:layout_below="@id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_text_margin_top"
+                android:layout_centerHorizontal="true">
+            <TextView style="@style/text_login_bg_style"
+                      android:text="@string/login"/>
+            <TextView style="@style/text_login_bg_style"
+                      android:layout_marginLeft="@dimen/login_regist_distance"
+                      android:text="@string/regist"/>
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
