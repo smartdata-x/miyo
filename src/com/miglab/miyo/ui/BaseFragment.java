@@ -37,4 +37,25 @@ public class BaseFragment extends Fragment {
     protected void setLayout(){
 
     }
+
+    public static class UIHandler extends Handler {
+        private final WeakReference<BaseFragment> fragmentWeakReference;
+
+        public UIHandler(BaseFragment activity) {
+            fragmentWeakReference = new WeakReference<BaseFragment>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                fragment.doHandler(msg);
+            }
+        }
+    }
+
+    protected UIHandler handler = new BaseFragment.UIHandler(this);
+
+    protected void doHandler(Message msg) {
+    }
 }

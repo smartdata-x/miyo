@@ -41,5 +41,5 @@ public interface MessageWhat {
     int WM_HEADSET_OFF				= NET_ON + 64;
 
     /** 播放器与UI界面/播放Service交互广播 */
-    String PLAY_BROADCAST_ACTION_NAME = "com.miglab.abheg.MusicServiceNotification";
+    String PLAY_BROADCAST_ACTION_NAME = "com.miglab.miyo.MusicServiceNotification";
 }

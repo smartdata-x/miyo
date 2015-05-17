@@ -35,32 +35,16 @@ public class BaseTask extends AsyncTask<Void, Void, Void> {
 			String errorMsg = ApiDefine.ERRORMSG_UNKNOWN;
 			try {
 				JSONObject json = new JSONObject(request);
+				preResult(json);
 				if (json != null) {
 					code = json.optInt("status");
 					if (code == 1) {
-//						if(MusicActivity.collectsong == 1){
-//							handler.sendMessage(handler.obtainMessage(ApiDefine.GET_COLLECT_SONG_SUCCESS, 0, code));
-//							MusicActivity.collectsong = 0;
-//						}
-//						if(MusicActivity.deletecollectsong == 1){
-//							handler.sendMessage(handler.obtainMessage(ApiDefine.GET_DELECT_COLLECT_SONG_SUCCESS, 1, code));
-//							MusicActivity.deletecollectsong = 0;
-//						}
-//						if(MusicActivity.hatesong == 1){
-//							handler.sendMessage(handler.obtainMessage(ApiDefine.GET_HATE_SONG_SUCCESS, 2, code));
-//							MusicActivity.hatesong = 0;
-//						}
 						JSONObject jresult = json.optJSONObject("result");
 						if (jresult != null && parseResult(jresult)) {
 							return null;
 						}
 					}else if(code != 1){
-//						if(MusicActivity.collectsong == 1 || MusicActivity.deletecollectsong == 1
-//								|| MusicActivity.hatesong == 1){
-//							MusicActivity.collectsong = 0;
-//							MusicActivity.deletecollectsong = 0;
-//							MusicActivity.hatesong = 0;
-//						}
+
 					}
 				}
 
@@ -88,6 +72,10 @@ public class BaseTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	protected boolean parseResult(JSONObject jresult) {
+		return false;
+	}
+
+	protected boolean preResult(JSONObject jresult) {
 		return false;
 	}
 

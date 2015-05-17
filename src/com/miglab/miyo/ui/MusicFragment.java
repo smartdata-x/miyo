@@ -1,5 +1,6 @@
 package com.miglab.miyo.ui;
 
+import android.animation.ObjectAnimator;
 import android.app.NotificationManager;
 import android.content.*;
 import android.graphics.Bitmap;
@@ -7,20 +8,21 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.miglab.miyo.R;
+import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.constant.MessageWhat;
 import com.miglab.miyo.constant.MusicServiceDefine;
 import com.miglab.miyo.control.MusicService;
 import com.miglab.miyo.entity.SongInfo;
+import com.miglab.miyo.net.DelSongTask;
 import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
 import com.miglab.miyo.third.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -47,10 +49,11 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     private SongInfo songInfo;// 记录正在播放的歌曲信息
     private Dimension dimension;
 
-    private Animation rotateAnimation;
+    private ObjectAnimator anim;
     private int totaltime;
     private boolean isplaying;
     private int songFlag = 0;// 记录收藏未收藏状态，0没有操作，1收藏成功之后，2取消收藏成功之后
+    private int palyFlag = 0;// 歌曲播放状态 0-正在播放 1-暂停
 
     private DisplayImageOptions options;
 
@@ -62,7 +65,11 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     @Override
     protected void init() {
         intiViews();
-        rotateAnimation = AnimationUtils.loadAnimation(ac, R.anim.cd_rotate_anim);
+        anim = ObjectAnimator.ofFloat(iv_cd, "rotation", 0, 360);
+        anim.setDuration(50000);
+        anim.setRepeatCount(-1);
+        anim.setRepeatMode(ObjectAnimator.RESTART);
+        anim.setInterpolator(new LinearInterpolator());
         registerPlayerReceiver();
         initMusicData();
         initDisplayImageOptions();
@@ -107,6 +114,9 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
                 break;
             case R.id.play_music:
                 nextMusic();
+                break;
+            case R.id.cd_palyer:
+                pauseMusic();
                 break;
         }
     }
@@ -192,14 +202,6 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
                     playTimeUpdate(time2);
                     break;
 
-                case MusicServiceDefine.MUSIC_PAUSE:
-                    cdStopAnimation();
-                    break;
-
-                case MusicServiceDefine.MUSIC_RESUME:
-                    cdStartAnimation();
-                    break;
-
                 case MusicServiceDefine.MUSIC_STOP:
                     break;
 
@@ -218,10 +220,35 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         musicService.nextMusic();
     }
 
+    /** 暂停或开始 */
+    private void pauseMusic() {
+        if(palyFlag == 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                anim.pause();
+            } else {
+                anim.cancel();
+            }
+            musicService.toggleMusic();
+            palyFlag = 1;
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                anim.resume();
+            } else {
+                anim.start();
+            }
+            musicService.toggleMusic();
+            palyFlag = 0;
+        }
+
+    }
+
+    /**
+     * 删除歌曲
+     * 切到下一首，然后删除 */
     private void delMusic() {
+        nextMusic();
         if (songInfo != null) {
-            //todo delmusic
-//            new DelSongTask(h, String.valueOf(songInfo.id)).execute();
+            new DelSongTask(ac, handler, songInfo).execute();
         }
     }
 
@@ -280,11 +307,12 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     }
 
     void cdStartAnimation() {
-        iv_cd.startAnimation(rotateAnimation);
+        anim.start();
+ //       iv_cd.startAnimation(rotateAnimation);
     }
 
     void cdStopAnimation() {
-        rotateAnimation.cancel();
+//        rotateAnimation.cancel();
     }
 
 
@@ -342,5 +370,16 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         super.onDestroy();
         unRegisterPlayerReceiver();
         ac.unbindService(serviceConnection);
+    }
+
+    @Override
+    protected void doHandler(Message msg) {
+        super.doHandler(msg);
+        switch (msg.what){
+            case ApiDefine.GET_HATE_SONG_SUCCESS:
+                SongInfo songTemp = (SongInfo) msg.obj;
+                Toast.makeText(ac,songTemp.name+"歌曲删除成功",Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }

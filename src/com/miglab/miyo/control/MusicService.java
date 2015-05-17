@@ -16,7 +16,6 @@ import com.miglab.miyo.MyUser;
 import com.miglab.miyo.control.AudioController.AudioState;
 import com.miglab.miyo.net.DimensionFMTask;
 import com.miglab.miyo.net.GetCltSongsTask;
-import com.miglab.miyo.ui.MusicFragment;
 import com.miglab.miyo.ui.MusicFragment.Dimension;
 /**
  * Created by tudou on 2015/5/9.
@@ -24,7 +23,7 @@ import com.miglab.miyo.ui.MusicFragment.Dimension;
 public class MusicService extends Service implements AudioControllerListener{
 
     private MyUser user;
-    // ========²¥·ÅÒôÀÖ======//
+    // ========æ’­æ”¾éŸ³ä¹======//
     ArrayList<SongInfo> songs = new ArrayList<SongInfo>();
     Player player;
     static int playState;
@@ -64,17 +63,6 @@ public class MusicService extends Service implements AudioControllerListener{
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-//        if (intent != null) {
-//            Bundle bundle = intent.getExtras();
-//            if (bundle != null) {
-//                doMusic(bundle);
-//            }
-//        }
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
     public void bePaused(AudioState state) {
         if (player != null && playState == MusicServiceDefine.PLAYER_PLAYING) {
             player.Pause();
@@ -104,26 +92,26 @@ public class MusicService extends Service implements AudioControllerListener{
 
     @Override
     public void headsetOn(AudioState state) {
-        // TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+        // TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 
     }
 
     @Override
     public void headsetOff(AudioState state) {
-        // TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+        // TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 
     }
 
-    /** ´¦ÀíÅĞ¶Ï */
+    /** å¤„ç†åˆ¤æ–­ */
     public void doMusic(Bundle bundle) {
         try {
             int action = bundle.getInt(MusicServiceDefine.INTENT_ACTION);
             switch (action) {
-                case MusicServiceDefine.ALBUM_START:// ¿ªÊ¼²¥·Å×¨¼­»òÕßÇĞ»»×¨¼­
+                case MusicServiceDefine.ALBUM_START:// å¼€å§‹æ’­æ”¾ä¸“è¾‘æˆ–è€…åˆ‡æ¢ä¸“è¾‘
                     startAlbum(bundle);
                     break;
 
-                case MusicServiceDefine.ACTION_TOGGLE: // ÔİÍ£»òÕß¿ªÊ¼
+                case MusicServiceDefine.ACTION_TOGGLE: // æš‚åœæˆ–è€…å¼€å§‹
                     toggleMusic();
                     break;
 
@@ -152,7 +140,7 @@ public class MusicService extends Service implements AudioControllerListener{
         }
     }
 
-    /** Æô¶¯»òÇĞ»»×¨¼­ */
+    /** å¯åŠ¨æˆ–åˆ‡æ¢ä¸“è¾‘ */
     void startAlbum(Bundle bundle) {
         if (player == null)
             player = new Player(handler);
@@ -170,7 +158,7 @@ public class MusicService extends Service implements AudioControllerListener{
         getDimensionMusics(mDimension);
     }
 
-    /** »ñÈ¡ÒôÀÖÁĞ±í */
+    /** è·å–éŸ³ä¹åˆ—è¡¨ */
     void getDimensionMusics(Dimension d) {
         mDimension = d;
 
@@ -180,7 +168,7 @@ public class MusicService extends Service implements AudioControllerListener{
             new DimensionFMTask(handler, mDimension.dim, mDimension.sid).execute();
     }
 
-    /** µÃµ½ÒôÀÖÁĞ±í */
+    /** å¾—åˆ°éŸ³ä¹åˆ—è¡¨ */
     void setMusicList(ArrayList<SongInfo> list) {
         if (list == null || list.isEmpty()) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
@@ -196,13 +184,13 @@ public class MusicService extends Service implements AudioControllerListener{
 
     }
 
-    /** ¿ªÊ¼²¥·ÅÒôÀÖ */
+    /** å¼€å§‹æ’­æ”¾éŸ³ä¹ */
     void startMusic(String url) {
         if (player != null)
             player.setMusicInfo(url);
     }
 
-    /** ´ÓÍ¨ÖªÀ¸´ò¿ª²¥·Å½çÃæ */
+    /** ä»é€šçŸ¥æ æ‰“å¼€æ’­æ”¾ç•Œé¢ */
     void fromNotice() {
         isMusicActivityOpen = true;
 
@@ -243,15 +231,13 @@ public class MusicService extends Service implements AudioControllerListener{
         }
     }
 
-    void toggleMusic() {
+    public void toggleMusic() {
         if (playState == MusicServiceDefine.PLAYER_PLAYING) {
             player.Pause();
             playState = MusicServiceDefine.PLAYER_PAUSE;
-            sendBroadCast(MusicServiceDefine.MUSIC_PAUSE);
         } else if (playState == MusicServiceDefine.PLAYER_PAUSE) {
             player.Resume();
             playState = MusicServiceDefine.PLAYER_PLAYING;
-            sendBroadCast(MusicServiceDefine.MUSIC_RESUME);
         }
     }
 
@@ -259,7 +245,7 @@ public class MusicService extends Service implements AudioControllerListener{
         if (player != null && playState > MusicServiceDefine.PLAYER_IDLE) {
             player.Stop();
             playState = MusicServiceDefine.PLAYER_IDLE;
-        }// Í£Ö¹
+        }// åœæ­¢
         audioController.setAudioFinish(AudioState.LISTEN_MUSIC);
         sendBroadCast(MusicServiceDefine.MUSIC_STOP);
     }
@@ -267,7 +253,7 @@ public class MusicService extends Service implements AudioControllerListener{
     public void nextMusic() {
         if (player != null && playState > MusicServiceDefine.PLAYER_IDLE) {
             player.Stop();
-        }// Í£Ö¹
+        }// åœæ­¢
 
         if (++playIndex >= songs.size() - 1) {
             playIndex = 0;
@@ -318,7 +304,7 @@ public class MusicService extends Service implements AudioControllerListener{
             try {
                 int nCommand = msg.what;
                 switch (nCommand) {
-                    // »ñÈ¡×¨¼­Êı¾İ
+                    // è·å–ä¸“è¾‘æ•°æ®
                     case ApiDefine.GET_DEMENSION_SUCCESS:
                         if (msg.obj != null) {
                             ArrayList<SongInfo> list = (ArrayList<SongInfo>) msg.obj;
@@ -328,7 +314,7 @@ public class MusicService extends Service implements AudioControllerListener{
                         }
                         break;
 
-                    // ²¥·ÅÆ÷×¼±¸Íê³É£¬¿ªÊ¼²¥·ÅÒôÀÖ
+                    // æ’­æ”¾å™¨å‡†å¤‡å®Œæˆï¼Œå¼€å§‹æ’­æ”¾éŸ³ä¹
                     case MessageWhat.PLAYER_PREPARED:
                         if (musicService.player != null) {
                             musicService.player.start(true);
@@ -355,7 +341,7 @@ public class MusicService extends Service implements AudioControllerListener{
                         musicService.nextMusic();
                         break;
 
-                    // »ñÈ¡ºìĞÇ¸èµ¥×¨¼­Êı¾İ
+                    // è·å–çº¢æ˜Ÿæ­Œå•ä¸“è¾‘æ•°æ®
                     case ApiDefine.GET_CLTSONGS_SUCCESS:
                         if (msg.obj != null) {
                             ArrayList<SongInfo> list = (ArrayList<SongInfo>) msg.obj;
