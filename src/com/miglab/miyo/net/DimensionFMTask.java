@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.miglab.miyo.MyUser;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.entity.SongInfo;
+import com.miglab.miyo.ui.MusicFragment.Dimension;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,26 +13,24 @@ import java.util.ArrayList;
 
 
 public class DimensionFMTask extends BaseTask {
-	String dimension;
-	int mId;
+	private Dimension dimension;
 
-	public DimensionFMTask(Handler tHandler, String dimension, int mid) {
+	public DimensionFMTask(Handler tHandler, Dimension dimension) {
 		this.init(tHandler);
 		this.dimension = dimension;
-		this.mId = mid;
 	}
 
 	@Override
 	protected boolean paramsFail() {
-		return dimension == null || mId <= 0;
+		return dimension == null || dimension.sid <= 0;
 
 	}
 
 	@Override
 	protected String request() throws Exception {
 		String url = ApiDefine.DOMAIN + ApiDefine.FOUND_FM;
-		String params = MyUser.getApiBasicParams() + "&dimension=" + dimension
-				+ "&sid=" + mId;
+		String params = MyUser.getApiBasicParams() + "&dimension=" + dimension.dim
+				+ "&sid=" + dimension.sid;
 
 		return ApiRequest.getRequest(url + params);
 	}

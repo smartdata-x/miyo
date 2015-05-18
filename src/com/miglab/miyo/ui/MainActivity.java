@@ -1,14 +1,22 @@
 package com.miglab.miyo.ui;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
+import com.miglab.miyo.net.GetWeatherTask;
+import com.miglab.miyo.util.LocationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +35,11 @@ public class MainActivity extends FragmentActivity {
     private BaseFragment musicFragment,fmFragment,userFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+    private LocationUtil locationUtil;
 
-    //
-    private int titleSelectColor,titleUnselectColor;
     private int select_R,select_G,select_B;
     private int color_Dif_R,color_Dif_G,color_Dif_B;
 
-    private boolean isInit = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +62,9 @@ public class MainActivity extends FragmentActivity {
         myFM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                viewPager.setCurrentItem(1, true);
+                myFM.setSelected(true);
+                findMusic.setSelected(false);
             }
         });
     }
@@ -68,8 +76,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initTitleColor() {
-        titleSelectColor = getResources().getColor(R.color.title_select);
-        titleUnselectColor = getResources().getColor(R.color.title_unselect);
+        int titleSelectColor = getResources().getColor(R.color.title_select);
+        int titleUnselectColor = getResources().getColor(R.color.title_unselect);
         select_R = Color.red(titleSelectColor);
         select_G = Color.green(titleSelectColor);
         select_B = Color.blue(titleSelectColor);
@@ -181,4 +189,7 @@ public class MainActivity extends FragmentActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
+
 }

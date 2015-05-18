@@ -35,6 +35,8 @@ public interface ApiDefine {
     String ENJOY_THINGS = "/find/v1/personal.fcgi";
     String KEY_SEARCH = "/store/v1/searchkey.fcgi";
     String GET_CLTSONGS = "/music/v1/getcltsongs.fcgi";
+    String WEATHER = "/soc/v1/getlocation.fcgi";
+    String MUSIC_TYPE = "/music/v1/dimensioninfo.fcgi";
 
     int GET_SUCCESS = 100001;
     int FRESH_IMAGE = 100002;
@@ -43,7 +45,8 @@ public interface ApiDefine {
     int GET_BEACON_SUCCESS = 100005;
     int GET_SHAKE_APP_SUCCESS = 100006;
     int GET_CLTSONGS_SUCCESS = 100007;
-
+    int GET_WEATHER_SUCCESS = 100008;
+    int GET_MUSIC_TYPE_SUCCESS = 100009;
 
     int ERROR_TIMEOUT = 200000;
     int ERROR_UNKNOWN = 200001;
@@ -62,4 +65,7 @@ public interface ApiDefine {
     int GET_HATE_SONG_SUCCESS = 400003;
 
     String ERRORMSG_UNKNOWN = "Î´Öª´íÎóÔ­Òò";
+
+
+
 }

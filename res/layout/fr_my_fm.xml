@@ -4,11 +4,12 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/app_bg">
-    <TextView
-            android:id="@+id/type_title"
+    <ListView
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    <ListView
+    <TextView
+            android:id="@+id/type_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     <RelativeLayout

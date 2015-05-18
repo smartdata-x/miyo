@@ -5,6 +5,10 @@ import android.app.NotificationManager;
 import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -16,19 +20,25 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.constant.MessageWhat;
 import com.miglab.miyo.constant.MusicServiceDefine;
 import com.miglab.miyo.control.MusicService;
 import com.miglab.miyo.entity.SongInfo;
+import com.miglab.miyo.net.CollectSongTask;
+import com.miglab.miyo.net.DelCollectSongTask;
 import com.miglab.miyo.net.DelSongTask;
+import com.miglab.miyo.net.GetWeatherTask;
 import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
 import com.miglab.miyo.third.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.miglab.miyo.ui.widget.RoundImageView;
 import com.miglab.miyo.ui.widget.RoundProgressBar;
 import com.miglab.miyo.util.DisplayUtil;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -36,16 +46,20 @@ import com.miglab.miyo.util.DisplayUtil;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MusicFragment extends BaseFragment implements View.OnClickListener{
+public class MusicFragment extends BaseFragment implements View.OnClickListener {
     private RoundImageView iv_cd;
     private RoundProgressBar roundProgressBar;
     private ImageView iv_heart;
+    private ImageView icon_player;
+    private ImageView icon_weather;
     private RelativeLayout ry_cd;
     private TextView tv_songName;
     private TextView tv_songType;
+    private TextView tv_address;
+    private TextView tv_temperature;
     private PlayerReceiver playerReceiver = null;
 
-    private MusicService  musicService;
+    private MusicService musicService;
     private SongInfo songInfo;// 记录正在播放的歌曲信息
     private Dimension dimension;
 
@@ -73,6 +87,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         registerPlayerReceiver();
         initMusicData();
         initDisplayImageOptions();
+        initWeather();
     }
 
     private void intiViews() {
@@ -82,45 +97,66 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         tv_songType = (TextView) vRoot.findViewById(R.id.music_type);
         ry_cd = (RelativeLayout) vRoot.findViewById(R.id.music_player);
         iv_heart = (ImageView) vRoot.findViewById(R.id.heart_music);
-        DisplayUtil.setListener(vRoot,this);
+        icon_player = (ImageView) vRoot.findViewById(R.id.icon_player);
+        icon_weather = (ImageView) vRoot.findViewById(R.id.weather_icon);
+        tv_address = (TextView) vRoot.findViewById(R.id.address);
+        tv_temperature = (TextView) vRoot.findViewById(R.id.temperature);
+        DisplayUtil.setListener(vRoot, this);
     }
 
     private void initDisplayImageOptions() {
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
-         //       .cacheOnDisk(true)
+                        //       .cacheOnDisk(true)
                 .considerExifParams(true)
                 .build();
+    }
+
+    private void initWeather() {
+        new GetWeatherTask(handler,
+                MiyoApplication.getInstance().getLocationUtil().getLatitude(),
+                MiyoApplication.getInstance().getLocationUtil().getLongitude()).execute();
+    }
+
+    private void displayWeather(String weather, String temp, String address) {
+        tv_temperature.setText(temp);
+        tv_address.setText(address);
+        int resID = getResources().getIdentifier(weather, "drawable",MiyoApplication.getInstance().getPackageName());
+        icon_weather.setImageResource(resID);
     }
 
     @SuppressWarnings("deprecation")
     public void setBackground() {
         Bitmap b = ((BitmapDrawable) (iv_cd).getDrawable()).getBitmap();
-        if(Build.VERSION.SDK_INT < 16) {
+        if (Build.VERSION.SDK_INT < 16) {
             vRoot.setBackgroundDrawable(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
-        }else {
+        } else {
             vRoot.setBackground(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
         }
     }
-//todo 事件监听
+
+    //todo 事件监听
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch (id){
+        switch (id) {
             case R.id.del_music:
                 delMusic();
                 break;
             case R.id.heart_music:
+                collectMusic();
                 break;
-            case R.id.play_music:
+            case R.id.next_music:
                 nextMusic();
                 break;
             case R.id.cd_palyer:
                 pauseMusic();
                 break;
+            case R.id.icon_player:
+                pauseMusic();
+                break;
         }
     }
-
 
 
     public enum Dimension {
@@ -168,13 +204,13 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
 
             int commend = bundle.getInt(MusicServiceDefine.PLAY_WHAT);
             if (commend <= 0) {
-                Toast.makeText(ac,"播放出错",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ac, "播放出错", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             switch (commend) {
                 case MusicServiceDefine.ALBUN_NULL:
-                    Toast.makeText(ac,"电台没有音乐",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ac, "电台没有音乐", Toast.LENGTH_SHORT).show();
                     break;
 
                 case MusicServiceDefine.MUSIC_CHANGE:
@@ -215,20 +251,25 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         bindMusicService();
     }
 
-    /** 下一首 */
+    /**
+     * 下一首
+     */
     private void nextMusic() {
         musicService.nextMusic();
     }
 
-    /** 暂停或开始 */
+    /**
+     * 暂停或开始
+     */
     private void pauseMusic() {
-        if(palyFlag == 0) {
+        if (palyFlag == 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 anim.pause();
             } else {
                 anim.cancel();
             }
             musicService.toggleMusic();
+            icon_player.setVisibility(View.VISIBLE);
             palyFlag = 1;
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -237,6 +278,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
                 anim.start();
             }
             musicService.toggleMusic();
+            icon_player.setVisibility(View.GONE);
             palyFlag = 0;
         }
 
@@ -244,7 +286,8 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
 
     /**
      * 删除歌曲
-     * 切到下一首，然后删除 */
+     * 切到下一首，然后删除
+     */
     private void delMusic() {
         nextMusic();
         if (songInfo != null) {
@@ -252,10 +295,25 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         }
     }
 
+    private void collectMusic() {
+        if (songInfo == null || dimension == null)
+            return;
+        //收藏歌曲
+        if (songInfo.like == 0) {
+            new CollectSongTask(handler, songInfo, dimension).execute();
+            songInfo.like = -2;
+        }
+        //取消收藏
+        if (songInfo.like == 1) {
+            new DelCollectSongTask(handler, songInfo).execute();
+            songInfo.like = -1;
+        }
+    }
+
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            musicService = ((MusicService.LocalService)service).getService();
+            musicService = ((MusicService.LocalService) service).getService();
         }
 
         @Override
@@ -263,7 +321,6 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
             musicService = null;
         }
     };
-
 
 
     /**
@@ -278,7 +335,9 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         ac.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    /** 切换电台 */
+    /**
+     * 切换电台
+     */
     void changeAlbum(Dimension d) {
         Intent intent = new Intent(ac, MusicService.class);
         intent.putExtra(MusicServiceDefine.INTENT_ACTION,
@@ -287,7 +346,9 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         ac.startService(intent);
     }
 
-    /** 后台播放显示 */
+    /**
+     * 后台播放显示
+     */
     private void showPlayingContent() {
         Intent intent = new Intent(ac, MusicService.class);
         intent.putExtra(MusicServiceDefine.INTENT_ACTION,
@@ -308,7 +369,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
 
     void cdStartAnimation() {
         anim.start();
- //       iv_cd.startAnimation(rotateAnimation);
+        //       iv_cd.startAnimation(rotateAnimation);
     }
 
     void cdStopAnimation() {
@@ -316,7 +377,9 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     }
 
 
-    /** 注册更新播放进度的Receiver 在oncreate的时候调用 */
+    /**
+     * 注册更新播放进度的Receiver 在oncreate的时候调用
+     */
     private void registerPlayerReceiver() {
         if (playerReceiver == null) {
             IntentFilter filter = new IntentFilter(
@@ -326,7 +389,9 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
         }
     }
 
-    /** 移除注册更新播放进度的Receiver 退出该页面前调用 */
+    /**
+     * 移除注册更新播放进度的Receiver 退出该页面前调用
+     */
     private void unRegisterPlayerReceiver() {
         if (playerReceiver != null) {
             ac.unregisterReceiver(playerReceiver);
@@ -337,19 +402,19 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     void setMusicInfo(SongInfo song) {
         if (song != null && !TextUtils.isEmpty(song.url)) {
             if (!TextUtils.isEmpty(song.name)) {
-                if(!TextUtils.isEmpty(song.artist)) {
+                if (!TextUtils.isEmpty(song.artist)) {
                     tv_songName.setText(song.artist + "-" + song.name);
-                }else{
+                } else {
                     tv_songName.setText(song.name);
                 }
             }
-            if (song.like == 0){
-                iv_heart.setImageResource(R.drawable.heart_music_selector);
-            }else if (song.like == 1) {
-                iv_heart.setImageResource(R.drawable.music_menu_dark_heart_sel);
+            if (song.like == 0) {
+                iv_heart.setImageResource(R.drawable.collect_music_selector);
+            } else if (song.like == 1) {
+                iv_heart.setImageResource(R.drawable.delcollect_music_selector);
             }
-            if(!TextUtils.isEmpty(song.pic)) {
-                ImageLoader.getInstance().displayImage(song.pic,iv_cd,options,new SimpleImageLoadingListener(){
+            if (!TextUtils.isEmpty(song.pic)) {
+                ImageLoader.getInstance().displayImage(song.pic, iv_cd, options, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         setBackground();
@@ -375,11 +440,36 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener{
     @Override
     protected void doHandler(Message msg) {
         super.doHandler(msg);
-        switch (msg.what){
+        switch (msg.what) {
             case ApiDefine.GET_HATE_SONG_SUCCESS:
                 SongInfo songTemp = (SongInfo) msg.obj;
-                Toast.makeText(ac,songTemp.name+"歌曲删除成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ac, songTemp.name + " 删除成功", Toast.LENGTH_SHORT).show();
+                break;
+            case ApiDefine.GET_COLLECT_SONG_SUCCESS:
+                SongInfo songTemp1 = (SongInfo) msg.obj;
+                Toast.makeText(ac, songTemp1.name + " 收藏成功", Toast.LENGTH_SHORT).show();
+                if (songTemp1.id == songInfo.id) {
+                    songInfo.like = 1;
+                    iv_heart.setImageResource(R.drawable.delcollect_music_selector);
+                }
+                break;
+            case ApiDefine.GET_DELECT_COLLECT_SONG_SUCCESS:
+                SongInfo songTemp2 = (SongInfo) msg.obj;
+                Toast.makeText(ac, songTemp2.name + " 取消收藏成功", Toast.LENGTH_SHORT).show();
+                if (songTemp2.id == songInfo.id) {
+                    songInfo.like = 0;
+                    iv_heart.setImageResource(R.drawable.collect_music_selector);
+                }
+                break;
+            case ApiDefine.GET_WEATHER_SUCCESS:
+                JSONObject jResult = (JSONObject) msg.obj;
+                String weather = jResult.optString("weather");
+                String temp = jResult.optString("temp");
+                String address = jResult.optString("city");
+                displayWeather(weather.toLowerCase(),temp,address);
                 break;
         }
     }
+
+
 }

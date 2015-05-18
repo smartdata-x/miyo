@@ -9,6 +9,7 @@ import com.miglab.miyo.third.universalimageloader.cache.disc.naming.Md5FileNameG
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoaderConfiguration;
 import com.miglab.miyo.third.universalimageloader.core.assist.QueueProcessingType;
+import com.miglab.miyo.util.LocationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,17 @@ public class MiyoApplication extends Application {
         return instance;
     }
 
+    private LocationUtil locationUtil;
     @Override
     public void onCreate() {
         super.onCreate();
         initImageLoader(getApplicationContext());
         instance = this;
+        locationUtil = new LocationUtil(this);
+    }
+
+    public LocationUtil getLocationUtil(){
+        return locationUtil;
     }
 
     private void initImageLoader(Context context) {

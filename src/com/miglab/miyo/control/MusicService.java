@@ -164,8 +164,9 @@ public class MusicService extends Service implements AudioControllerListener{
 
         if(mDimension.sid == 20){
             new GetCltSongsTask(handler, user.id).execute();
-        }else
-            new DimensionFMTask(handler, mDimension.dim, mDimension.sid).execute();
+        }else {
+            new DimensionFMTask(handler, mDimension).execute();
+        }
     }
 
     /** 得到音乐列表 */
@@ -175,9 +176,14 @@ public class MusicService extends Service implements AudioControllerListener{
             return;
         }
 
-        songs.clear();
+        if(songs.size() > 20){
+            for(;playIndex > 2; playIndex--){
+                songs.remove(0);
+            }
+        }
         songs.addAll(list);
-
+        if(playState == MusicServiceDefine.PLAYER_PLAYING)
+            return;
         if (checkSong(0)) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
         }
@@ -254,9 +260,9 @@ public class MusicService extends Service implements AudioControllerListener{
         if (player != null && playState > MusicServiceDefine.PLAYER_IDLE) {
             player.Stop();
         }// 停止
-
-        if (++playIndex >= songs.size() - 1) {
-            playIndex = 0;
+        //播放到最后3首的时候
+        if (++playIndex >= songs.size() - 4) {
+            new DimensionFMTask(handler, mDimension).execute();
         }
         if (checkSong(playIndex) && checkSong(0)) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
