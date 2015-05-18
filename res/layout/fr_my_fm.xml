@@ -7,11 +7,16 @@
     <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:divider="@color/chat_view_bg"
+            android:dividerHeight="1dp"/>
     <TextView
             android:id="@+id/type_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="@dimen/music_type_item_height"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/music_type_item_left_margin"/>
     <RelativeLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent" android:layout_height="wrap_content">

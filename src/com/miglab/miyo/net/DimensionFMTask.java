@@ -13,24 +13,26 @@ import java.util.ArrayList;
 
 
 public class DimensionFMTask extends BaseTask {
-	private Dimension dimension;
+	private String dim;
+	private int sid;
 
-	public DimensionFMTask(Handler tHandler, Dimension dimension) {
+	public DimensionFMTask(Handler tHandler, String dim, int sid) {
 		this.init(tHandler);
-		this.dimension = dimension;
+		this.dim = dim;
+		this.sid = sid;
 	}
 
 	@Override
 	protected boolean paramsFail() {
-		return dimension == null || dimension.sid <= 0;
+		return dim == null || sid <= 0;
 
 	}
 
 	@Override
 	protected String request() throws Exception {
 		String url = ApiDefine.DOMAIN + ApiDefine.FOUND_FM;
-		String params = MyUser.getApiBasicParams() + "&dimension=" + dimension.dim
-				+ "&sid=" + dimension.sid;
+		String params = MyUser.getApiBasicParams() + "&dimension=" + dim
+				+ "&sid=" + sid;
 
 		return ApiRequest.getRequest(url + params);
 	}

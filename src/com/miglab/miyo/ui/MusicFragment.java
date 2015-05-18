@@ -40,6 +40,8 @@ import com.miglab.miyo.util.DisplayUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 
 /**
  * Created by fanglei
@@ -471,5 +473,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
         }
     }
 
-
+    public void updateMusicList(List<SongInfo> list) {
+        musicService.updateMusicList(list);
+    }
 }

@@ -15,6 +15,8 @@ import android.view.*;
 import android.widget.TextView;
 import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
+import com.miglab.miyo.control.MusicService;
+import com.miglab.miyo.entity.SongInfo;
 import com.miglab.miyo.net.GetWeatherTask;
 import com.miglab.miyo.util.LocationUtil;
 
@@ -26,13 +28,15 @@ import java.util.List;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements FMFragment.MusicInterface{
     private TextView findMusic;
     private TextView myFM;
     private ViewPager viewPager;
     private List<Fragment> fragmentList = new ArrayList<Fragment>();
 
-    private BaseFragment musicFragment,fmFragment,userFragment;
+    private MusicFragment musicFragment;
+    private FMFragment fmFragment;
+    private UserFragment userFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private LocationUtil locationUtil;
@@ -106,6 +110,7 @@ public class MainActivity extends FragmentActivity {
         fragmentManager = getSupportFragmentManager();
         musicFragment = new MusicFragment();
         fmFragment = new FMFragment();
+        fmFragment.setMusicInterface(this);
         userFragment = new UserFragment();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.user, userFragment);
@@ -158,6 +163,11 @@ public class MainActivity extends FragmentActivity {
 
         }
     };
+
+    @Override
+    public void updateMusicList(List<SongInfo> list) {
+        musicFragment.updateMusicList(list);
+    }
 
     private class FragmentAdapter extends FragmentPagerAdapter{
 

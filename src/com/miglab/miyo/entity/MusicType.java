@@ -1,5 +1,8 @@
 package com.miglab.miyo.entity;
 
+import com.miglab.miyo.MiyoApplication;
+import com.miglab.miyo.R;
+
 /**
  * Created by fanglei
  * Email: 412552696@qq.com
@@ -44,5 +47,13 @@ public class MusicType extends BaseEntity {
 
     public void setDim(String dim) {
         this.dim = dim;
+    }
+
+    public int getParentResID() {
+        int resID = MiyoApplication.getInstance().getResources().getIdentifier(getDim(),
+                "string",
+                MiyoApplication.getInstance().getPackageName());
+
+        return resID;
     }
 }

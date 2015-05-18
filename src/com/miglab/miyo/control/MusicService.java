@@ -11,6 +11,7 @@ import com.miglab.miyo.entity.SongInfo;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.miglab.miyo.MyUser;
 import com.miglab.miyo.control.AudioController.AudioState;
@@ -33,6 +34,9 @@ public class MusicService extends Service implements AudioControllerListener{
     boolean isMusicActivityOpen = true;
     private AudioController audioController;
     private final LocalService localService = new LocalService();
+
+
+
     public class LocalService extends Binder {
         public MusicService getService() {
             return MusicService.this;
@@ -165,7 +169,7 @@ public class MusicService extends Service implements AudioControllerListener{
         if(mDimension.sid == 20){
             new GetCltSongsTask(handler, user.id).execute();
         }else {
-            new DimensionFMTask(handler, mDimension).execute();
+            new DimensionFMTask(handler, mDimension.dim, mDimension.sid).execute();
         }
     }
 
@@ -188,6 +192,19 @@ public class MusicService extends Service implements AudioControllerListener{
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
         }
 
+    }
+
+    public void updateMusicList(List<SongInfo> list) {
+        stopMusic();
+        if (list == null || list.isEmpty()) {
+            sendBroadCast(MusicServiceDefine.ALBUN_NULL);
+            return;
+        }
+        songs.clear();
+        songs.addAll(list);
+        if (checkSong(0)) {
+            sendBroadCast(MusicServiceDefine.ALBUN_NULL);
+        }
     }
 
     /** 开始播放音乐 */
@@ -262,7 +279,7 @@ public class MusicService extends Service implements AudioControllerListener{
         }// 停止
         //播放到最后3首的时候
         if (++playIndex >= songs.size() - 4) {
-            new DimensionFMTask(handler, mDimension).execute();
+            new DimensionFMTask(handler, mDimension.dim, mDimension.sid).execute();
         }
         if (checkSong(playIndex) && checkSong(0)) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
