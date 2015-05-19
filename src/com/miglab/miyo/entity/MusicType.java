@@ -13,6 +13,9 @@ public class MusicType extends BaseEntity {
     private int id;
     private String name;
     private String dim;
+    public MusicType(){
+
+    }
     public MusicType(String name,boolean isTitle){
         this.name = name;
         this.isTitle = isTitle;

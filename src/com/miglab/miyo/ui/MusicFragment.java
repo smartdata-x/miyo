@@ -1,41 +1,25 @@
 package com.miglab.miyo.ui;
 
-import android.animation.ObjectAnimator;
-import android.app.NotificationManager;
-import android.content.*;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
-import com.miglab.miyo.constant.MessageWhat;
-import com.miglab.miyo.constant.MusicServiceDefine;
-import com.miglab.miyo.control.MusicService;
-import com.miglab.miyo.entity.SongInfo;
-import com.miglab.miyo.net.CollectSongTask;
-import com.miglab.miyo.net.DelCollectSongTask;
-import com.miglab.miyo.net.DelSongTask;
+
+import com.miglab.miyo.entity.ChatMsgInfo;
+import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.net.GetWeatherTask;
-import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
-import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
-import com.miglab.miyo.third.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.miglab.miyo.ui.widget.RoundImageView;
-import com.miglab.miyo.ui.widget.RoundProgressBar;
-import com.miglab.miyo.util.DisplayUtil;
+
+import com.miglab.miyo.net.GetChatDataTask;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -44,10 +28,8 @@ import java.util.List;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MusicFragment extends BaseFragment implements View.OnClickListener {
-    private RoundImageView iv_cd;
-    private RoundProgressBar roundProgressBar;
-    private ImageView iv_heart;
+public class MusicFragment extends PlayBaseFragment{
+
     private ImageView icon_player;
     private ImageView icon_weather;
     private RelativeLayout ry_cd;
@@ -55,20 +37,10 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
     private TextView tv_songType;
     private TextView tv_address;
     private TextView tv_temperature;
-    private PlayerReceiver playerReceiver = null;
+    private TextView tv_chat;
 
-    private MusicService musicService;
-    private SongInfo songInfo;// 记录正在播放的歌曲信息
-    private Dimension dimension;
-
-    private ObjectAnimator anim;
-    private int totaltime;
-    private boolean isplaying;
-    private int songFlag = 0;// 记录收藏未收藏状态，0没有操作，1收藏成功之后，2取消收藏成功之后
-    private int palyFlag = 0;// 歌曲播放状态 0-正在播放 1-暂停
-
-    private DisplayImageOptions options;
-    private NotifyFmInterface notifyFmInterface;
+    private List<ChatMsgInfo> list = new ArrayList<ChatMsgInfo>();
+    private Animation animation;
 
     @Override
     protected void setLayout() {
@@ -77,38 +49,28 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     protected void init() {
-        intiViews();
-        anim = ObjectAnimator.ofFloat(iv_cd, "rotation", 0, 360);
-        anim.setDuration(50000);
-        anim.setRepeatCount(-1);
-        anim.setRepeatMode(ObjectAnimator.RESTART);
-        anim.setInterpolator(new LinearInterpolator());
-        registerPlayerReceiver();
-        initMusicData();
-        initDisplayImageOptions();
+        super.init();
         initWeather();
+        animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0
+                ,Animation.RELATIVE_TO_SELF,0
+                ,Animation.RELATIVE_TO_SELF,0
+                ,Animation.RELATIVE_TO_SELF,-1.0f);
+        animation.setDuration(2000);
+        animation.setRepeatMode(2);
+        animation.setFillAfter(true);
     }
 
-    private void intiViews() {
-        iv_cd = (RoundImageView) vRoot.findViewById(R.id.music_cd);
-        roundProgressBar = (RoundProgressBar) vRoot.findViewById(R.id.cd_progress);
+    @Override
+    protected void initViews() {
+        super.initViews();
         tv_songName = (TextView) vRoot.findViewById(R.id.music_name);
         tv_songType = (TextView) vRoot.findViewById(R.id.music_type);
         ry_cd = (RelativeLayout) vRoot.findViewById(R.id.music_player);
-        iv_heart = (ImageView) vRoot.findViewById(R.id.heart_music);
         icon_player = (ImageView) vRoot.findViewById(R.id.icon_player);
         icon_weather = (ImageView) vRoot.findViewById(R.id.weather_icon);
         tv_address = (TextView) vRoot.findViewById(R.id.address);
         tv_temperature = (TextView) vRoot.findViewById(R.id.temperature);
-        DisplayUtil.setListener(vRoot, this);
-    }
-
-    private void initDisplayImageOptions() {
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                        //       .cacheOnDisk(true)
-                .considerExifParams(true)
-                .build();
+        tv_chat = (TextView) vRoot.findViewById(R.id.chat);
     }
 
     private void initWeather() {
@@ -120,365 +82,77 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
     private void displayWeather(String weather, String temp, String address) {
         tv_temperature.setText(temp);
         tv_address.setText(address);
-        int resID = getResources().getIdentifier(weather, "drawable",MiyoApplication.getInstance().getPackageName());
+        int resID = getResources().getIdentifier(weather, "drawable", MiyoApplication.getInstance().getPackageName());
         icon_weather.setImageResource(resID);
     }
 
-    public void setNotifyFmInterface(NotifyFmInterface notifyFmInterface){
-        this.notifyFmInterface = notifyFmInterface;
-    }
-
-    @SuppressWarnings("deprecation")
-    public void setBackground() {
-        Drawable drawable = iv_cd.getDrawable();
-        Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-        Drawable drawableBg = new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80));
-        if (Build.VERSION.SDK_INT < 16) {
-            vRoot.setBackgroundDrawable(drawableBg);
-        } else {
-            vRoot.setBackground(drawableBg);
-        }
-        notifyFmInterface.updateBackground(drawableBg);
-        notifyFmInterface.updateCD(drawable);
-    }
 
     //todo 事件监听
     @Override
     public void onClick(View v) {
+        super.onClick(v);
         int id = v.getId();
         switch (id) {
-            case R.id.del_music:
-                delMusic();
-                break;
-            case R.id.heart_music:
-                collectMusic();
-                break;
-            case R.id.next_music:
-                nextMusic();
-                break;
-            case R.id.cd_palyer:
-                pauseMusic();
-                break;
             case R.id.icon_player:
                 pauseMusic();
                 break;
         }
     }
 
-
-    public enum Dimension {
-        PD_HUAYU(1, "chl", 1, "华语流行"), PD_OUMEI(2, "chl", 2, "欧美金曲"), PD_YAOGUN(
-                3, "chl", 7, "摇滚rock"),
-        XQ_SHILIAN(4, "mm", 1, "失恋疗伤"), XQ_CUOZHE(5, "mm", 2, "受到挫折"), XQ_ANLIAN(
-                6, "mm", 5, "暗恋"),
-        GR_HONGXIN(7, "clt", 20, "我的红星"); /*GR_TUIJIAN(8, "mhx", 8, "推荐偏好");*/
-
-        public int index;
-        public String dim;
-        public int sid;
-        public String name;
-
-        Dimension(int index, String dim, int sid, String name) {
-            this.index = index;
-            this.dim = dim;
-            this.sid = sid;
-            this.name = name;
-        }
-
-        public static Dimension getDimension(String dim, int sid) {
-            for (Dimension d : values()) {
-                if (d.sid == sid && dim.equals(d.dim)) {
-                    return d;
-                }
-            }
-            return PD_HUAYU;
-        }
-
-        public static Dimension getDimension(int index) {
-            for (Dimension d : values()) {
-                if (d.index == index) {
-                    return d;
-                }
-            }
-            return PD_HUAYU;
-        }
+    public void updateMusicType(MusicType musicType) {
+        tv_songType.setText(musicType.getName());
+        new GetChatDataTask(handler,musicType).execute();
     }
 
-    class PlayerReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-
-            int commend = bundle.getInt(MusicServiceDefine.PLAY_WHAT);
-            if (commend <= 0) {
-                Toast.makeText(ac, "播放出错", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            switch (commend) {
-                case MusicServiceDefine.ALBUN_NULL:
-                    Toast.makeText(ac, "电台没有音乐", Toast.LENGTH_SHORT).show();
-                    break;
-
-                case MusicServiceDefine.MUSIC_CHANGE:
-                    if (bundle.containsKey(MusicServiceDefine.PLAY_INFO)) {
-                        SongInfo info = (SongInfo) bundle
-                                .getSerializable(MusicServiceDefine.PLAY_INFO);
-                        if (info != null) {
-                            songInfo = info;
-                            setMusicInfo(songInfo);
-                        }
-
-                        int d = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
-                        dimension = Dimension.getDimension(d);
-                        tv_songType.setText(dimension.name);
-                    }
-                    break;
-
-                case MusicServiceDefine.MUSIC_PREPARE:
-                    int time1 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
-                    playPrepare(time1);
-                    break;
-
-                case MusicServiceDefine.MUSIC_PLAYING:
-                    int time2 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
-                    playTimeUpdate(time2);
-                    break;
-
-                case MusicServiceDefine.MUSIC_STOP:
-                    break;
-
-                case MusicServiceDefine.ACTIVITY_CLOSE:
-                    break;
-            }
-        }
+    public void updateMusicName(String name) {
+        tv_songName.setText(name);
     }
 
-    private void initMusicData() {
-        bindMusicService();
-    }
-
-    /**
-     * 下一首
-     */
-    private void nextMusic() {
-        musicService.nextMusic();
-    }
-
-    /**
-     * 暂停或开始
-     */
-    private void pauseMusic() {
-        if (palyFlag == 0) {
+    @Override
+    public void updateMusicState(boolean bPause) {
+        super.updateMusicState(bPause);
+        if (bPause) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 anim.pause();
             } else {
                 anim.cancel();
             }
-            musicService.toggleMusic();
             icon_player.setVisibility(View.VISIBLE);
-            palyFlag = 1;
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                anim.resume();
-            } else {
-                anim.start();
-            }
-            musicService.toggleMusic();
             icon_player.setVisibility(View.GONE);
-            palyFlag = 0;
         }
 
     }
 
-    /**
-     * 删除歌曲
-     * 切到下一首，然后删除
-     */
-    private void delMusic() {
-        nextMusic();
-        if (songInfo != null) {
-            new DelSongTask(ac, handler, songInfo).execute();
-        }
-    }
 
-    private void collectMusic() {
-        if (songInfo == null || dimension == null)
-            return;
-        //收藏歌曲
-        if (songInfo.like == 0) {
-            new CollectSongTask(handler, songInfo, dimension).execute();
-            songInfo.like = -2;
-        }
-        //取消收藏
-        if (songInfo.like == 1) {
-            new DelCollectSongTask(handler, songInfo).execute();
-            songInfo.like = -1;
-        }
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            musicService = ((MusicService.LocalService) service).getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicService = null;
-        }
-    };
-
-
-    /**
-     * 启动后台播放
-     *
-     * @throws Exception
-     */
-    private void bindMusicService() {
-        Intent intent = new Intent(ac, MusicService.class);
-        intent.putExtra(MusicServiceDefine.INTENT_ACTION,
-                MusicServiceDefine.ALBUM_START);
-        ac.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    /**
-     * 切换电台
-     */
-    void changeAlbum(Dimension d) {
-        Intent intent = new Intent(ac, MusicService.class);
-        intent.putExtra(MusicServiceDefine.INTENT_ACTION,
-                MusicServiceDefine.ALBUM_CHANGE);
-        intent.putExtra(MusicServiceDefine.INTENT_DIMENSION, d.index);
-        ac.startService(intent);
-    }
-
-    /**
-     * 后台播放显示
-     */
-    private void showPlayingContent() {
-        Intent intent = new Intent(ac, MusicService.class);
-        intent.putExtra(MusicServiceDefine.INTENT_ACTION,
-                MusicServiceDefine.FROM_NOTICE);
-        ac.startService(intent);
-    }
-
-    void playPrepare(int time) {
-        totaltime = time;
-        isplaying = true;
-        cdStartAnimation();
-        roundProgressBar.setMax(time / 100);
-    }
-
-    void playTimeUpdate(int curTime) {
-        roundProgressBar.setProgress(curTime / 100);
-    }
-
-    void cdStartAnimation() {
-        anim.start();
-    }
-
-    /**
-     * 注册更新播放进度的Receiver 在oncreate的时候调用
-     */
-    private void registerPlayerReceiver() {
-        if (playerReceiver == null) {
-            IntentFilter filter = new IntentFilter(
-                    MessageWhat.PLAY_BROADCAST_ACTION_NAME);
-            playerReceiver = new PlayerReceiver();
-            ac.registerReceiver(playerReceiver, filter);
-        }
-    }
-
-    /**
-     * 移除注册更新播放进度的Receiver 退出该页面前调用
-     */
-    private void unRegisterPlayerReceiver() {
-        if (playerReceiver != null) {
-            ac.unregisterReceiver(playerReceiver);
-            playerReceiver = null;
-        }
-    }
-
-    void setMusicInfo(SongInfo song) {
-        if (song != null && !TextUtils.isEmpty(song.url)) {
-            if (!TextUtils.isEmpty(song.name)) {
-                if (!TextUtils.isEmpty(song.artist)) {
-                    tv_songName.setText(song.artist + "-" + song.name);
-                } else {
-                    tv_songName.setText(song.name);
-                }
-            }
-            if (song.like == 0) {
-                iv_heart.setImageResource(R.drawable.collect_music_selector);
-            } else if (song.like == 1) {
-                iv_heart.setImageResource(R.drawable.delcollect_music_selector);
-            }
-            if (!TextUtils.isEmpty(song.pic)) {
-                ImageLoader.getInstance().displayImage(song.pic, iv_cd, options, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        setBackground();
-                    }
-                });
-            }
-        }
-    }
-
-    void cancelNotification() {
-        NotificationManager mNotificationManager = (NotificationManager) ac
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(MusicServiceDefine.MUSIC_PLAYER_NOTIFY_ID);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unRegisterPlayerReceiver();
-        ac.unbindService(serviceConnection);
-    }
 
     @Override
     protected void doHandler(Message msg) {
         super.doHandler(msg);
         switch (msg.what) {
-            case ApiDefine.GET_HATE_SONG_SUCCESS:
-                SongInfo songTemp = (SongInfo) msg.obj;
-                Toast.makeText(ac, songTemp.name + " 删除成功", Toast.LENGTH_SHORT).show();
-                break;
-            case ApiDefine.GET_COLLECT_SONG_SUCCESS:
-                SongInfo songTemp1 = (SongInfo) msg.obj;
-                Toast.makeText(ac, songTemp1.name + " 收藏成功", Toast.LENGTH_SHORT).show();
-                if (songTemp1.id == songInfo.id) {
-                    songInfo.like = 1;
-                    iv_heart.setImageResource(R.drawable.delcollect_music_selector);
-                }
-                break;
-            case ApiDefine.GET_DELECT_COLLECT_SONG_SUCCESS:
-                SongInfo songTemp2 = (SongInfo) msg.obj;
-                Toast.makeText(ac, songTemp2.name + " 取消收藏成功", Toast.LENGTH_SHORT).show();
-                if (songTemp2.id == songInfo.id) {
-                    songInfo.like = 0;
-                    iv_heart.setImageResource(R.drawable.collect_music_selector);
-                }
-                break;
             case ApiDefine.GET_WEATHER_SUCCESS:
                 JSONObject jResult = (JSONObject) msg.obj;
                 String weather = jResult.optString("weather");
                 String temp = jResult.optString("temp");
                 String address = jResult.optString("city");
-                displayWeather(weather.toLowerCase(),temp,address);
+                weather.replace("-","_");
+                displayWeather(weather.toLowerCase(), temp, address);
+                break;
+            case ApiDefine.GET_CHAT_SUCCESS:
+                if(list != null && list.size() > 0) {
+                    list.clear();
+                }
+                list.addAll((List < ChatMsgInfo >) msg.obj);
+                StringBuffer chat = new StringBuffer();
+                for(ChatMsgInfo chatMsgInfo: list){
+                    chat.append(chatMsgInfo.getNickname());
+                    chat.append("： ");
+                    chat.append(chatMsgInfo.getMsg());
+                    chat.append("        ");
+                }
+                tv_chat.setText(chat);
                 break;
         }
     }
 
-    public void updateMusicList(List<SongInfo> list) {
-        musicService.updateMusicList(list);
-    }
-
-    public interface NotifyFmInterface {
-        public void updateBackground(Drawable drawable);
-        public void updateCD(Drawable drawable);
-        public void startPlay();
-    }
 }

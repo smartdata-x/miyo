@@ -7,19 +7,22 @@ import android.text.TextUtils;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.constant.MessageWhat;
 import com.miglab.miyo.constant.MusicServiceDefine;
+import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.entity.SongInfo;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.miglab.miyo.MyUser;
 import com.miglab.miyo.control.AudioController.AudioState;
 import com.miglab.miyo.net.DimensionFMTask;
-import com.miglab.miyo.net.GetCltSongsTask;
-import com.miglab.miyo.ui.MusicFragment.Dimension;
 /**
- * Created by tudou on 2015/5/9.
+ * Created by fanglei
+ * Email: 412552696@qq.com
+ * Date: 2015/5/9.
  */
 public class MusicService extends Service implements AudioControllerListener{
 
@@ -29,13 +32,11 @@ public class MusicService extends Service implements AudioControllerListener{
     Player player;
     static int playState;
     int playIndex, totalTime;
-    Dimension mDimension;
+    MusicType musicType;
     SongInfo mSong;
     boolean isMusicActivityOpen = true;
     private AudioController audioController;
     private final LocalService localService = new LocalService();
-
-
 
     public class LocalService extends Binder {
         public MusicService getService() {
@@ -155,22 +156,20 @@ public class MusicService extends Service implements AudioControllerListener{
         playState = MusicServiceDefine.PLAYER_IDLE;
         playIndex = 0;
         isMusicActivityOpen = true;
+        /**todo
+         * 初始化歌单
+         */
+        musicType = new MusicType();
+        musicType.setDim("chl");
+        musicType.setName("华语流行");
+        musicType.setId(1);
 
-        int iDimension = bundle.getInt(MusicServiceDefine.INTENT_DIMENSION);
-        mDimension = Dimension.getDimension(iDimension);
-
-        getDimensionMusics(mDimension);
+        getDimensionMusics();
     }
 
     /** 获取音乐列表 */
-    void getDimensionMusics(Dimension d) {
-        mDimension = d;
-
-        if(mDimension.sid == 20){
-            new GetCltSongsTask(handler, user.id).execute();
-        }else {
-            new DimensionFMTask(handler, mDimension.dim, mDimension.sid).execute();
-        }
+    private void getDimensionMusics() {
+       new DimensionFMTask(handler, musicType, 0).execute();
     }
 
     /** 得到音乐列表 */
@@ -194,7 +193,12 @@ public class MusicService extends Service implements AudioControllerListener{
 
     }
 
-    public void updateMusicList(List<SongInfo> list) {
+    public void updateMusicList(MusicType musicType) {
+        this.musicType = musicType;
+        new DimensionFMTask(handler,musicType, 0).execute();
+    }
+
+    public void clearMusicList(List<SongInfo> list) {
         stopMusic();
         if (list == null || list.isEmpty()) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
@@ -218,7 +222,7 @@ public class MusicService extends Service implements AudioControllerListener{
         isMusicActivityOpen = true;
 
         if (mSong != null && !TextUtils.isEmpty(mSong.url)) {
-            sendBroadCast(MusicServiceDefine.MUSIC_CHANGE, mDimension, mSong);
+            sendBroadCast(MusicServiceDefine.MUSIC_CHANGE, musicType, mSong);
         }
 
         if (totalTime > 0 && isBackPlaying()) {
@@ -235,11 +239,11 @@ public class MusicService extends Service implements AudioControllerListener{
         }
     }
 
-    private void sendBroadCast(int what, Dimension mDimension, SongInfo info) {
+    private void sendBroadCast(int what, MusicType musicType, SongInfo info) {
         if (isMusicActivityOpen) {
             Intent intent = new Intent(MessageWhat.PLAY_BROADCAST_ACTION_NAME);
             intent.putExtra(MusicServiceDefine.PLAY_WHAT, what);
-            intent.putExtra(MusicServiceDefine.PLAY_PARAM1, mDimension.index);
+            intent.putExtra(MusicServiceDefine.PLAY_PARAM1, musicType);
             intent.putExtra(MusicServiceDefine.PLAY_INFO, info);
             sendBroadcast(intent);
         }
@@ -270,7 +274,10 @@ public class MusicService extends Service implements AudioControllerListener{
             playState = MusicServiceDefine.PLAYER_IDLE;
         }// 停止
         audioController.setAudioFinish(AudioState.LISTEN_MUSIC);
-        sendBroadCast(MusicServiceDefine.MUSIC_STOP);
+    }
+
+    public boolean bePause() {
+        return playState == MusicServiceDefine.PLAYER_PAUSE;
     }
 
     public void nextMusic() {
@@ -279,7 +286,7 @@ public class MusicService extends Service implements AudioControllerListener{
         }// 停止
         //播放到最后3首的时候
         if (++playIndex >= songs.size() - 4) {
-            new DimensionFMTask(handler, mDimension.dim, mDimension.sid).execute();
+            new DimensionFMTask(handler, musicType, 1).execute();
         }
         if (checkSong(playIndex) && checkSong(0)) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
@@ -294,7 +301,7 @@ public class MusicService extends Service implements AudioControllerListener{
 
             if (mSong != null && !TextUtils.isEmpty(mSong.url)) {
                 playIndex = i;
-                sendBroadCast(MusicServiceDefine.MUSIC_CHANGE, mDimension,
+                sendBroadCast(MusicServiceDefine.MUSIC_CHANGE, musicType,
                         mSong);
                 startMusic(mSong.url);
                 isEnd = false;
@@ -330,10 +337,16 @@ public class MusicService extends Service implements AudioControllerListener{
                     // 获取专辑数据
                     case ApiDefine.GET_DEMENSION_SUCCESS:
                         if (msg.obj != null) {
-                            ArrayList<SongInfo> list = (ArrayList<SongInfo>) msg.obj;
+                            Map<String,Object> map = (HashMap<String,Object>)msg.obj;
+                            ArrayList<SongInfo> list = (ArrayList<SongInfo>) map.get("songList");
+                            int type = (Integer) map.get("getType");
                             if (list != null && !list.isEmpty()) {
-                                musicService.setMusicList(list);
+                                if(type == 1)
+                                    musicService.setMusicList(list);
+                                if(type == 0)
+                                    musicService.clearMusicList(list);
                             }
+                            musicService.musicType = (MusicType) map.get("musicType");
                         }
                         break;
 

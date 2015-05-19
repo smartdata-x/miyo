@@ -3,7 +3,6 @@ package com.miglab.miyo.ui;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.miglab.miyo.MiyoApplication;
@@ -18,20 +17,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by fanglei
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class FMFragment extends BaseFragment {
+public class FMFragment extends PlayBaseFragment {
     private List<MusicType> list = new ArrayList<MusicType>();
 
     private ListView listView;
     private TextView titleText;
-    private MusicInterface musicInterface;
-    private ImageView iv_cd;
     @Override
     protected void setLayout() {
         resourceID = R.layout.fr_my_fm;
@@ -39,19 +38,16 @@ public class FMFragment extends BaseFragment {
 
     @Override
     protected void init() {
-        initViews();
+        super.init();
         initData();
         initListener();
     }
 
-    public void setMusicInterface(MusicInterface musicInterface) {
-        this.musicInterface = musicInterface;
-    }
-
-    private void initViews() {
+    @Override
+    protected void initViews() {
+        super.initViews();
         listView = (ListView) vRoot.findViewById(R.id.listView);
         titleText = (TextView) vRoot.findViewById(R.id.type_title);
-        iv_cd = (ImageView) vRoot.findViewById(R.id.music_cd);
     }
 
     private void initData() {
@@ -60,13 +56,6 @@ public class FMFragment extends BaseFragment {
     }
 
     private void initListener() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MusicType musicType = list.get(position);
-                new DimensionFMTask(handler,musicType.getDim(),musicType.getId()).execute();
-            }
-        });
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -78,7 +67,6 @@ public class FMFragment extends BaseFragment {
                 if (firstVisibleItem < list.size() && visibleItemCount > 0) {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) titleText.getLayoutParams();
                     View itemView = view.getChildAt(1);
-                    Log.e("firstVisibleItem:", "" + firstVisibleItem);
                     int top = 0;
                     if (list.get(firstVisibleItem + 1).getIsTitle()) {
                         top = itemView.getTop() - itemView.getHeight();
@@ -102,15 +90,6 @@ public class FMFragment extends BaseFragment {
                 JSONObject jResult = (JSONObject) msg.obj;
                 initMusicTypeList(jResult);
                 break;
-            case ApiDefine.GET_DEMENSION_SUCCESS:
-                if (msg.obj != null) {
-                    ArrayList<SongInfo> list = (ArrayList<SongInfo>) msg.obj;
-                    if (list != null && !list.isEmpty()) {
-                        musicInterface.updateMusicList(list);
-                        break;
-                    }
-                }
-                break;
         }
     }
 
@@ -127,7 +106,7 @@ public class FMFragment extends BaseFragment {
         list.addAll(getMusicList(mmArray, "mm"));
         list.add(musicMs);
         list.addAll(getMusicList(msArray, "ms"));
-        MusicTypeAdapter adapter = new MusicTypeAdapter(ac,list);
+        MusicTypeAdapter adapter = new MusicTypeAdapter(ac,list,handler);
         listView.setAdapter(adapter);
     }
 
@@ -154,10 +133,6 @@ public class FMFragment extends BaseFragment {
 
     public void updateCD(Drawable drawable) {
         iv_cd.setImageDrawable(drawable);
-    }
-
-    public interface MusicInterface {
-        public void updateMusicList(List<SongInfo> list);
     }
 
 

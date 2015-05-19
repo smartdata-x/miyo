@@ -1,6 +1,7 @@
 package com.miglab.miyo.adapter;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.miglab.miyo.R;
 import com.miglab.miyo.entity.MusicType;
+import com.miglab.miyo.net.DimensionFMTask;
+import com.miglab.miyo.ui.MainActivity;
 
 import java.util.List;
 
@@ -22,9 +25,11 @@ public class MusicTypeAdapter extends BaseAdapter {
     private Activity ac;
     private List<MusicType> list;
     private MusicTypeHolder holder;
-    public MusicTypeAdapter(Activity ac,List<MusicType> list){
+    private Handler handler;
+    public MusicTypeAdapter(Activity ac,List<MusicType> list, Handler handler){
         this.ac = ac;
         this.list = list;
+        this.handler = handler;
     }
     @Override
     public int getCount() {
@@ -66,10 +71,17 @@ public class MusicTypeAdapter extends BaseAdapter {
             holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     ac.getResources().getDimensionPixelSize(R.dimen.my_fm_title_textSize));
         }else {
-            holder.parent.setBackgroundColor(ac.getResources().getColor(R.color.bg_my_fm_item));
+            holder.parent.setBackgroundResource(R.drawable.music_type_item_selector);//ac.getResources().getColor(R.color.bg_my_fm_item));
             holder.tv_name.setTextColor(ac.getResources().getColor(R.color.my_fm_item_textColor));
             holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     ac.getResources().getDimensionPixelSize(R.dimen.my_fm_item_textSize));
+            holder.parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MusicType musicType = list.get(position);
+                    ((MainActivity)ac).updateMusicList(musicType);
+                }
+            });
         }
         return convertView;
     }

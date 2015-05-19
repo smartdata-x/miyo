@@ -13,10 +13,8 @@ import org.json.JSONObject;
  */
 public class DelSongTask extends BaseTask{
     private SongInfo song;//¸èÇúid
-    private Activity ac;
-    public DelSongTask(Activity ac, Handler handler, SongInfo song) {
+    public DelSongTask( Handler handler, SongInfo song) {
         this.song = song;
-        this.ac = ac;
         this.handler = handler;
     }
 

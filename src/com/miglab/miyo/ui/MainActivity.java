@@ -1,26 +1,28 @@
 package com.miglab.miyo.ui;
 
-import android.content.Context;
+import android.content.*;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
+
+import android.os.*;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
+import com.miglab.miyo.constant.ApiDefine;
+import com.miglab.miyo.constant.MessageWhat;
+import com.miglab.miyo.constant.MusicServiceDefine;
 import com.miglab.miyo.control.MusicService;
+import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.entity.SongInfo;
-import com.miglab.miyo.net.GetWeatherTask;
-import com.miglab.miyo.util.LocationUtil;
+import com.miglab.miyo.net.CollectSongTask;
+import com.miglab.miyo.net.DelCollectSongTask;
+import com.miglab.miyo.net.DelSongTask;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,7 @@ import java.util.List;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MainActivity extends FragmentActivity implements FMFragment.MusicInterface,MusicFragment.NotifyFmInterface{
+public class MainActivity extends FragmentActivity {
     private TextView findMusic;
     private TextView myFM;
     private ViewPager viewPager;
@@ -40,7 +42,11 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
     private UserFragment userFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-    private LocationUtil locationUtil;
+
+    private MusicService musicService;
+    private PlayerReceiver playerReceiver = null;
+    private SongInfo songInfo;// 记录正在播放的歌曲信息
+    private MusicType musicType;// 记录当前播放纬度
 
     private int select_R,select_G,select_B;
     private int color_Dif_R,color_Dif_G,color_Dif_B;
@@ -53,13 +59,15 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
         initViews();
         initTitleColor();
         setListener();
+        bindMusicService();
+        registerPlayerReceiver();
     }
 
     private void setListener() {
         findMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(0,true);
+                viewPager.setCurrentItem(0, true);
                 findMusic.setSelected(true);
                 myFM.setSelected(false);
             }
@@ -78,6 +86,12 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
     protected void onResume() {
         super.onResume();
         MiyoApplication.resume(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
     }
 
     private void initTitleColor() {
@@ -110,9 +124,7 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
     private void initFragments() {
         fragmentManager = getSupportFragmentManager();
         musicFragment = new MusicFragment();
-        musicFragment.setNotifyFmInterface(this);
         fmFragment = new FMFragment();
-        fmFragment.setMusicInterface(this);
         userFragment = new UserFragment();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.user, userFragment);
@@ -133,6 +145,8 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
         findMusic.setSelected(true);
         myFM.setSelected(false);
     }
+
+
 
     private ViewPager.OnPageChangeListener myPageListener = new ViewPager.OnPageChangeListener(){
         /**
@@ -166,19 +180,49 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
         }
     };
 
-    @Override
-    public void updateMusicList(List<SongInfo> list) {
-        musicFragment.updateMusicList(list);
+    public void updateMusicList(MusicType musicType) {
+        musicService.updateMusicList(musicType);
     }
 
-    @Override
-    public void updateBackground(Drawable drawable) {
-       fmFragment.updateBackground(drawable);
+    public void collectMusic() {
+        if (songInfo == null || musicType == null)
+            return;
+        //收藏歌曲
+        if (songInfo.like == 0) {
+            new CollectSongTask(handler, songInfo, musicType).execute();
+            songInfo.like = -2;
+        }
+        //取消收藏
+        if (songInfo.like == 1) {
+            new DelCollectSongTask(handler, songInfo).execute();
+            songInfo.like = -1;
+        }
     }
 
-    @Override
-    public void updateCD(Drawable drawable) {
-        fmFragment.updateCD(drawable);
+    public void delMusic() {
+        nextMusic();
+        if (songInfo != null) {
+            new DelSongTask(handler, songInfo).execute();
+        }
+    }
+
+    public void nextMusic() {
+        musicService.nextMusic();
+    }
+
+    public void pauseMusic() {
+        musicService.toggleMusic();
+        musicFragment.updateMusicState(musicService.bePause());
+        fmFragment.updateMusicState(musicService.bePause());
+    }
+
+    public void updateMusicType(MusicType musicType) {
+        this.musicType = musicType;
+        musicFragment.updateMusicType(musicType);
+    }
+
+    public MusicType getMusicType() {
+        return this.musicType;
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{
@@ -212,6 +256,144 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
         return super.onKeyDown(keyCode, event);
     }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            musicService = ((MusicService.LocalService) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    private void bindMusicService() {
+        Intent intent = new Intent(this, MusicService.class);
+        intent.putExtra(MusicServiceDefine.INTENT_ACTION,
+                MusicServiceDefine.ALBUM_START);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 注册更新播放进度的Receiver 在oncreate的时候调用
+     */
+    private void registerPlayerReceiver() {
+        if (playerReceiver == null) {
+            IntentFilter filter = new IntentFilter(
+                    MessageWhat.PLAY_BROADCAST_ACTION_NAME);
+            playerReceiver = new PlayerReceiver();
+            registerReceiver(playerReceiver, filter);
+        }
+    }
+
+    /**
+     * 移除注册更新播放进度的Receiver 退出该页面前调用
+     */
+    private void unRegisterPlayerReceiver() {
+        if (playerReceiver != null) {
+            unregisterReceiver(playerReceiver);
+            playerReceiver = null;
+        }
+    }
+
+    class PlayerReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+
+            int commend = bundle.getInt(MusicServiceDefine.PLAY_WHAT);
+            if (commend <= 0) {
+                Toast.makeText(MainActivity.this, "播放出错", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            switch (commend) {
+                case MusicServiceDefine.ALBUN_NULL:
+                    Toast.makeText(MainActivity.this, "电台没有音乐", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case MusicServiceDefine.MUSIC_CHANGE:
+                    if (bundle.containsKey(MusicServiceDefine.PLAY_INFO)) {
+                        SongInfo info = (SongInfo) bundle
+                                .getSerializable(MusicServiceDefine.PLAY_INFO);
+                        if (info != null) {
+                            songInfo = info;
+                            musicFragment.updateHeartMusic(songInfo.like == 1);
+                            fmFragment.updateHeartMusic(songInfo.like == 1);
+                            musicFragment.updateMusicName(songInfo.artist + "-" + songInfo.name);
+                            musicFragment.updatePicInfo(songInfo.pic);
+                            fmFragment.updatePicInfo(songInfo.pic);
+                        }
+
+                        MusicType musicType = (MusicType) bundle.getSerializable(MusicServiceDefine.PLAY_PARAM1);
+                        updateMusicType(musicType);
+                    }
+                    break;
+
+                case MusicServiceDefine.MUSIC_PREPARE:
+                    int time1 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
+                    musicFragment.playPrepare(time1);
+                    fmFragment.playPrepare(time1);
+                    break;
+
+                case MusicServiceDefine.MUSIC_PLAYING:
+                    int time2 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
+                    musicFragment.playTimeUpdate(time2);
+                    fmFragment.playTimeUpdate(time2);
+                    break;
+
+                case MusicServiceDefine.ACTIVITY_CLOSE:
+                    break;
+            }
+        }
+    }
+
+    public static class UIHandler extends Handler {
+        private final WeakReference<MainActivity> mActivity;
+
+        public UIHandler(MainActivity activity) {
+            mActivity = new WeakReference<MainActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity activity = mActivity.get();
+            if (activity != null) {
+                activity.doHandler(msg);
+            }
+        }
+    }
+
+    protected UIHandler handler = new MainActivity.UIHandler(this);
+
+    private void doHandler(Message msg) {
+        switch (msg.what) {
+            case ApiDefine.GET_COLLECT_SONG_SUCCESS:
+                SongInfo songTemp1 = (SongInfo) msg.obj;
+                Toast.makeText(MainActivity.this, songTemp1.name + " 收藏成功", Toast.LENGTH_SHORT).show();
+                if (songTemp1.id == songInfo.id) {
+                    songInfo.like = 1;
+                    musicFragment.updateHeartMusic(true);
+                    fmFragment.updateHeartMusic(true);
+
+                }
+                break;
+            case ApiDefine.GET_HATE_SONG_SUCCESS:
+                SongInfo songTemp = (SongInfo) msg.obj;
+                Toast.makeText(MainActivity.this, songTemp.name + " 删除成功", Toast.LENGTH_SHORT).show();
+                break;
+            case ApiDefine.GET_DELECT_COLLECT_SONG_SUCCESS:
+                SongInfo songTemp2 = (SongInfo) msg.obj;
+                Toast.makeText(this, songTemp2.name + " 取消收藏成功", Toast.LENGTH_SHORT).show();
+                if (songTemp2.id == songInfo.id) {
+                    songInfo.like = 0;
+                    musicFragment.updateHeartMusic(false);
+                    fmFragment.updateHeartMusic(false);
+                }
+                break;
+        }
+    }
 
 
 }

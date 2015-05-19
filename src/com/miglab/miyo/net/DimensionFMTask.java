@@ -2,37 +2,38 @@ package com.miglab.miyo.net;
 
 import android.os.Handler;
 
+import android.support.annotation.NonNull;
 import com.miglab.miyo.MyUser;
 import com.miglab.miyo.constant.ApiDefine;
+import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.entity.SongInfo;
-import com.miglab.miyo.ui.MusicFragment.Dimension;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class DimensionFMTask extends BaseTask {
-	private String dim;
-	private int sid;
+	private MusicType musicType;
+	private Integer getType;  //0---ÇÐ»»¸èµ¥ 1--×·¼Ó¸èµ¥
 
-	public DimensionFMTask(Handler tHandler, String dim, int sid) {
+	public DimensionFMTask(Handler tHandler, MusicType musicType, Integer type) {
 		this.init(tHandler);
-		this.dim = dim;
-		this.sid = sid;
+		this.musicType = musicType;
+		this.getType = type;
 	}
 
 	@Override
 	protected boolean paramsFail() {
-		return dim == null || sid <= 0;
+		return musicType.getDim() == null || musicType.getId() <= 0;
 
 	}
 
 	@Override
 	protected String request() throws Exception {
 		String url = ApiDefine.DOMAIN + ApiDefine.FOUND_FM;
-		String params = MyUser.getApiBasicParams() + "&dimension=" + dim
-				+ "&sid=" + sid;
+		String params = MyUser.getApiBasicParams() + "&dimension=" + musicType.getDim()
+				+ "&sid=" + musicType.getId();
 
 		return ApiRequest.getRequest(url + params);
 	}
@@ -46,8 +47,11 @@ public class DimensionFMTask extends BaseTask {
 				list.add(new SongInfo(array.optJSONObject(j)));
 			}
 		}
-
-		handler.sendMessage(handler.obtainMessage(ApiDefine.GET_DEMENSION_SUCCESS, list));
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("songList",list);
+		map.put("musicType", musicType);
+		map.put("getType", getType);
+		handler.sendMessage(handler.obtainMessage(ApiDefine.GET_DEMENSION_SUCCESS, map));
 
 		return false;
 

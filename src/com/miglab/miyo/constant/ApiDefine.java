@@ -37,6 +37,7 @@ public interface ApiDefine {
     String GET_CLTSONGS = "/music/v1/getcltsongs.fcgi";
     String WEATHER = "/soc/v1/getlocation.fcgi";
     String MUSIC_TYPE = "/music/v1/dimensioninfo.fcgi";
+    String CHAT = "/soc/v1/getbarragecomm.fcgi";
 
     int GET_SUCCESS = 100001;
     int FRESH_IMAGE = 100002;
@@ -47,6 +48,7 @@ public interface ApiDefine {
     int GET_CLTSONGS_SUCCESS = 100007;
     int GET_WEATHER_SUCCESS = 100008;
     int GET_MUSIC_TYPE_SUCCESS = 100009;
+    int GET_CHAT_SUCCESS = 100010;
 
     int ERROR_TIMEOUT = 200000;
     int ERROR_UNKNOWN = 200001;

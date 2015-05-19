@@ -3,8 +3,8 @@ package com.miglab.miyo.net;
 import android.os.Handler;
 import com.miglab.miyo.MyUser;
 import com.miglab.miyo.constant.ApiDefine;
+import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.entity.SongInfo;
-import com.miglab.miyo.ui.MusicFragment.Dimension;
 import org.json.JSONObject;
 
 /**
@@ -14,19 +14,19 @@ import org.json.JSONObject;
  */
 public class CollectSongTask extends BaseTask {
     private SongInfo songInfo;
-    private Dimension dimension;
+    private MusicType musicType;
 
-    public CollectSongTask(Handler h, SongInfo song, Dimension dimension){
+    public CollectSongTask(Handler h, SongInfo song, MusicType musicType){
         this.handler = h;
         this.songInfo = song;
-        this.dimension = dimension;
+        this.musicType = musicType;
     }
 
     @Override
     protected String request() throws Exception {
         String url = ApiDefine.DOMAIN + ApiDefine.MUSIC_COLLECT_SONG;
-        String params = MyUser.getApiBasicParams() + "&songid=" + songInfo.id + "&sid=" + dimension.sid
-                + "&dimension=" + dimension.dim;
+        String params = MyUser.getApiBasicParams() + "&songid=" + songInfo.id + "&sid=" + musicType.getId()
+                + "&dimension=" + musicType.getDim();
         return ApiRequest.getRequest(url + params);
     }
 
