@@ -1,26 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/app_bg">
+                xmlns:app="http://schemas.android.com/apk/res/com.miglab.miyo"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/view_bg">
     <ListView
             android:id="@+id/listView"
+            android:layout_above="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/chat_view_bg"
-            android:dividerHeight="1dp"/>
+            android:scrollbars="none"
+            android:divider="@color/diver_color"
+            android:dividerHeight="@dimen/diver_height"/>
     <TextView
             android:id="@+id/type_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/music_type_item_height"
-            android:background="@color/white"
+            android:background="@color/bg_my_fm_title"
+            android:textColor="@color/my_fm_title_textColor"
+            android:textSize="@dimen/my_fm_title_textSize"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/music_type_item_left_margin"/>
+    <TextView
+            android:layout_below="@id/type_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/diver_height"
+            android:background="@color/diver_color"/>
     <RelativeLayout
             android:id="@+id/bottom"
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fm_bottom_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_my_fm_title"
+            android:paddingLeft="@dimen/fm_bottom_left_padding">
+        <RelativeLayout
+                android:id="@+id/ry_player"
+                android:layout_width="@dimen/fm_bottom_progress_diameter"
+                android:layout_height="@dimen/fm_bottom_progress_diameter"
+                android:layout_centerVertical="true">
+            <com.miglab.miyo.ui.widget.RoundImageView
+                    android:id="@+id/music_cd"
+                    android:layout_width="@dimen/fm_bottom_cd_diameter"
+                    android:layout_height="@dimen/fm_bottom_cd_diameter"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/loading"/>
+            <com.miglab.miyo.ui.widget.RoundProgressBar
+                    android:id="@+id/cd_progress"
+                    android:layout_width="@dimen/fm_bottom_progress_diameter"
+                    android:layout_height="@dimen/fm_bottom_progress_diameter"
+                    android:layout_centerInParent="true"
+                    app:roundWidth="@dimen/fm_bottom_progress_width"
+                    app:roundColor="@color/cd_progress_bg"
+                    app:roundProgressColor="@color/cd_progress"
+                    app:style="STROKE"/>
+            <ImageView
+                    android:id="@+id/cd_palyer"
+                    android:layout_width="@dimen/fm_bottom_cd_diameter"
+                    android:layout_height="@dimen/fm_bottom_cd_diameter"
+                    android:background="@drawable/cd_selector"
+                    android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/ry_player"
+                android:layout_centerVertical="true">
+            <ImageView
+                    android:id="@+id/heart_music"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/collect_music_selector"/>
+            <ImageView
+                    android:id="@+id/del_music"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/music_menu_bottom_space"
+                    android:layout_toLeftOf="@id/heart_music"
+                    android:src="@drawable/del_music_selector"/>
+            <ImageView
+                    android:id="@+id/next_music"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/music_menu_bottom_space"
+                    android:layout_toRightOf="@id/heart_music"
+                    android:src="@drawable/next_music_selector"/>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

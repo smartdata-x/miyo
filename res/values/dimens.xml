@@ -39,5 +39,15 @@
 
     <dimen name="weather_icon_width">25dp</dimen>
     <dimen name="music_type_item_height">50dp</dimen>
-    <dimen name="music_type_item_left_margin">15dp</dimen>
+    <dimen name="music_type_item_left_margin">18dp</dimen>
+    <dimen name="my_fm_title_textSize">27px</dimen>
+    <dimen name="my_fm_item_textSize">33px</dimen>
+    <dimen name="diver_height">1px</dimen>
+    <dimen name="fm_bottom_height">60dp</dimen>
+    <dimen name="fm_bottom_left_padding">30dp</dimen>
+
+    <dimen name="fm_bottom_cd_diameter">40dp</dimen>
+    <dimen name="fm_bottom_progress_diameter">46dp</dimen>
+    <dimen name="fm_bottom_progress_width">3dp</dimen>
+    <dimen name="music_menu_bottom_space">18dp</dimen>
 </resources>

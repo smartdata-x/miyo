@@ -2,6 +2,7 @@ package com.miglab.miyo.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,7 +29,7 @@ import java.util.List;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MainActivity extends FragmentActivity implements FMFragment.MusicInterface{
+public class MainActivity extends FragmentActivity implements FMFragment.MusicInterface,MusicFragment.NotifyFmInterface{
     private TextView findMusic;
     private TextView myFM;
     private ViewPager viewPager;
@@ -109,6 +110,7 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
     private void initFragments() {
         fragmentManager = getSupportFragmentManager();
         musicFragment = new MusicFragment();
+        musicFragment.setNotifyFmInterface(this);
         fmFragment = new FMFragment();
         fmFragment.setMusicInterface(this);
         userFragment = new UserFragment();
@@ -167,6 +169,16 @@ public class MainActivity extends FragmentActivity implements FMFragment.MusicIn
     @Override
     public void updateMusicList(List<SongInfo> list) {
         musicFragment.updateMusicList(list);
+    }
+
+    @Override
+    public void updateBackground(Drawable drawable) {
+       fmFragment.updateBackground(drawable);
+    }
+
+    @Override
+    public void updateCD(Drawable drawable) {
+        fmFragment.updateCD(drawable);
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{

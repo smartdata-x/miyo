@@ -1,6 +1,7 @@
 package com.miglab.miyo.adapter;
 
 import android.app.Activity;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,9 +61,15 @@ public class MusicTypeAdapter extends BaseAdapter {
         }
         holder.tv_name.setText(list.get(position).getName());
         if(list.get(position).getIsTitle()) {
-            holder.tv_name.setBackgroundColor(0xffe6e6e6);
+            holder.parent.setBackgroundColor(ac.getResources().getColor(R.color.bg_my_fm_title));
+            holder.tv_name.setTextColor(ac.getResources().getColor(R.color.my_fm_title_textColor));
+            holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    ac.getResources().getDimensionPixelSize(R.dimen.my_fm_title_textSize));
         }else {
-            holder.tv_name.setBackgroundColor(0xffffffff);
+            holder.parent.setBackgroundColor(ac.getResources().getColor(R.color.bg_my_fm_item));
+            holder.tv_name.setTextColor(ac.getResources().getColor(R.color.my_fm_item_textColor));
+            holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    ac.getResources().getDimensionPixelSize(R.dimen.my_fm_item_textSize));
         }
         return convertView;
     }

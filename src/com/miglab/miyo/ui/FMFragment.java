@@ -1,6 +1,9 @@
 package com.miglab.miyo.ui;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.miglab.miyo.MiyoApplication;
@@ -28,6 +31,7 @@ public class FMFragment extends BaseFragment {
     private ListView listView;
     private TextView titleText;
     private MusicInterface musicInterface;
+    private ImageView iv_cd;
     @Override
     protected void setLayout() {
         resourceID = R.layout.fr_my_fm;
@@ -47,6 +51,7 @@ public class FMFragment extends BaseFragment {
     private void initViews() {
         listView = (ListView) vRoot.findViewById(R.id.listView);
         titleText = (TextView) vRoot.findViewById(R.id.type_title);
+        iv_cd = (ImageView) vRoot.findViewById(R.id.music_cd);
     }
 
     private void initData() {
@@ -71,17 +76,17 @@ public class FMFragment extends BaseFragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem < list.size() && visibleItemCount > 0) {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) titleText
-                            .getLayoutParams();
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) titleText.getLayoutParams();
                     View itemView = view.getChildAt(1);
+                    Log.e("firstVisibleItem:", "" + firstVisibleItem);
                     int top = 0;
                     if (list.get(firstVisibleItem + 1).getIsTitle()) {
                         top = itemView.getTop() - itemView.getHeight();
                     }
-                  if(!list.get(firstVisibleItem).getIsTitle())
-                    titleText.setText(list.get(firstVisibleItem).getParentResID());
-                  else
-                      titleText.setText(list.get(firstVisibleItem).getName());
+                    if (!list.get(firstVisibleItem).getIsTitle())
+                        titleText.setText(list.get(firstVisibleItem).getParentResID());
+                    else
+                        titleText.setText(list.get(firstVisibleItem).getName());
                     params.setMargins(0, top, 0, 0);
                     titleText.setLayoutParams(params);
                 }
@@ -136,6 +141,19 @@ public class FMFragment extends BaseFragment {
             list.add(musicType);
         }
         return list;
+    }
+
+    @SuppressWarnings("deprecation")
+    public void updateBackground(Drawable drawable) {
+        if (Build.VERSION.SDK_INT < 16) {
+            vRoot.setBackgroundDrawable(drawable);
+        } else {
+            vRoot.setBackground(drawable);
+        }
+    }
+
+    public void updateCD(Drawable drawable) {
+        iv_cd.setImageDrawable(drawable);
     }
 
     public interface MusicInterface {

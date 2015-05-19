@@ -5,10 +5,7 @@ import android.app.NotificationManager;
 import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -37,7 +34,6 @@ import com.miglab.miyo.third.universalimageloader.core.listener.SimpleImageLoadi
 import com.miglab.miyo.ui.widget.RoundImageView;
 import com.miglab.miyo.ui.widget.RoundProgressBar;
 import com.miglab.miyo.util.DisplayUtil;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -72,6 +68,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
     private int palyFlag = 0;// 歌曲播放状态 0-正在播放 1-暂停
 
     private DisplayImageOptions options;
+    private NotifyFmInterface notifyFmInterface;
 
     @Override
     protected void setLayout() {
@@ -127,14 +124,22 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
         icon_weather.setImageResource(resID);
     }
 
+    public void setNotifyFmInterface(NotifyFmInterface notifyFmInterface){
+        this.notifyFmInterface = notifyFmInterface;
+    }
+
     @SuppressWarnings("deprecation")
     public void setBackground() {
-        Bitmap b = ((BitmapDrawable) (iv_cd).getDrawable()).getBitmap();
+        Drawable drawable = iv_cd.getDrawable();
+        Bitmap b = ((BitmapDrawable) drawable).getBitmap();
+        Drawable drawableBg = new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80));
         if (Build.VERSION.SDK_INT < 16) {
-            vRoot.setBackgroundDrawable(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
+            vRoot.setBackgroundDrawable(drawableBg);
         } else {
-            vRoot.setBackground(new BitmapDrawable(ac.getResources(), DisplayUtil.fastblur(ac, b, 80)));
+            vRoot.setBackground(drawableBg);
         }
+        notifyFmInterface.updateBackground(drawableBg);
+        notifyFmInterface.updateCD(drawable);
     }
 
     //todo 事件监听
@@ -371,13 +376,7 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
 
     void cdStartAnimation() {
         anim.start();
-        //       iv_cd.startAnimation(rotateAnimation);
     }
-
-    void cdStopAnimation() {
-//        rotateAnimation.cancel();
-    }
-
 
     /**
      * 注册更新播放进度的Receiver 在oncreate的时候调用
@@ -475,5 +474,11 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
 
     public void updateMusicList(List<SongInfo> list) {
         musicService.updateMusicList(list);
+    }
+
+    public interface NotifyFmInterface {
+        public void updateBackground(Drawable drawable);
+        public void updateCD(Drawable drawable);
+        public void startPlay();
     }
 }
