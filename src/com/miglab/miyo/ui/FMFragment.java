@@ -10,16 +10,12 @@ import com.miglab.miyo.adapter.MusicTypeAdapter;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.entity.MusicType;
-import com.miglab.miyo.entity.SongInfo;
-import com.miglab.miyo.net.DimensionFMTask;
 import com.miglab.miyo.net.GetMusicType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by fanglei
@@ -31,6 +27,10 @@ public class FMFragment extends PlayBaseFragment {
 
     private ListView listView;
     private TextView titleText;
+    private MusicTypeAdapter adapter;
+    private int position = -1; //记录之前播放纬度的pos
+    private MusicType musicType;
+
     @Override
     protected void setLayout() {
         resourceID = R.layout.fr_my_fm;
@@ -56,6 +56,16 @@ public class FMFragment extends PlayBaseFragment {
     }
 
     private void initListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MusicType musicType = list.get(position);
+                mainActivity.getMusicListByType(musicType);
+                mainActivity.showMusicFragment();
+//                adapter.notifyShowPosition(position);
+
+            }
+        });
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -82,6 +92,14 @@ public class FMFragment extends PlayBaseFragment {
         });
     }
 
+    public void updateMusicType(MusicType musicType){
+        this.musicType = musicType;
+        if(adapter != null){
+            initPosition();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected void doHandler(Message msg) {
         super.doHandler(msg);
@@ -106,8 +124,27 @@ public class FMFragment extends PlayBaseFragment {
         list.addAll(getMusicList(mmArray, "mm"));
         list.add(musicMs);
         list.addAll(getMusicList(msArray, "ms"));
-        MusicTypeAdapter adapter = new MusicTypeAdapter(ac,list,handler);
+        adapter = new MusicTypeAdapter(ac,list,handler);
+        initPosition();
         listView.setAdapter(adapter);
+    }
+
+    private void initPosition() {
+        int pos = -1;
+        if(list != null && list.size() > 0){
+            for(MusicType m : list){
+                pos++;
+                if(m.getIsTitle())
+                    continue;
+                if(m.getDim().equals(musicType.getDim()) && m.getId()==musicType.getId()){
+                    break;
+                }
+            }
+        }
+        if(pos != position && adapter != null) {
+            position = pos;
+            adapter.setShowPosition(position);
+        }
     }
 
     private List<MusicType> getMusicList(JSONArray jArray,String channel){
@@ -121,19 +158,5 @@ public class FMFragment extends PlayBaseFragment {
         }
         return list;
     }
-
-    @SuppressWarnings("deprecation")
-    public void updateBackground(Drawable drawable) {
-        if (Build.VERSION.SDK_INT < 16) {
-            vRoot.setBackgroundDrawable(drawable);
-        } else {
-            vRoot.setBackground(drawable);
-        }
-    }
-
-    public void updateCD(Drawable drawable) {
-        iv_cd.setImageDrawable(drawable);
-    }
-
 
 }

@@ -61,7 +61,7 @@
                 android:layout_width="@dimen/music_cd_diameter"
                 android:layout_height="@dimen/music_cd_diameter"
                 android:layout_centerInParent="true"
-                android:src="@drawable/loading"/>
+                android:src="@drawable/music_default_cd"/>
 
         <com.miglab.miyo.ui.widget.RoundProgressBar
                 android:id="@+id/cd_progress"
@@ -108,8 +108,7 @@
             android:layout_height="@dimen/chat_height"
             android:gravity="center"
             android:textSize="@dimen/chat_text_size"
-            style="@style/text_chat_style"
-            android:text="最是那一低头的温柔，恰是一朵水莲花，不胜凉风的娇羞..."/>
+            style="@style/text_chat_style"/>
     <RelativeLayout
             android:layout_below="@id/chat"
             android:layout_width="match_parent"

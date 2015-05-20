@@ -32,7 +32,9 @@ public interface MusicServiceDefine {
     int MUSIC_RESUME = 80026;
     int MUSIC_STOP = 80027;
     int ACTIVITY_CLOSE = 80028;
-
+    int UPDATE_LIST_SUCCESS = 80029;
+    int UPDATE_LIST_NONE = 80030;
 
     int MUSIC_PLAYER_NOTIFY_ID = 80041;
+
 }

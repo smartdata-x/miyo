@@ -1,7 +1,9 @@
 package com.miglab.miyo.control;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.*;
 import android.text.TextUtils;
 import com.miglab.miyo.constant.ApiDefine;
@@ -160,9 +162,10 @@ public class MusicService extends Service implements AudioControllerListener{
          * 初始化歌单
          */
         musicType = new MusicType();
-        musicType.setDim("chl");
-        musicType.setName("华语流行");
-        musicType.setId(1);
+        SharedPreferences preferences=getSharedPreferences("musictype", Context.MODE_PRIVATE);
+        musicType.setDim(preferences.getString("dim", "chl"));
+        musicType.setName(preferences.getString("name", "华语流行"));
+        musicType.setId(preferences.getInt("sid", 1));
 
         getDimensionMusics();
     }
@@ -193,19 +196,16 @@ public class MusicService extends Service implements AudioControllerListener{
 
     }
 
-    public void updateMusicList(MusicType musicType) {
-        this.musicType = musicType;
+    public void getMusicListByType(MusicType musicType) {
         new DimensionFMTask(handler,musicType, 0).execute();
     }
 
+    //更新歌单结果
     public void clearMusicList(List<SongInfo> list) {
         stopMusic();
-        if (list == null || list.isEmpty()) {
-            sendBroadCast(MusicServiceDefine.ALBUN_NULL);
-            return;
-        }
         songs.clear();
         songs.addAll(list);
+        sendBroadCast(MusicServiceDefine.UPDATE_LIST_SUCCESS);
         if (checkSong(0)) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
         }
@@ -335,18 +335,23 @@ public class MusicService extends Service implements AudioControllerListener{
                 int nCommand = msg.what;
                 switch (nCommand) {
                     // 获取专辑数据
-                    case ApiDefine.GET_DEMENSION_SUCCESS:
+                    case ApiDefine.GET_MUSIC_LIST_SUCCESS:
                         if (msg.obj != null) {
                             Map<String,Object> map = (HashMap<String,Object>)msg.obj;
                             ArrayList<SongInfo> list = (ArrayList<SongInfo>) map.get("songList");
                             int type = (Integer) map.get("getType");
                             if (list != null && !list.isEmpty()) {
-                                if(type == 1)
+                                musicService.musicType = (MusicType) map.get("musicType");
+                                if (type == 1)
                                     musicService.setMusicList(list);
-                                if(type == 0)
+                                if (type == 0)
                                     musicService.clearMusicList(list);
                             }
-                            musicService.musicType = (MusicType) map.get("musicType");
+                            if (list == null || list.isEmpty()) {
+                                //请求成功，没有数据
+                                musicService.sendBroadCast(MusicServiceDefine.UPDATE_LIST_NONE);
+                                return;
+                            }
                         }
                         break;
 

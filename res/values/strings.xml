@@ -14,5 +14,6 @@
     <string name="chl">频道</string>
     <string name="mm">心情</string>
     <string name="ms">玩笑</string>
+    <string name="no_music">该纬度暂无音乐数据</string>
 
 </resources>

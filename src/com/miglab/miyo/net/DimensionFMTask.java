@@ -2,7 +2,6 @@ package com.miglab.miyo.net;
 
 import android.os.Handler;
 
-import android.support.annotation.NonNull;
 import com.miglab.miyo.MyUser;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.entity.MusicType;
@@ -51,7 +50,7 @@ public class DimensionFMTask extends BaseTask {
 		map.put("songList",list);
 		map.put("musicType", musicType);
 		map.put("getType", getType);
-		handler.sendMessage(handler.obtainMessage(ApiDefine.GET_DEMENSION_SUCCESS, map));
+		handler.sendMessage(handler.obtainMessage(ApiDefine.GET_MUSIC_LIST_SUCCESS, map));
 
 		return false;
 

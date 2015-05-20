@@ -13,5 +13,9 @@
     <ImageView
             android:id="@+id/playing"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/music_type_item_left_margin"
+            android:src="@anim/current_type_anim"/>
 </RelativeLayout>

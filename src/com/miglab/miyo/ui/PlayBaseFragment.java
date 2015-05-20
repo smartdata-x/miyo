@@ -59,9 +59,9 @@ public class PlayBaseFragment extends BaseFragment implements View.OnClickListen
 
     private void initDisplayImageOptions() {
         options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                        //       .cacheOnDisk(true)
-                .considerExifParams(true)
+                .cacheInMemory(false)
+                .cacheOnDisk(false)
+                .considerExifParams(false)
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.miglab.miyo.adapter;
 
 import android.app.Activity;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class MusicTypeAdapter extends BaseAdapter {
     private List<MusicType> list;
     private MusicTypeHolder holder;
     private Handler handler;
+    private int typePosition = -1;
     public MusicTypeAdapter(Activity ac,List<MusicType> list, Handler handler){
         this.ac = ac;
         this.list = list;
@@ -75,15 +77,20 @@ public class MusicTypeAdapter extends BaseAdapter {
             holder.tv_name.setTextColor(ac.getResources().getColor(R.color.my_fm_item_textColor));
             holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     ac.getResources().getDimensionPixelSize(R.dimen.my_fm_item_textSize));
-            holder.parent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MusicType musicType = list.get(position);
-                    ((MainActivity)ac).updateMusicList(musicType);
-                }
-            });
+        }
+        if(typePosition != -1 && typePosition == position){
+            AnimationDrawable animationDrawable= (AnimationDrawable) holder.iv_playing.getDrawable();
+            holder.iv_playing.setVisibility(View.VISIBLE);
+            if(!animationDrawable.isRunning())
+                 animationDrawable.start();
+        }else{
+            holder.iv_playing.setVisibility(View.GONE);
         }
         return convertView;
+    }
+
+    public void setShowPosition(int position) {
+        this.typePosition = position;
     }
 
     private class MusicTypeHolder {

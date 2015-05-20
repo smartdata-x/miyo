@@ -21,6 +21,7 @@ import com.miglab.miyo.entity.SongInfo;
 import com.miglab.miyo.net.CollectSongTask;
 import com.miglab.miyo.net.DelCollectSongTask;
 import com.miglab.miyo.net.DelSongTask;
+import com.miglab.miyo.ui.widget.LoadingDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class MainActivity extends FragmentActivity {
     private SongInfo songInfo;// 记录正在播放的歌曲信息
     private MusicType musicType;// 记录当前播放纬度
 
+    private LoadingDialog loadingDialog;
+
     private int select_R,select_G,select_B;
     private int color_Dif_R,color_Dif_G,color_Dif_B;
 
@@ -58,9 +61,15 @@ public class MainActivity extends FragmentActivity {
         initFragments();
         initViews();
         initTitleColor();
+        initProgressDlg();
         setListener();
         bindMusicService();
         registerPlayerReceiver();
+    }
+
+    private void initProgressDlg() {
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setMessage("加载中");
     }
 
     private void setListener() {
@@ -92,6 +101,7 @@ public class MainActivity extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
+        unRegisterPlayerReceiver();
     }
 
     private void initTitleColor() {
@@ -180,8 +190,8 @@ public class MainActivity extends FragmentActivity {
         }
     };
 
-    public void updateMusicList(MusicType musicType) {
-        musicService.updateMusicList(musicType);
+    public void getMusicListByType(MusicType musicType) {
+        musicService.getMusicListByType(musicType);
     }
 
     public void collectMusic() {
@@ -216,13 +226,26 @@ public class MainActivity extends FragmentActivity {
         fmFragment.updateMusicState(musicService.bePause());
     }
 
-    public void updateMusicType(MusicType musicType) {
-        this.musicType = musicType;
+    public void updateMusicType(MusicType music) {
+        this.musicType = music;
+        saveMusicType(music);
         musicFragment.updateMusicType(musicType);
+        fmFragment.updateMusicType(musicType);
     }
 
-    public MusicType getMusicType() {
-        return this.musicType;
+    private void saveMusicType(MusicType musicType){
+        SharedPreferences preferences=getSharedPreferences("musictype",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferences.edit();
+        editor.putString("dim", musicType.getDim());
+        editor.putInt("sid", musicType.getId());
+        editor.putString("name", musicType.getName());
+        editor.commit();
+    }
+
+    public void showMusicFragment() {
+        viewPager.setCurrentItem(0);
+        if(!loadingDialog.isShowing())
+            loadingDialog.show();
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{
@@ -344,6 +367,15 @@ public class MainActivity extends FragmentActivity {
                     break;
 
                 case MusicServiceDefine.ACTIVITY_CLOSE:
+                    break;
+                case MusicServiceDefine.UPDATE_LIST_SUCCESS:
+                    if(loadingDialog.isShowing())
+                        loadingDialog.dismiss();
+                    break;
+                case MusicServiceDefine.UPDATE_LIST_NONE:
+                    if(loadingDialog.isShowing())
+                        loadingDialog.dismiss();
+                    Toast.makeText(MainActivity.this,getString(R.string.no_music),Toast.LENGTH_SHORT).show();
                     break;
             }
         }

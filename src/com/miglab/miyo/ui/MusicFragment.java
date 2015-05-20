@@ -87,18 +87,6 @@ public class MusicFragment extends PlayBaseFragment{
     }
 
 
-    //todo 事件监听
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        int id = v.getId();
-        switch (id) {
-            case R.id.icon_player:
-                pauseMusic();
-                break;
-        }
-    }
-
     public void updateMusicType(MusicType musicType) {
         tv_songType.setText(musicType.getName());
         new GetChatDataTask(handler,musicType).execute();

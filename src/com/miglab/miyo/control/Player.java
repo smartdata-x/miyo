@@ -79,7 +79,7 @@ public class Player {
 			/* 设置要播放的文件的路径 */
             mediaPlayer.setDataSource(musicURL);
 			/* 准备播放 */
-            mediaPlayer.prepare();
+            mediaPlayer.prepareAsync();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
