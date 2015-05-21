@@ -1,9 +1,7 @@
 package com.miglab.miyo.net;
 
-import android.app.Activity;
 import android.os.Handler;
-import android.widget.Toast;
-import com.miglab.miyo.MyUser;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.entity.SongInfo;
 import org.json.JSONObject;
@@ -21,7 +19,7 @@ public class DelSongTask extends BaseTask{
     @Override
     protected String request() throws Exception {
         String url = ApiDefine.DOMAIN + ApiDefine.MUSIC_HATE_SONG;
-        String params = MyUser.getApiBasicParams() + "&songid=" + song.id;
+        String params = MiyoUser.getApiBasicParams() + "&songid=" + song.id;
         return ApiRequest.getRequest(url + params);
     }
 

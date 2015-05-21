@@ -37,4 +37,23 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="login_btn_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginLeft">@dimen/login_btn_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/login_btn_margin_left</item>
+        <item name="android:layout_marginTop">@dimen/login_btn_margin_top</item>
+    </style>
+
+    <style name="login_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@drawable/text_login_selector</item>
+        <item name="android:drawablePadding">@dimen/login_ico_padding</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
 </resources>

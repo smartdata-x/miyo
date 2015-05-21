@@ -1,7 +1,7 @@
 package com.miglab.miyo.net;
 
 import android.os.Handler;
-import com.miglab.miyo.MyUser;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.entity.SongInfo;
@@ -25,7 +25,7 @@ public class CollectSongTask extends BaseTask {
     @Override
     protected String request() throws Exception {
         String url = ApiDefine.DOMAIN + ApiDefine.MUSIC_COLLECT_SONG;
-        String params = MyUser.getApiBasicParams() + "&songid=" + songInfo.id + "&sid=" + musicType.getId()
+        String params = MiyoUser.getApiBasicParams() + "&songid=" + songInfo.id + "&sid=" + musicType.getId()
                 + "&dimension=" + musicType.getDim();
         return ApiRequest.getRequest(url + params);
     }

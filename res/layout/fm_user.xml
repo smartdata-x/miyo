@@ -13,8 +13,7 @@
                 android:id="@+id/header"
                 android:layout_width="@dimen/head_diameter"
                 android:layout_height="@dimen/head_diameter"
-                android:layout_marginTop="@dimen/head_margin_top"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:scaleType="fitXY"
                 android:src="@drawable/loading"
                 app:border_thickness="@dimen/head_border"
@@ -24,20 +23,7 @@
                 android:layout_width="@dimen/head_diameter"
                 android:layout_height="@dimen/head_diameter"
                 android:background="@drawable/cd_selector"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/head_margin_top"
+                android:layout_centerInParent="true"
                 />
-        <LinearLayout
-                android:layout_below="@id/header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/login_text_margin_top"
-                android:layout_centerHorizontal="true">
-            <TextView style="@style/text_login_bg_style"
-                      android:text="@string/login"/>
-            <TextView style="@style/text_login_bg_style"
-                      android:layout_marginLeft="@dimen/login_regist_distance"
-                      android:text="@string/regist"/>
-        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

@@ -1,9 +1,8 @@
 package com.miglab.miyo.net;
 
 import android.os.Handler;
-import com.miglab.miyo.MyUser;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.constant.ApiDefine;
-import com.miglab.miyo.ui.BaseFragment;
 import org.json.JSONObject;
 
 /**
@@ -21,7 +20,7 @@ public class GetMusicType extends BaseTask{
     @Override
     protected String request() throws Exception {
         String url = ApiDefine.DOMAIN + ApiDefine.MUSIC_TYPE;
-        String params = MyUser.getApiBasicParams() + "&latitude=" + latitude + "&longitude=" + longitude;
+        String params = MiyoUser.getApiBasicParams() + "&latitude=" + latitude + "&longitude=" + longitude;
         return ApiRequest.getRequest(url + params);
     }
 

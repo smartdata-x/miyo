@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.miglab.miyo.MyUser;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.control.AudioController.AudioState;
 import com.miglab.miyo.net.DimensionFMTask;
 /**
@@ -28,7 +28,6 @@ import com.miglab.miyo.net.DimensionFMTask;
  */
 public class MusicService extends Service implements AudioControllerListener{
 
-    private MyUser user;
     // ========播放音乐======//
     ArrayList<SongInfo> songs = new ArrayList<SongInfo>();
     Player player;
@@ -64,9 +63,6 @@ public class MusicService extends Service implements AudioControllerListener{
             player = new Player(handler);
 
         audioController = AudioController.get();
-
-        user = MyUser.getInstance();
-        user.readRecord(this);
     }
 
     @Override

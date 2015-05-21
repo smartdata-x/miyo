@@ -70,13 +70,13 @@ public class MusicTypeAdapter extends BaseAdapter {
         if(list.get(position).getIsTitle()) {
             holder.parent.setBackgroundColor(ac.getResources().getColor(R.color.bg_my_fm_title));
             holder.tv_name.setTextColor(ac.getResources().getColor(R.color.my_fm_title_textColor));
-            holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    ac.getResources().getDimensionPixelSize(R.dimen.my_fm_title_textSize));
+            holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_SP,
+                    14);
         }else {
             holder.parent.setBackgroundResource(R.drawable.music_type_item_selector);//ac.getResources().getColor(R.color.bg_my_fm_item));
             holder.tv_name.setTextColor(ac.getResources().getColor(R.color.my_fm_item_textColor));
-            holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    ac.getResources().getDimensionPixelSize(R.dimen.my_fm_item_textSize));
+            holder.tv_name.setTextSize(TypedValue.COMPLEX_UNIT_SP,
+                    16);
         }
         if(typePosition != -1 && typePosition == position){
             AnimationDrawable animationDrawable= (AnimationDrawable) holder.iv_playing.getDrawable();

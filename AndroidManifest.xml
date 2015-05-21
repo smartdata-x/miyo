@@ -9,9 +9,12 @@
         android:targetSdkVersion="22" />
     
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 获取手机imei -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
@@ -30,7 +33,25 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.MainActivity"
+                  android:launchMode="singleTask"
                   android:screenOrientation="portrait"/>
+
+        <activity
+                android:name="com.tencent.tauth.AuthActivity"
+                android:noHistory="true"
+                android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent100525100" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.tencent.connect.common.AssistActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                  android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+        <activity android:name=".ui.LoginActivity"/>
 
         <service
                 android:name="com.miglab.miyo.control.MusicService"

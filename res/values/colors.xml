@@ -20,4 +20,5 @@
     <color name="my_fm_item_textColor">#45413a</color>
     <color name="diver_color">#30d3d5dc</color>
     <color name="bg_my_fm_item">#30ffffff</color>
+    <color name="login_text_press">#66000000</color>
 </resources>
