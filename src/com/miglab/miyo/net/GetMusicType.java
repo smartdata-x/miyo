@@ -15,6 +15,8 @@ public class GetMusicType extends BaseTask{
     private String longitude;
     public GetMusicType(Handler handler,double latitude,double longitude) {
         this.handler = handler;
+        this.latitude = String.valueOf(latitude);
+        this.longitude = String.valueOf(longitude);
     }
 
     @Override

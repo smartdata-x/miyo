@@ -165,7 +165,7 @@ public class MiyoUser {
                 nickname = sharedPrefs.getString("nickname", "");
                 gender = sharedPrefs.getInt("gender", 0);
                 headUrl = sharedPrefs.getString("headUrl", "");
-                birthday = sharedPrefs.getString("birthday", "0");
+                birthday = sharedPrefs.getString("birthday", "");
                 location = sharedPrefs.getString("location", "");
                 imei = sharedPrefs.getString("imei", "");
                 source = sharedPrefs.getInt("source",3);

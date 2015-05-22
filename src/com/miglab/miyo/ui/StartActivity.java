@@ -18,7 +18,7 @@ import com.miglab.miyo.net.ThirdLoginTask;
 
 
 public class StartActivity extends BaseActivity {
-    private int[] imageID = {R.drawable.loading,R.drawable.loading1, R.drawable.loading2, R.drawable.loading3};
+    private int[] imageID = {R.drawable.loading1, R.drawable.loading2, R.drawable.loading3};
     private ViewPager viewPager;
     boolean bFirst = false;
 
