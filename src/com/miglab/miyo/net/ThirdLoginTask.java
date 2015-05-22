@@ -28,7 +28,7 @@ public class ThirdLoginTask extends BaseTask {
 		MiyoUser user = MiyoUser.getInstance();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("machine", "" + user.getMachine());
-		params.put("nickname", URLEncoder.encode(user.getNickname(),"utf-8"));
+		params.put("nickname", user.getNickname());
 		params.put("source", "" + user.getSource());
 		params.put("session", "" + user.getSession());
 		if (!TextUtils.isEmpty(user.getImei()))
@@ -37,7 +37,7 @@ public class ThirdLoginTask extends BaseTask {
 		if (!TextUtils.isEmpty(user.getBirthday()))
 			params.put("birthday", "" + user.getBirthday());
 		if (!TextUtils.isEmpty(user.getLocation()))
-			params.put("location", URLEncoder.encode(user.getLocation(),"utf-8"));
+			params.put("location", user.getLocation());
 		if (!TextUtils.isEmpty(user.getHeadUrl()))
 			params.put("head", user.getHeadUrl());
 		return ApiRequest.postRequest(url, params);

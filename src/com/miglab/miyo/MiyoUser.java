@@ -134,11 +134,7 @@ public class MiyoUser {
     public void loginSet(JSONObject json) {
         if (json != null) {
             userId = json.optLong("uid");
-            try {
-                location = URLDecoder.decode(json.optString("location"), "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            location = json.optString("location");
             nickname = json.optString("nickname");
             token = json.optString("token");
             headUrl = json.optString("head");
