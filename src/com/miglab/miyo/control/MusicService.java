@@ -21,6 +21,8 @@ import java.util.Map;
 import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.control.AudioController.AudioState;
 import com.miglab.miyo.net.DimensionFMTask;
+import com.miglab.miyo.net.RecordCurMusicTask;
+
 /**
  * Created by fanglei
  * Email: 412552696@qq.com
@@ -28,6 +30,7 @@ import com.miglab.miyo.net.DimensionFMTask;
  */
 public class MusicService extends Service implements AudioControllerListener{
 
+    private static final int LIKE_SECONDS = 10000;
     // ========播放音乐======//
     ArrayList<SongInfo> songs = new ArrayList<SongInfo>();
     Player player;
@@ -38,6 +41,8 @@ public class MusicService extends Service implements AudioControllerListener{
     boolean isMusicActivityOpen = true;
     private AudioController audioController;
     private final LocalService localService = new LocalService();
+
+
 
     public class LocalService extends Binder {
         public MusicService getService() {
@@ -192,8 +197,24 @@ public class MusicService extends Service implements AudioControllerListener{
 
     }
 
+    public void delLocateMusic(SongInfo info) {
+        if (songs == null || songs.isEmpty()) {
+            return;
+        }else {
+            synchronized (songs) {
+                for ( int i = 0; i < songs.size(); i++) {
+                    SongInfo value = songs.get(i);
+                    if (value.id == info.id) {
+                        songs.remove(value);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     public void getMusicListByType(MusicType musicType) {
-        new DimensionFMTask(handler,musicType, 0).execute();
+        new DimensionFMTask(handler, musicType, 0).execute();
     }
 
     //更新歌单结果
@@ -279,12 +300,18 @@ public class MusicService extends Service implements AudioControllerListener{
     public void nextMusic() {
         if (player != null && playState > MusicServiceDefine.PLAYER_IDLE) {
             player.Stop();
+            sendBroadCast(MusicServiceDefine.STOP_TO_NEXT);
         }// 停止
-        //播放到最后3首的时候
-        if (++playIndex >= songs.size() - 4) {
-            new DimensionFMTask(handler, musicType, 1).execute();
+
+        if(musicType.getId() != MiyoUser.getInstance().getUserId()){
+            //播放到最后3首的时候
+            if (++playIndex >= songs.size() - 4) {
+                new DimensionFMTask(handler, musicType, 1).execute();
+            }
+        }else{
+            ++playIndex;
         }
-        if (checkSong(playIndex) && checkSong(0)) {
+        if (checkSong(playIndex)/* && checkSong(0)*/) {
             sendBroadCast(MusicServiceDefine.ALBUN_NULL);
         }
 
@@ -300,6 +327,8 @@ public class MusicService extends Service implements AudioControllerListener{
                 sendBroadCast(MusicServiceDefine.MUSIC_CHANGE, musicType,
                         mSong);
                 startMusic(mSong.url);
+                handler.removeCallbacks(recordLikeRunnable);
+                handler.postDelayed(recordLikeRunnable, LIKE_SECONDS);
                 isEnd = false;
                 break;
             }
@@ -309,6 +338,14 @@ public class MusicService extends Service implements AudioControllerListener{
 
         return isEnd;
     }
+
+    //一首歌超过10秒则统计一次数据
+    Runnable recordLikeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            new RecordCurMusicTask(handler,mSong,musicType).execute();
+        }
+    };
 
     public static boolean isBackPlaying() {
         return playState == MusicServiceDefine.PLAYER_PLAYING

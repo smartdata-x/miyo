@@ -27,6 +27,8 @@ public class ThirdLoginTask extends BaseTask {
 		String url = ApiDefine.DOMAIN + ApiDefine.THIRD_LOGIN;
 		MiyoUser user = MiyoUser.getInstance();
 		Map<String, String> params = new HashMap<String, String>();
+		params.put("plat","" + user.getPlat());
+		params.put("channel", user.getChannel());
 		params.put("machine", "" + user.getMachine());
 		params.put("nickname", user.getNickname());
 		params.put("source", "" + user.getSource());

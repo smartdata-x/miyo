@@ -6,6 +6,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.*;
 import com.miglab.miyo.MiyoApplication;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.adapter.MusicTypeAdapter;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
@@ -59,10 +60,11 @@ public class FMFragment extends PlayBaseFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(id==-1)
+                    return;
                 MusicType musicType = list.get(position);
                 mainActivity.getMusicListByType(musicType);
                 mainActivity.showMusicFragment();
-//                adapter.notifyShowPosition(position);
 
             }
         });
@@ -115,9 +117,12 @@ public class FMFragment extends PlayBaseFragment {
         JSONArray chlArray = jResult.optJSONArray("chl");
         JSONArray mmArray = jResult.optJSONArray("mm");
         JSONArray msArray = jResult.optJSONArray("ms");
+        MusicType musicFM = new MusicType(getString(R.string.my_fm),true);
         MusicType musicChl = new MusicType(getString(R.string.chl),true);
         MusicType musicMm = new MusicType(getString(R.string.mm),true);
         MusicType musicMs = new MusicType(getString(R.string.ms),true);
+        list.add(musicFM);
+        list.addAll(getPersonalMusicList());
         list.add(musicChl);
         list.addAll(getMusicList(chlArray, "chl"));
         list.add(musicMm);
@@ -156,6 +161,19 @@ public class FMFragment extends PlayBaseFragment {
             musicType.setId(jObj.optInt("id"));
             list.add(musicType);
         }
+        return list;
+    }
+
+    private List<MusicType> getPersonalMusicList() {
+        List<MusicType> list = new ArrayList<MusicType>();
+        MusicType musicType = new MusicType(getString(R.string.my_Heart),false);
+        musicType.setId(MiyoUser.getInstance().getUserId());
+        musicType.setDim("my_fm");
+        list.add(musicType);
+        MusicType musicType1 = new MusicType(getString(R.string.auto_recommend),false);
+        musicType1.setDim("my_fm");
+        musicType1.setId(-1);
+        list.add(musicType1);
         return list;
     }
 

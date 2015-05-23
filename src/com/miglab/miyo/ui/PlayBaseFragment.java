@@ -62,6 +62,7 @@ public class PlayBaseFragment extends BaseFragment implements View.OnClickListen
                 .cacheInMemory(false)
                 .cacheOnDisk(false)
                 .considerExifParams(false)
+                .showImageForEmptyUri(R.drawable.music_default_cd)
                 .build();
     }
 
@@ -134,14 +135,14 @@ public class PlayBaseFragment extends BaseFragment implements View.OnClickListen
     }
 
     public void updatePicInfo(String url) {
-        if (!TextUtils.isEmpty(url)) {
             ImageLoader.getInstance().displayImage(url, iv_cd, options, new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    setBackground();
+                    if(!TextUtils.isEmpty(imageUri))
+                        setBackground();
                 }
             });
-        }
+
     }
 
     @SuppressWarnings("deprecation")

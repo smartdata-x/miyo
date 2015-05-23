@@ -7,7 +7,7 @@ public interface ApiDefine {
     String DOMAIN = "http://112.124.49.59/cgi-bin/miyo";
 
     String THIRD_LOGIN = "/user/v1/thirdlogin.fcgi";
-    String QUICK_LOGIN = "/user/v1/quicklogin.fcgi";
+    String AUTO_LOGIN = "/user/v1/loginrecord.fcgi";
 
     String RECOMMEND_HOME = "/find/v1/main.fcgi";
     String BOOKMALL_HOME = "/find/v1/bookstore.fcgi";
@@ -38,6 +38,7 @@ public interface ApiDefine {
     String WEATHER = "/soc/v1/getlocation.fcgi";
     String MUSIC_TYPE = "/music/v1/dimensioninfo.fcgi";
     String CHAT = "/soc/v1/getbarragecomm.fcgi";
+    String RECORD_MUSIC = "/music/v1/recordcursong.fcgi";
 
     int GET_SUCCESS = 100001;
     int FRESH_IMAGE = 100002;
@@ -67,7 +68,5 @@ public interface ApiDefine {
     int GET_HATE_SONG_SUCCESS = 400003;
 
     String ERRORMSG_UNKNOWN = "Î´Öª´íÎóÔ­Òò";
-
-
 
 }

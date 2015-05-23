@@ -14,7 +14,7 @@ import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
-import com.miglab.miyo.net.ThirdLoginTask;
+import com.miglab.miyo.net.AutoLoginTask;
 
 
 public class StartActivity extends BaseActivity {
@@ -87,7 +87,7 @@ public class StartActivity extends BaseActivity {
         MiyoUser user = MiyoUser.getInstance();
         user.readRecord();
         if (user.hasRecoder())
-            new ThirdLoginTask(uiHandler).execute();
+            new AutoLoginTask(uiHandler).execute();
         else {
             startActivity(new Intent(StartActivity.this, LoginActivity.class));
             finish();

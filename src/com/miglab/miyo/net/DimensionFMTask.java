@@ -23,16 +23,18 @@ public class DimensionFMTask extends BaseTask {
 	}
 
 	@Override
-	protected boolean paramsFail() {
-		return musicType.getDim() == null || musicType.getId() <= 0;
-
-	}
-
-	@Override
 	protected String request() throws Exception {
-		String url = ApiDefine.DOMAIN + ApiDefine.FOUND_FM;
-		String params = MiyoUser.getApiBasicParams() + "&dimension=" + musicType.getDim()
-				+ "&sid=" + musicType.getId();
+		String url = null;
+		String params = null;
+		if(musicType.getId() == MiyoUser.getInstance().getUserId()){
+			//ºìÐÄ¸èµ¥
+			url = ApiDefine.DOMAIN + ApiDefine.GET_CLTSONGS;
+			params = MiyoUser.getApiBasicParams() + "&mTid=" + musicType.getId();
+		}else {
+			url = ApiDefine.DOMAIN + ApiDefine.FOUND_FM;
+			params = MiyoUser.getApiBasicParams() + "&dimension=" + musicType.getDim()
+					+ "&sid=" + musicType.getId();
+		}
 
 		return ApiRequest.getRequest(url + params);
 	}

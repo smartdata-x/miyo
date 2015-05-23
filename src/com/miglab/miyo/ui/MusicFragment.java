@@ -86,6 +86,11 @@ public class MusicFragment extends PlayBaseFragment{
         icon_weather.setImageResource(resID);
     }
 
+    @Override
+    protected void cdStartAnimation() {
+        super.cdStartAnimation();
+        icon_player.setVisibility(View.GONE);
+    }
 
     public void updateMusicType(MusicType musicType) {
         tv_songType.setText(musicType.getName());

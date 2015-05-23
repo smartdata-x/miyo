@@ -108,7 +108,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                 }
                                 MiyoUser user = MiyoUser.getInstance();
                                 user.setNickname(jResult.optString("name"));
-                                user.setSource(1);
+                                user.setSource(MiyoUser.WEIBO_LOGIN);
                                 user.setSession(jResult.optString("id"));
                                 if(jResult.optString("gender").equals("m"))
                                     user.setGender(1);
@@ -169,7 +169,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                     JSONObject jResult = (JSONObject) o;
                     MiyoUser user = MiyoUser.getInstance();
                     user.setNickname(jResult.optString("nickname"));
-                    user.setSource(3);
+                    user.setSource(MiyoUser.QQ_LOGIN);
                     user.setSession(tencent.getAccessToken());
                     if(jResult.optString("gender").equals("男"))
                         user.setGender(1);

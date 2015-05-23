@@ -13,11 +13,13 @@
 
     <string name="chl">频道</string>
     <string name="mm">心情</string>
-    <string name="ms">玩笑</string>
+    <string name="ms">场景</string>
     <string name="no_music">该纬度暂无音乐数据</string>
     <string name="cancel">取消</string>
     <string name="qq_login">ＱＱ登录</string>
     <string name="weibo_login">微博登录</string>
     <string name="douban_login">豆瓣登录</string>
+    <string name="my_Heart">我的红心</string>
+    <string name="auto_recommend">推荐偏好</string>
 
 </resources>

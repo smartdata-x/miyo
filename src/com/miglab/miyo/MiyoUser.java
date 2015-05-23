@@ -15,10 +15,12 @@ import java.net.URLDecoder;
  * Date: 2015/5/21.
  */
 public class MiyoUser {
+    public static int QQ_LOGIN = 2;
+    public static int WEIBO_LOGIN = 1;
 
     private int machine; //1-android 2-iphone
     private String nickname;
-    private int source; // 登陆来源 1 新浪微博 2 微信 3 QQ
+    private int source; // 登陆来源 1 新浪微博 2 QQ 3 微信 4豆瓣
     private String session; // 第三方平台返回唯一凭据
     private String imei;
     private int gender; // 0 女 1男
@@ -27,22 +29,42 @@ public class MiyoUser {
     private String headUrl;
     private String latitude;
     private String longitude;
+    private int plat; //MIYO官方平台号
+    private String channel; //推广渠道号
 
     private String token; //登录成功，服务端返回唯一标识
-    private long userId; // 登录成功，服务端返回用户id
+    private int userId; // 登录成功，服务端返回用户id
 
     static MiyoUser user = new MiyoUser();
 
     private MiyoUser() {
         machine = 1;
+        plat = 10000;
+        channel = "10000";
     }
 
     public static MiyoUser getInstance() {
         return user;
     }
 
+    public int getPlat() {
+        return plat;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
     public int getMachine() {
         return machine;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public String getNickname() {
@@ -133,7 +155,7 @@ public class MiyoUser {
 
     public void loginSet(JSONObject json) {
         if (json != null) {
-            userId = json.optLong("uid");
+            userId = json.optInt("uid");
             location = json.optString("location");
             nickname = json.optString("nickname");
             token = json.optString("token");
@@ -155,7 +177,7 @@ public class MiyoUser {
             SharedPreferences sharedPrefs = MiyoApplication.getInstance().getSharedPreferences("miuser",
                     Context.MODE_PRIVATE);
             if (sharedPrefs != null) {
-                userId = sharedPrefs.getLong("userId", 0);
+                userId = sharedPrefs.getInt("userId", 0);
                 session = sharedPrefs.getString("id", "");
                 token = sharedPrefs.getString("token", "");
                 nickname = sharedPrefs.getString("nickname", "");
@@ -174,7 +196,7 @@ public class MiyoUser {
                 .getSharedPreferences("miuser", Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putLong("userId", userId);
+        editor.putInt("userId", userId);
         editor.putInt("source", source);
         editor.putString("token", token);
         editor.putString("nickname", nickname);

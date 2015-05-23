@@ -11,6 +11,7 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.miglab.miyo.MiyoApplication;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.constant.MessageWhat;
@@ -216,6 +217,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public void delLocateMusic(SongInfo info) {
+        musicService.delLocateMusic(info);
+    }
+
     public void nextMusic() {
         musicService.nextMusic();
     }
@@ -377,6 +382,15 @@ public class MainActivity extends FragmentActivity {
                         loadingDialog.dismiss();
                     Toast.makeText(MainActivity.this,getString(R.string.no_music),Toast.LENGTH_SHORT).show();
                     break;
+                case MusicServiceDefine.STOP_TO_NEXT:
+                    //切换到下一首时，对当前播放歌曲界面处理
+                    musicFragment.updatePicInfo(null);
+                    fmFragment.updatePicInfo(null);
+                    musicFragment.setProgress(0);
+                    fmFragment.setProgress(0);
+                    musicFragment.updateMusicState(true);
+                    fmFragment.updateMusicState(true);
+                    break;
             }
         }
     }
@@ -418,6 +432,12 @@ public class MainActivity extends FragmentActivity {
             case ApiDefine.GET_DELECT_COLLECT_SONG_SUCCESS:
                 SongInfo songTemp2 = (SongInfo) msg.obj;
                 Toast.makeText(this, songTemp2.name + " 取消收藏成功", Toast.LENGTH_SHORT).show();
+                //如果当前在我的红心歌单，则切到下一首同时删除该曲目
+                if(musicType.getId() == MiyoUser.getInstance().getUserId()){
+                    nextMusic();
+                    delLocateMusic(songTemp2);
+
+                }
                 if (songTemp2.id == songInfo.id) {
                     songInfo.like = 0;
                     musicFragment.updateHeartMusic(false);

@@ -34,6 +34,7 @@ public interface MusicServiceDefine {
     int ACTIVITY_CLOSE = 80028;
     int UPDATE_LIST_SUCCESS = 80029;
     int UPDATE_LIST_NONE = 80030;
+    int STOP_TO_NEXT = 80031;
 
     int MUSIC_PLAYER_NOTIFY_ID = 80041;
 
