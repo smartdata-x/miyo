@@ -56,4 +56,19 @@
         <item name="android:drawablePadding">@dimen/login_ico_padding</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
+
+    <style name="btn_share_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/text_grey_color</item>
+        <item name="android:textSize">@dimen/share_text_size</item>
+        <item name="android:background">@drawable/commen_selector</item>
+    </style>
+
+    <style name="share_ppw_anim_style">
+        <item name="android:windowEnterAnimation">@anim/ppw_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/ppw_fade_out</item>
+    </style>
+
 </resources>

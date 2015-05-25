@@ -2,12 +2,14 @@ package com.miglab.miyo.ui;
 
 import android.os.Build;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
@@ -31,7 +33,7 @@ import java.util.List;
 public class MusicFragment extends PlayBaseFragment{
 
     private ImageView icon_player;
-    private ImageView icon_weather;
+    private ImageView icon_weather,cd_palyer;
     private RelativeLayout ry_cd;
     private TextView tv_songName;
     private TextView tv_songType;
@@ -71,6 +73,16 @@ public class MusicFragment extends PlayBaseFragment{
         tv_address = (TextView) vRoot.findViewById(R.id.address);
         tv_temperature = (TextView) vRoot.findViewById(R.id.temperature);
         tv_chat = (TextView) vRoot.findViewById(R.id.chat);
+        cd_palyer = (ImageView) vRoot.findViewById(R.id.cd_palyer);
+        cd_palyer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(mainActivity,"pop",Toast.LENGTH_SHORT).show();
+                SharePopwindow p = new SharePopwindow(mainActivity);
+                p.showAtLocation(vRoot,Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,0);
+                return true;
+            }
+        });
     }
 
     private void initWeather() {

@@ -45,6 +45,8 @@ public class MusicType extends BaseEntity {
     }
 
     public String getDim() {
+        if(dim == null)
+            return "";
         return dim;
     }
 

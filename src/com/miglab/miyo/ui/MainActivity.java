@@ -55,6 +55,10 @@ public class MainActivity extends FragmentActivity {
     private int select_R,select_G,select_B;
     private int color_Dif_R,color_Dif_G,color_Dif_B;
 
+    public SongInfo getSongInfo() {
+        return songInfo;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -56,4 +56,6 @@
     <dimen name="login_btn_margin_top">15dp</dimen>
     <dimen name="login_ico_padding">12dp</dimen>
     <dimen name="start_margin_bottom">45dp</dimen>
+
+    <dimen name="share_text_size">12sp</dimen>
 </resources>
