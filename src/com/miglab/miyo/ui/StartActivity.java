@@ -26,12 +26,14 @@ public class StartActivity extends BaseActivity {
     protected void init() {
         setContentView(R.layout.ac_start);
         SharedPreferences sharedPrefs = getSharedPreferences("first_use", Context.MODE_PRIVATE);
-        if (sharedPrefs != null)
-            bFirst = sharedPrefs.getBoolean("firststart", true);
-        if (bFirst)
-            initFirstStart();
-        else
-            autoLogin();
+        startActivity(new Intent(StartActivity.this, MainActivity.class));
+        finish();
+//        if (sharedPrefs != null)
+//            bFirst = sharedPrefs.getBoolean("firststart", true);
+//        if (bFirst)
+//            initFirstStart();
+//        else
+//            autoLogin();
     }
 
     public void initFirstStart() {

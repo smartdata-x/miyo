@@ -2,7 +2,6 @@ package com.miglab.miyo.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.miglab.miyo.MiyoUser;
@@ -79,7 +78,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void weiboLogin() {
-        authInfo = new AuthInfo(this, Constants.WEIBO_APP_KEY,
+        authInfo = new AuthInfo(this, Constants.WEIBO_APP_ID,
                 Constants.REDIRECT_URL,Constants.WEIBO_SCOPE);
         ssoHandler = new SsoHandler(this, authInfo);
         ssoHandler.authorize(new AuthListener());
@@ -91,7 +90,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             final Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(bundle);
             if (accessToken.isSessionValid()) {
                 long uid = Long.parseLong(accessToken.getUid());
-                WeiboParameters parameters = new WeiboParameters(Constants.WEIBO_APP_KEY);
+                WeiboParameters parameters = new WeiboParameters(Constants.WEIBO_APP_ID);
                 parameters.put("uid", uid);
                 parameters.put(Constants.WEIBO_KEY_ACCESS_TOKEN,accessToken.getToken());
                 if(loadingDialog != null && !loadingDialog.isShowing())
@@ -142,7 +141,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void qqLogin() {
-        tencent = Tencent.createInstance(Constants.QQ_APP_KEY, this);
+        tencent = Tencent.createInstance(Constants.QQ_APP_ID, this);
 
         if(!tencent.isSessionValid()){
             tencent.login(this, com.tencent.connect.common.Constants.PARAM_SCOPE, qqListener);

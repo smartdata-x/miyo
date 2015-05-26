@@ -66,9 +66,4 @@
         <item name="android:background">@drawable/commen_selector</item>
     </style>
 
-    <style name="share_ppw_anim_style">
-        <item name="android:windowEnterAnimation">@anim/ppw_fade_in</item>
-        <item name="android:windowExitAnimation">@anim/ppw_fade_out</item>
-    </style>
-
 </resources>
