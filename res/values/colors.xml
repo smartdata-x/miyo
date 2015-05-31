@@ -21,4 +21,5 @@
     <color name="diver_color">#30d3d5dc</color>
     <color name="bg_my_fm_item">#30ffffff</color>
     <color name="login_text_press">#66000000</color>
+    <color name="bg_left_drawer">#383a53</color>
 </resources>

@@ -37,6 +37,18 @@
         <activity android:name=".ui.MainActivity"
                   android:launchMode="singleTask"
                   android:screenOrientation="portrait"/>
+        <intent-filter>
+            <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+
+
+        <activity android:name=".ui.LoginActivity"/>
+
+        <!-- qq -->
+        <activity android:name="com.tencent.connect.common.AssistActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                  android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity
                 android:name="com.tencent.tauth.AuthActivity"
@@ -49,19 +61,17 @@
                 <data android:scheme="tencent100525100" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.LoginActivity"/>
-
-        <!-- qq -->
-        <activity android:name="com.tencent.connect.common.AssistActivity"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                  android:configChanges="orientation|keyboardHidden|screenSize"/>
         
         <!-- weibi -->
         <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrower"
                   android:configChanges="keyboardHidden|orientation"
                   android:windowSoftInputMode="adjustResize"
                   android:exported="false"/>
+        <!-- weinxin -->
+        <activity android:name=".wxapi.WXEntryActivity"
+                  android:exported="true"
+                  android:launchMode="singleTop"
+                  android:theme="@android:style/Theme.Translucent"/>
 
         <service
                 android:name="com.miglab.miyo.control.MusicService"

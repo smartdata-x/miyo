@@ -2,6 +2,8 @@ package com.miglab.miyo.third.share;
 
 
 import android.app.Activity;
+import com.miglab.miyo.R;
+import com.miglab.miyo.entity.SongInfo;
 
 /**
  * Created by fanglei
@@ -15,8 +17,13 @@ public class Share {
     public String imgURL;
     public String appName;
     protected Activity ac;
-    public Share(Activity ac) {
+    public Share(Activity ac, SongInfo songInfo) {
         this.ac = ac;
+        this.title = songInfo.name;
+        this.summary = songInfo.artist;
+        this.url = songInfo.url;
+        this.imgURL = songInfo.pic;
+        this.appName =  ac.getString(R.string.app_name);
     }
 
     public void share(){

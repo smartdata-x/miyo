@@ -18,8 +18,8 @@ import com.tencent.tauth.UiError;
  */
 public class Share2QQ extends Share {
 
-    public Share2QQ(Activity ac) {
-        super(ac);
+    public Share2QQ(Activity ac,SongInfo songInfo) {
+        super(ac,songInfo);
     }
 
     @Override

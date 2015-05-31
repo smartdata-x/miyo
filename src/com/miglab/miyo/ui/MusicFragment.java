@@ -1,5 +1,7 @@
 package com.miglab.miyo.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Message;
 import android.view.Gravity;
@@ -77,9 +79,8 @@ public class MusicFragment extends PlayBaseFragment{
         cd_palyer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(mainActivity,"pop",Toast.LENGTH_SHORT).show();
                 SharePopwindow p = new SharePopwindow(mainActivity);
-                p.showAtLocation(vRoot,Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,0);
+                p.showAtLocation(vRoot, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 return true;
             }
         });
@@ -158,6 +159,10 @@ public class MusicFragment extends PlayBaseFragment{
                 tv_chat.setText(chat);
                 break;
         }
+    }
+
+    public Bitmap getCurMusicBitmap() {
+        return ((BitmapDrawable)iv_cd.getDrawable()).getBitmap();
     }
 
 }

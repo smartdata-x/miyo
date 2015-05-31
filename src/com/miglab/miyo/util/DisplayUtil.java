@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
+import com.miglab.miyo.ui.UserFragment;
 
 /**
  * Created by fanglei
@@ -207,17 +208,30 @@ public class DisplayUtil {
         return (bitmap);
     }
 
-    public static void setListener(View v,View.OnClickListener listener){
+    public static void setViewListener(View v, View.OnClickListener listener){
         if(v instanceof ViewGroup){
             ViewGroup viewGroup = (ViewGroup) v;
             if(viewGroup.getChildCount() > 0){
                 for(int i = 0; i < viewGroup.getChildCount(); i++) {
                     View view =  viewGroup.getChildAt(i);
-                    setListener(view,listener);
+                    setViewListener(view, listener);
                 }
             }
         }else{
             v.setOnClickListener(listener);
+        }
+    }
+
+    public static void setGropListener(View v, View.OnClickListener listener) {
+        if(v instanceof ViewGroup){
+            ViewGroup viewGroup = (ViewGroup) v;
+            v.setOnClickListener(listener);
+            if(viewGroup.getChildCount() > 0){
+                for(int i = 0; i < viewGroup.getChildCount(); i++) {
+                    View view =  viewGroup.getChildAt(i);
+                    setGropListener(view, listener);
+                }
+            }
         }
     }
 }

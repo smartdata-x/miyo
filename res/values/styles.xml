@@ -66,4 +66,54 @@
         <item name="android:background">@drawable/commen_selector</item>
     </style>
 
+    <style name="user_head_style">
+        <item name="android:layout_width">@dimen/head_diameter</item>
+        <item name="android:layout_height">@dimen/head_diameter</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">@dimen/head_left_margin</item>
+    </style>
+
+    <style name="head_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_middle</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="head_right_icon_style">
+        <item name="android:layout_width">@dimen/weather_icon_width</item>
+        <item name="android:layout_height">@dimen/weather_icon_width</item>
+        <item name="android:layout_marginLeft">@dimen/head_left_icon_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/head_left_icon_margin_right</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="left_drawer_menu_item_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/left_drawer_menu_item_height</item>
+        <item name="android:paddingLeft">@dimen/head_left_margin</item>
+        <item name="android:paddingRight">@dimen/head_left_margin</item>
+        <item name="android:background">@drawable/commen_selector</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="left_drawer_menu_item_icon_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/left_drawer_menu_item_icon_margin_right</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="left_drawer_menu_item_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_middle</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
 </resources>

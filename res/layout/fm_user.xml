@@ -4,26 +4,142 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/white"
+              android:background="@color/bg_left_drawer"
               android:clickable="true">
-    <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="@dimen/login_layout_height"
-                    android:background="@color/app_theme">
+    <RelativeLayout
+            android:id="@+id/ry_userInfo"
+            android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_layout_height">
         <com.miglab.miyo.ui.widget.RoundImageView
                 android:id="@+id/header"
-                android:layout_width="@dimen/head_diameter"
-                android:layout_height="@dimen/head_diameter"
-                android:layout_centerInParent="true"
+                style="@style/user_head_style"
                 android:scaleType="fitXY"
                 android:src="@drawable/loading"
                 app:border_thickness="@dimen/head_border"
                 app:border_color="@color/white"/>
         <ImageView
                 android:id="@+id/user_photo_click"
-                android:layout_width="@dimen/head_diameter"
-                android:layout_height="@dimen/head_diameter"
+                style="@style/user_head_style"
                 android:background="@drawable/cd_selector"
-                android:layout_centerInParent="true"
                 />
+        <LinearLayout
+                android:layout_toRightOf="@+id/user_photo_click"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/head_diameter"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="@dimen/half_head_diameter">
+                <ImageView
+                        android:id="@+id/genderIcon"
+                        style="@style/head_right_icon_style"/>
+                <TextView
+                        android:id="@+id/name"
+                        style="@style/head_text_style"
+                        android:layout_toRightOf="@id/genderIcon"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="@dimen/half_head_diameter">
+                <ImageView
+                        android:id="@+id/weatherIcon"
+                        style="@style/head_right_icon_style"/>
+                <TextView
+                        android:id="@+id/address"
+                        style="@style/head_text_style"
+                        android:layout_toRightOf="@id/weatherIcon"/>
+            </RelativeLayout>
+
+        </LinearLayout>
     </RelativeLayout>
+    <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            <RelativeLayout
+                    android:id="@+id/ry_message"
+                    style="@style/left_drawer_menu_item_style">
+                <ImageView
+                        android:id="@+id/iv_message"
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:src="@drawable/message_ico"/>
+                <TextView
+                        style="@style/left_drawer_menu_item_text_style"
+                        android:layout_toRightOf="@id/iv_message"
+                        android:text="@string/message"/>
+                <ImageView
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/go_ico"/>
+            </RelativeLayout>
+            <RelativeLayout
+                    android:id="@+id/ry_tucao"
+                    style="@style/left_drawer_menu_item_style">
+                <ImageView
+                        android:id="@+id/iv_tucao"
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:src="@drawable/tucao_ico"/>
+                <TextView
+                        style="@style/left_drawer_menu_item_text_style"
+                        android:layout_toRightOf="@id/iv_tucao"
+                        android:text="@string/tucao"/>
+                <ImageView
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/go_ico"/>
+            </RelativeLayout>
+            <View android:layout_width="match_parent"
+                  android:layout_height="@dimen/diver_height"
+                  android:layout_margin="@dimen/left_drawer_diver_margin"
+                    android:background="@color/diver_color"/>
+            <RelativeLayout
+                    android:id="@+id/ry_score"
+                    style="@style/left_drawer_menu_item_style">
+                <ImageView
+                        android:id="@+id/iv_score"
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:src="@drawable/score_ico"/>
+                <TextView
+                        style="@style/left_drawer_menu_item_text_style"
+                        android:layout_toRightOf="@id/iv_score"
+                        android:text="@string/score"/>
+                <ImageView
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/go_ico"/>
+            </RelativeLayout>
+            <RelativeLayout
+                    android:id="@+id/ry_check"
+                    style="@style/left_drawer_menu_item_style">
+                <ImageView
+                        android:id="@+id/iv_check"
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:src="@drawable/search_ico"/>
+                <TextView
+                        style="@style/left_drawer_menu_item_text_style"
+                        android:layout_toRightOf="@id/iv_check"
+                        android:text="@string/check_fro_update"/>
+                <ImageView
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/go_ico"/>
+            </RelativeLayout>
+            <RelativeLayout
+                    android:id="@+id/ry_about"
+                    style="@style/left_drawer_menu_item_style">
+                <ImageView
+                        android:id="@+id/iv_about"
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:src="@drawable/pen_ico"/>
+                <TextView
+                        style="@style/left_drawer_menu_item_text_style"
+                        android:layout_toRightOf="@id/iv_about"
+                        android:text="@string/about"/>
+                <ImageView
+                        style="@style/left_drawer_menu_item_icon_style"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/go_ico"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

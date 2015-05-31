@@ -46,7 +46,7 @@ public class PlayBaseFragment extends BaseFragment implements View.OnClickListen
         iv_cd = (RoundImageView) vRoot.findViewById(R.id.music_cd);
         roundProgressBar = (RoundProgressBar) vRoot.findViewById(R.id.cd_progress);
         iv_heart = (ImageView) vRoot.findViewById(R.id.heart_music);
-        DisplayUtil.setListener(vRoot, this);
+        DisplayUtil.setViewListener(vRoot, this);
     }
 
     protected void initAnim() {

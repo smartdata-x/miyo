@@ -135,6 +135,8 @@ public class FMFragment extends PlayBaseFragment {
     }
 
     private void initPosition() {
+        if(musicType == null)
+            return;;
         int pos = -1;
         if(list != null && list.size() > 0){
             for(MusicType m : list){

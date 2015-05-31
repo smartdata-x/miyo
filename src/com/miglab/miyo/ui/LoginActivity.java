@@ -50,7 +50,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private void initViews() {
         setContentView(R.layout.ac_login);
-        DisplayUtil.setListener(findViewById(R.id.center), this);
+        DisplayUtil.setViewListener(findViewById(R.id.center), this);
     }
 
     @Override

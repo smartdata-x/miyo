@@ -21,8 +21,22 @@
     <string name="douban_login">豆瓣登录</string>
     <string name="my_Heart">我的红心</string>
     <string name="auto_recommend">推荐偏好</string>
-    <string name="qq_share">QQ</string>
-    <string name="weixin_share">微信</string>
-    <string name="weibo_share">微博</string>
+    <string name="qq_share">QQ好友</string>
+    <string name="weixin_share">微信好友</string>
+    <string name="friends_share">微信朋友圈</string>
+    <string name="qqzone_share">QQ空间</string>
+    <string name="weibo_share">新浪微博</string>
+    <string name="share_to">分享到</string>
+    <string name="share_success">分享成功</string>
+    <string name="share_fail">分享失败</string>
+    <string name="share_cancel">取消分享</string>
+    <string name="share_deny">发送被拒绝</string>
+    <string name="share_unknown">发送返回</string>
+    <string name="weibo_not_support_api">微博客户端不支持 SDK 分享或微博客户端未安装或微博客户端是非官方版本。</string>
+    <string name="message">消息</string>
+    <string name="tucao">吐槽</string>
+    <string name="score">评分</string>
+    <string name="check_fro_update">版本更新</string>
+    <string name="about">条款</string>
 
 </resources>

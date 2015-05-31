@@ -3,6 +3,7 @@ package com.miglab.miyo.third.share;
 import android.app.Activity;
 import android.os.Bundle;
 import com.miglab.miyo.constant.Constants;
+import com.miglab.miyo.entity.SongInfo;
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -17,8 +18,9 @@ import java.util.ArrayList;
  */
 public class Share2QQZone extends Share {
 
-    public Share2QQZone(Activity ac) {
-        super(ac);
+
+    public Share2QQZone(Activity ac, SongInfo songInfo) {
+        super(ac, songInfo);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.miglab.miyo.ui;
 
 import android.content.*;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import android.os.*;
@@ -23,6 +24,10 @@ import com.miglab.miyo.net.CollectSongTask;
 import com.miglab.miyo.net.DelCollectSongTask;
 import com.miglab.miyo.net.DelSongTask;
 import com.miglab.miyo.ui.widget.LoadingDialog;
+import com.sina.weibo.sdk.api.share.BaseResponse;
+import com.sina.weibo.sdk.api.share.IWeiboHandler;
+import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
+import com.sina.weibo.sdk.constant.WBConstants;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -33,7 +38,7 @@ import java.util.List;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements IWeiboHandler.Response{
     private TextView findMusic;
     private TextView myFM;
     private ViewPager viewPager;
@@ -54,6 +59,7 @@ public class MainActivity extends FragmentActivity {
 
     private int select_R,select_G,select_B;
     private int color_Dif_R,color_Dif_G,color_Dif_B;
+    private IWeiboShareAPI weiboShareAPI;
 
     public SongInfo getSongInfo() {
         return songInfo;
@@ -199,6 +205,10 @@ public class MainActivity extends FragmentActivity {
         musicService.getMusicListByType(musicType);
     }
 
+    public Bitmap getCurMusicBitmap() {
+        return musicFragment.getCurMusicBitmap();
+    }
+
     public void collectMusic() {
         if (songInfo == null || musicType == null)
             return;
@@ -255,6 +265,33 @@ public class MainActivity extends FragmentActivity {
         viewPager.setCurrentItem(0);
         if(!loadingDialog.isShowing())
             loadingDialog.show();
+    }
+
+    @Override
+    public void onResponse(BaseResponse baseResponse) {
+        switch (baseResponse.errCode) {
+            case WBConstants.ErrorCode.ERR_OK:
+                Toast.makeText(this, R.string.share_success, Toast.LENGTH_LONG).show();
+                break;
+            case WBConstants.ErrorCode.ERR_CANCEL:
+                Toast.makeText(this, R.string.share_cancel, Toast.LENGTH_LONG).show();
+                break;
+            case WBConstants.ErrorCode.ERR_FAIL:
+                Toast.makeText(this, getString(R.string.share_fail) + "Error Message: " + baseResponse.errMsg,
+                        Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (weiboShareAPI != null)
+            weiboShareAPI.handleWeiboResponse(intent, this);
+    }
+
+    public void setWeiboShareAPI(IWeiboShareAPI weiboShareAPI) {
+        this.weiboShareAPI = weiboShareAPI;
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{
