@@ -27,8 +27,11 @@ public class Share2Weibo extends Share{
     public void share() {
         iWeiboShareAPI = WeiboShareSDK.createWeiboAPI(ac, Constants.WEIBO_APP_ID);
         iWeiboShareAPI.registerApp();
-        if(iWeiboShareAPI.isWeiboAppSupportAPI()) {
-            sendMultiMessage(true, true, false, true, false, false);
+        if (iWeiboShareAPI.isWeiboAppSupportAPI()) {
+            int supportApi = iWeiboShareAPI.getWeiboAppSupportAPI();
+            if (supportApi >= 10351 /*ApiUtils.BUILD_INT_VER_2_2*/) {
+                sendMultiMessage(true, true, false, true, true, true);
+            }
         }else {
             Toast.makeText(ac, ac.getString(R.string.weibo_not_support_api), Toast.LENGTH_SHORT).show();
         }
@@ -102,9 +105,14 @@ public class Share2Weibo extends Share{
      */
     private MusicObject getMusicObj() {
         MusicObject musicObject = new MusicObject();
+        musicObject.identify = Utility.generateGUID();
         musicObject.dataUrl = url;
         musicObject.title = title;
         musicObject.description = summary;
+        musicObject.actionUrl = url;
+        musicObject.dataUrl = imgURL;
+        musicObject.duration = 10;
+        musicObject.setThumbImage(((MainActivity) ac).getCurMusicBitmap());
         return musicObject;
     }
 }

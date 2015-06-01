@@ -7,7 +7,7 @@ package com.miglab.miyo.constant;
  */
 public interface Constants {
     String QQ_APP_ID = "100525100";
-    String WEIBO_APP_ID = "961980461";
+    String WEIBO_APP_ID = "961980461";//862410865
     String WEIXIN_APP_ID = "wx8975da7e04f500b3";
     String REDIRECT_URL = "http://42.121.14.108/3rdauth/sinaweibo/callback.php";
     String WEIBO_SCOPE = "";

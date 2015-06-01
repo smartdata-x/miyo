@@ -61,12 +61,14 @@
                 <data android:scheme="tencent100525100" />
             </intent-filter>
         </activity>
-        
-        <!-- weibi -->
-        <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrower"
+        <!-- weibo -->
+        <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
                   android:configChanges="keyboardHidden|orientation"
                   android:windowSoftInputMode="adjustResize"
-                  android:exported="false"/>
+                  android:exported="false" >
+        </activity>
+        <service android:name="com.sina.weibo.sdk.net.DownloadService"
+                 android:exported="false"/>
         <!-- weinxin -->
         <activity android:name=".wxapi.WXEntryActivity"
                   android:exported="true"
