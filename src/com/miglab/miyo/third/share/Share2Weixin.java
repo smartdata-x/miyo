@@ -8,6 +8,7 @@ import com.miglab.miyo.ui.MainActivity;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXMusicObject;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
@@ -35,6 +36,18 @@ public class Share2Weixin extends Share {
     public void share() {
         IWXAPI wxApi = WXAPIFactory.createWXAPI(ac, Constants.WEIXIN_APP_ID, true);
         wxApi.registerApp(Constants.WEIXIN_APP_ID);
+//        WXTextObject textObj = new WXTextObject();
+//        textObj.text = summary;
+//
+//        WXMediaMessage msg = new WXMediaMessage();
+//        msg.mediaObject = textObj;
+//        msg.description = summary;
+//
+//        SendMessageToWX.Req req = new SendMessageToWX.Req();
+//        req.transaction = buildTransaction("text"); // transaction字段用于唯一标识一个请求
+//        req.message = msg;
+
+
         WXMusicObject music = new WXMusicObject();
         music.musicUrl = url;
         WXMediaMessage msg = new WXMediaMessage();
@@ -55,10 +68,33 @@ public class Share2Weixin extends Share {
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
+//
+//    public final void setThumbImage(Bitmap bitmap) {
+//        ByteArrayOutputStream os = null;
+//
+//        try {
+//            os = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
+//            this.thumbData = os.toByteArray();
+//        } catch (Exception var12) {
+//            var12.printStackTrace();
+//            LogUtil.e("Weibo.BaseMediaObject", "put thumb failed");
+//        } finally {
+//            try {
+//                if(os != null) {
+//                    os.close();
+//                }
+//            } catch (IOException var11) {
+//                var11.printStackTrace();
+//            }
+//
+//        }
+//
+//    }
 
     private byte[] bmpToByteArray(Bitmap bmp, boolean needRecycle) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 85, output);
         if (needRecycle) {
             bmp.recycle();
         }

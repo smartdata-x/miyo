@@ -24,11 +24,13 @@ import com.miglab.miyo.net.CollectSongTask;
 import com.miglab.miyo.net.DelCollectSongTask;
 import com.miglab.miyo.net.DelSongTask;
 import com.miglab.miyo.ui.widget.LoadingDialog;
+import com.miglab.miyo.util.DisplayUtil;
 import com.sina.weibo.sdk.api.share.BaseResponse;
 import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.constant.WBConstants;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +208,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
     }
 
     public Bitmap getCurMusicBitmap() {
-        return musicFragment.getCurMusicBitmap();
+        return DisplayUtil.imageZoom(musicFragment.getCurMusicBitmap(), 32764);//32768=='耀'
     }
 
     public void collectMusic() {
