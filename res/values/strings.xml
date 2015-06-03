@@ -39,4 +39,7 @@
     <string name="check_fro_update">版本更新</string>
     <string name="about">条款</string>
 
+
+    <!-- 分享 -->
+    <string name="weibo_share_music_template">我正在听 %1$s（分享自 %2$s）</string>
 </resources>

@@ -1,8 +1,6 @@
 package com.miglab.miyo.third.share;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.widget.Toast;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.Constants;
@@ -30,7 +28,7 @@ public class Share2Weibo extends Share{
         if (iWeiboShareAPI.isWeiboAppSupportAPI()) {
             int supportApi = iWeiboShareAPI.getWeiboAppSupportAPI();
             if (supportApi >= 10351 /*ApiUtils.BUILD_INT_VER_2_2*/) {
-                sendMultiMessage(true, true, false, true, true, true);
+                sendMultiMessage(true, false, false, true, true, true);
             }
         }else {
             Toast.makeText(ac, ac.getString(R.string.weibo_not_support_api), Toast.LENGTH_SHORT).show();
@@ -83,8 +81,17 @@ public class Share2Weibo extends Share{
      */
     private TextObject getTextObj() {
         TextObject textObject = new TextObject();
-        textObject.text = summary;
+        textObject.text = getShareText();
+
         return textObject;
+    }
+
+    private String getShareText() {
+        String format;
+        String text = "";
+        format = ac.getString(R.string.weibo_share_music_template);
+        text = String.format(format, title, appName);
+        return text;
     }
 
     /**
@@ -106,13 +113,14 @@ public class Share2Weibo extends Share{
     private MusicObject getMusicObj() {
         MusicObject musicObject = new MusicObject();
         musicObject.identify = Utility.generateGUID();
-        musicObject.dataUrl = url;
         musicObject.title = title;
         musicObject.description = summary;
-        musicObject.actionUrl = url;
-        musicObject.dataUrl = imgURL;
-        musicObject.duration = 10;
         musicObject.setThumbImage(((MainActivity) ac).getCurMusicBitmap());
+
+        musicObject.actionUrl = url;//"http://music.sina.com.cn/yueku/i/2850305.html";
+        musicObject.dataUrl = Constants.MIYO_JUMP_URL;
+        musicObject.duration = 10;
+
         return musicObject;
     }
 }

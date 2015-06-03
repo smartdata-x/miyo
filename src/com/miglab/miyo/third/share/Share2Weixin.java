@@ -49,7 +49,8 @@ public class Share2Weixin extends Share {
 
 
         WXMusicObject music = new WXMusicObject();
-        music.musicUrl = url;
+        music.musicUrl = Constants.MIYO_JUMP_URL;
+        music.musicDataUrl = url;
         WXMediaMessage msg = new WXMediaMessage();
         msg.mediaObject = music;
         msg.title = title;

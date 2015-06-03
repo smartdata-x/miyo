@@ -29,8 +29,9 @@ public class Share2QQ extends Share {
         params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_AUDIO);
         params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
         params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
-        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url);
+        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, Constants.MIYO_JUMP_URL);
         params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imgURL);
+        params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, url);
         params.putString(QQShare.SHARE_TO_QQ_APP_NAME, appName);
         tencent.shareToQQ(ac, params, new IUiListener() {
             @Override

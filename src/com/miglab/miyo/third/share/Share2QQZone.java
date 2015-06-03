@@ -27,10 +27,11 @@ public class Share2QQZone extends Share {
     public void share() {
         Tencent tencent = Tencent.createInstance(Constants.QQ_APP_ID, ac);
         Bundle params = new Bundle();
-        params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
+        params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, 2);
         params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
         params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, summary);//选填
-        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url);//必填
+        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, Constants.MIYO_JUMP_URL);//必填
+ //       params.putString(QzoneShare.SHARE_TO_QQ_AUDIO_URL, url);
         ArrayList<String> list = new ArrayList<String>();
         list.add(imgURL);
         params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, list);
