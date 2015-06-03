@@ -4,47 +4,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/view_bg">
-        <RelativeLayout
-                android:id="@+id/weather"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/weather_top_margin"
-                android:layout_marginRight="@dimen/weather_right_margin"
+        <ImageView
+                android:id="@+id/share"
+                android:layout_width="@dimen/share_icon_width"
+                android:layout_height="@dimen/share_icon_width"
+                android:layout_marginTop="@dimen/share_top_margin"
+                android:layout_marginRight="@dimen/share_right_margin"
                 android:gravity="center_vertical"
+                android:background="@drawable/share_selector"
                 android:layout_alignParentRight="true">
-                <ImageView
-                        android:id="@+id/weather_icon"
-                        android:layout_width="@dimen/weather_icon_width"
-                        android:layout_height="@dimen/weather_icon_width"
-                        android:scaleType="centerInside"/>
-                <TextView
-                        android:id="@+id/address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/weather_icon"
-                        android:textSize="@dimen/weather_text_size"
-                        android:textColor="@color/text_grey_color"/>
-                <TextView
-                        android:id="@+id/temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/address"
-                        android:textSize="@dimen/weather_text_size"
-                        android:textColor="@color/text_grey_color"/>
-                <ImageView
-                        android:layout_toRightOf="@id/temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/temperature"
-                        android:visibility="gone"/>
-        </RelativeLayout>
+
+        </ImageView>
     <TextView
             android:id="@+id/music_type"
-            android:layout_below="@id/weather"
+            android:layout_below="@id/share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/music_type_margin_bottom"
-            android:layout_alignParentTop="@dimen/music_type_margin_top"
+            android:layout_marginTop="@dimen/music_type_margin_top"
             android:textSize="@dimen/music_type_size"
             android:textColor="@color/text_grey_color"
             android:layout_centerHorizontal="true"

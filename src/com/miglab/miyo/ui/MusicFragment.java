@@ -35,12 +35,11 @@ import java.util.List;
 public class MusicFragment extends PlayBaseFragment{
 
     private ImageView icon_player;
-    private ImageView icon_weather,cd_palyer;
+    private ImageView cd_palyer;
     private RelativeLayout ry_cd;
     private TextView tv_songName;
     private TextView tv_songType;
     private TextView tv_address;
-    private TextView tv_temperature;
     private TextView tv_chat;
 
     private List<ChatMsgInfo> list = new ArrayList<ChatMsgInfo>();
@@ -54,7 +53,6 @@ public class MusicFragment extends PlayBaseFragment{
     @Override
     protected void init() {
         super.init();
-        initWeather();
         animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0
                 ,Animation.RELATIVE_TO_SELF,0
                 ,Animation.RELATIVE_TO_SELF,0
@@ -71,32 +69,29 @@ public class MusicFragment extends PlayBaseFragment{
         tv_songType = (TextView) vRoot.findViewById(R.id.music_type);
         ry_cd = (RelativeLayout) vRoot.findViewById(R.id.music_player);
         icon_player = (ImageView) vRoot.findViewById(R.id.icon_player);
-        icon_weather = (ImageView) vRoot.findViewById(R.id.weather_icon);
         tv_address = (TextView) vRoot.findViewById(R.id.address);
-        tv_temperature = (TextView) vRoot.findViewById(R.id.temperature);
         tv_chat = (TextView) vRoot.findViewById(R.id.chat);
         cd_palyer = (ImageView) vRoot.findViewById(R.id.cd_palyer);
-        cd_palyer.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
+//        cd_palyer.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                SharePopwindow p = new SharePopwindow(mainActivity);
+//                p.showAtLocation(vRoot, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                return true;
+//            }
+//        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case  R.id.share:
                 SharePopwindow p = new SharePopwindow(mainActivity);
                 p.showAtLocation(vRoot, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                return true;
-            }
-        });
-    }
+                break;
+        }
+        super.onClick(v);
 
-    private void initWeather() {
-        new GetWeatherTask(handler,
-                MiyoApplication.getInstance().getLocationUtil().getLatitude(),
-                MiyoApplication.getInstance().getLocationUtil().getLongitude()).execute();
-    }
-
-    private void displayWeather(String weather, String temp, String address) {
-        tv_temperature.setText(temp);
-        tv_address.setText(address);
-        int resID = getResources().getIdentifier(weather, "drawable", MiyoApplication.getInstance().getPackageName());
-        icon_weather.setImageResource(resID);
     }
 
     @Override
@@ -136,14 +131,6 @@ public class MusicFragment extends PlayBaseFragment{
     protected void doHandler(Message msg) {
         super.doHandler(msg);
         switch (msg.what) {
-            case ApiDefine.GET_WEATHER_SUCCESS:
-                JSONObject jResult = (JSONObject) msg.obj;
-                String weather = jResult.optString("weather");
-                String temp = jResult.optString("temp");
-                String address = jResult.optString("city");
-                weather.replace("-","_");
-                displayWeather(weather.toLowerCase(), temp, address);
-                break;
             case ApiDefine.GET_CHAT_SUCCESS:
                 if(list != null && list.size() > 0) {
                     list.clear();
