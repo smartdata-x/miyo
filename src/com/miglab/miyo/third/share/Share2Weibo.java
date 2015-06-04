@@ -16,19 +16,29 @@ import com.sina.weibo.sdk.utils.Utility;
  * Created by tudou on 2015/5/31.
  */
 public class Share2Weibo extends Share{
+
+
     public IWeiboShareAPI iWeiboShareAPI;
     public Share2Weibo(Activity ac, SongInfo songInfo) {
         super(ac, songInfo);
     }
 
-    @Override
-    public void share() {
+    public void setiWeiboShareAPI(IWeiboShareAPI iWeiboShareAPI) {
+        this.iWeiboShareAPI = iWeiboShareAPI;
+    }
+
+    private void initWeiboAPI() {
         iWeiboShareAPI = WeiboShareSDK.createWeiboAPI(ac, Constants.WEIBO_APP_ID);
         iWeiboShareAPI.registerApp();
+        iWeiboShareAPI.handleWeiboResponse(ac.getIntent(), (WBShareActivity) ac);
+    }
+
+    @Override
+    public void share() {
         if (iWeiboShareAPI.isWeiboAppSupportAPI()) {
             int supportApi = iWeiboShareAPI.getWeiboAppSupportAPI();
             if (supportApi >= 10351 /*ApiUtils.BUILD_INT_VER_2_2*/) {
-                sendMultiMessage(true, false, false, true, true, true);
+                sendMultiMessage(true, true, false, true, true, true);
             }
         }else {
             Toast.makeText(ac, ac.getString(R.string.weibo_not_support_api), Toast.LENGTH_SHORT).show();
@@ -71,7 +81,7 @@ public class Share2Weibo extends Share{
         request.multiMessage = weiboMessage;
 
         // 3. 发送请求消息到微博，唤起微博分享界面
-        iWeiboShareAPI.sendRequest(ac, request);
+        iWeiboShareAPI.sendRequest((WBShareActivity)ac, request);
     }
 
     /**
@@ -88,10 +98,8 @@ public class Share2Weibo extends Share{
 
     private String getShareText() {
         String format;
-        String text = "";
         format = ac.getString(R.string.weibo_share_music_template);
-        text = String.format(format, title, appName);
-        return text;
+        return String.format(format, album, title, appName+"miyo");
     }
 
     /**
@@ -101,7 +109,7 @@ public class Share2Weibo extends Share{
      */
     private ImageObject getImageObj() {
         ImageObject imageObject = new ImageObject();
-        imageObject.setImageObject(((MainActivity)ac).getCurMusicBitmap());
+        imageObject.setImageObject(bitmap);
         return imageObject;
     }
 
@@ -113,11 +121,11 @@ public class Share2Weibo extends Share{
     private MusicObject getMusicObj() {
         MusicObject musicObject = new MusicObject();
         musicObject.identify = Utility.generateGUID();
-        musicObject.title = title;
+        musicObject.title = "";
         musicObject.description = summary;
-        musicObject.setThumbImage(((MainActivity) ac).getCurMusicBitmap());
+        musicObject.setThumbImage(bitmap);
 
-        musicObject.actionUrl = url;//"http://music.sina.com.cn/yueku/i/2850305.html";
+        musicObject.actionUrl = Constants.MIYO_JUMP_URL;//"http://music.sina.com.cn/yueku/i/2850305.html";
         musicObject.dataUrl = Constants.MIYO_JUMP_URL;
         musicObject.duration = 10;
 

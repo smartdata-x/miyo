@@ -294,6 +294,11 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
 
     public void setWeiboShareAPI(IWeiboShareAPI weiboShareAPI) {
         this.weiboShareAPI = weiboShareAPI;
+        weiboShareAPI.handleWeiboResponse(getIntent(), this);
+    }
+
+    public MusicType getMusicType() {
+        return musicType;
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{

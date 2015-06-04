@@ -1,6 +1,7 @@
 package com.miglab.miyo.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
                         break;
 
                 }
+                SharePopwindow.this.dismiss();
             }
         });
     }
@@ -94,6 +96,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
         if(songInfo == null)
             return;
         Share2Weixin share = new Share2Weixin(ac,songInfo);
+        share.bitmap = ac.getCurMusicBitmap();
         share.setReqScene(Share2Weixin.WEIXIN_SHARE);
         share.share();
     }
@@ -103,6 +106,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
         if(songInfo == null)
             return;
         Share2Weixin share = new Share2Weixin(ac,songInfo);
+        share.bitmap = ac.getCurMusicBitmap();
         share.setReqScene(Share2Weixin.FRIENDS_SHARE);
         share.share();
     }
@@ -111,9 +115,15 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
         SongInfo songInfo = ac.getSongInfo();
         if(songInfo == null)
             return;
-        Share2Weibo share = new Share2Weibo(ac,songInfo);
-        share.share();
-        ((MainActivity)ac).setWeiboShareAPI(share.iWeiboShareAPI);
+        Intent i = new Intent(ac,WBShareActivity.class);
+        i.putExtra("songInfo", songInfo);
+        i.putExtra("bitmap",ac.getCurMusicBitmap());
+        i.putExtra("album", ac.getMusicType().getName());
+        ac.startActivity(i);
+//        Share2Weibo share = new Share2Weibo(ac,songInfo);
+//        ac.setWeiboShareAPI(share.iWeiboShareAPI);
+//        share.share();
+
     }
 
     private class ShareAdapter extends BaseAdapter {

@@ -2,8 +2,10 @@ package com.miglab.miyo.third.share;
 
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import com.miglab.miyo.R;
 import com.miglab.miyo.entity.SongInfo;
+import com.miglab.miyo.ui.MainActivity;
 
 /**
  * Created by fanglei
@@ -16,6 +18,8 @@ public class Share {
     public String url;
     public String imgURL;
     public String appName;
+    public String album;
+    public Bitmap bitmap;
     protected Activity ac;
     public Share(Activity ac, SongInfo songInfo) {
         this.ac = ac;

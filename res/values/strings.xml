@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">咪呦</string>
+    <string name="app_name">咪哟</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="find_music">发现音乐</string>
@@ -37,9 +37,9 @@
     <string name="tucao">吐槽</string>
     <string name="score">评分</string>
     <string name="check_fro_update">版本更新</string>
-    <string name="about">条款</string>
+    <string name="about">条款&lt;xxx&gt;</string>
 
 
     <!-- 分享 -->
-    <string name="weibo_share_music_template">我正在听 %1$s（分享自 %2$s）</string>
+    <string name="weibo_share_music_template">分享一首[%1$s]单曲，&lt;%2$s&gt;（来自@%3$s）（#听对的音乐遇见对的人#）试听下载地址</string>
 </resources>
