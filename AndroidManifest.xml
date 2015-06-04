@@ -87,6 +87,8 @@
                 android:name="com.miglab.miyo.control.MusicService"
                 android:enabled="true" />
 
+        <meta-data
+                android:name="com.crashlytics.ApiKey"
+                android:value="13b0dd85b007ad78249b02fc26fa3972dff8da79" />
     </application>
-
 </manifest>

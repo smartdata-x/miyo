@@ -81,7 +81,7 @@ public class Share2Weibo extends Share{
         request.multiMessage = weiboMessage;
 
         // 3. 发送请求消息到微博，唤起微博分享界面
-        iWeiboShareAPI.sendRequest((WBShareActivity)ac, request);
+        iWeiboShareAPI.sendRequest(ac, request);
     }
 
     /**

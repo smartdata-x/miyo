@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.util.SparseArray;
+import com.crashlytics.android.Crashlytics;
 import com.miglab.miyo.third.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoaderConfiguration;
@@ -34,6 +34,7 @@ public class MiyoApplication extends Application {
         initImageLoader(getApplicationContext());
         instance = this;
         locationUtil = new LocationUtil(this);
+        Crashlytics.start(this);
     }
 
     public LocationUtil getLocationUtil(){
