@@ -8,6 +8,7 @@ import android.os.*;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 
+import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +18,10 @@ import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.constant.MessageWhat;
 import com.miglab.miyo.constant.MusicServiceDefine;
+import com.miglab.miyo.control.IPlayAction;
+import com.miglab.miyo.control.MusicManager;
 import com.miglab.miyo.control.MusicService;
+import com.miglab.miyo.control.PlayerReceiver;
 import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.entity.SongInfo;
 import com.miglab.miyo.net.CollectSongTask;
@@ -30,7 +34,6 @@ import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.constant.WBConstants;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +43,11 @@ import java.util.List;
  * Email: 412552696@qq.com
  * Date: 2015/5/8.
  */
-public class MainActivity extends FragmentActivity implements IWeiboHandler.Response{
+public class MainActivity extends FragmentActivity implements IWeiboHandler.Response, IPlayAction {
     private TextView findMusic;
     private TextView myFM;
     private ViewPager viewPager;
+    private DrawerLayout drawerLayout;
     private List<Fragment> fragmentList = new ArrayList<Fragment>();
 
     private MusicFragment musicFragment;
@@ -54,18 +58,12 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
 
     private MusicService musicService;
     private PlayerReceiver playerReceiver = null;
-    private SongInfo songInfo;// 记录正在播放的歌曲信息
-    private MusicType musicType;// 记录当前播放纬度
 
     private LoadingDialog loadingDialog;
 
-    private int select_R,select_G,select_B;
-    private int color_Dif_R,color_Dif_G,color_Dif_B;
+    private int select_R, select_G, select_B;
+    private int color_Dif_R, color_Dif_G, color_Dif_B;
     private IWeiboShareAPI weiboShareAPI;
-
-    public SongInfo getSongInfo() {
-        return songInfo;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +126,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
         color_Dif_B = Color.blue(titleUnselectColor) - select_B;
     }
 
-    private int getNewColor(float f){
+    private int getNewColor(float f) {
         int newR, newG, newB;
         newR = (int) (color_Dif_R * f) + select_R;
         newG = (int) (color_Dif_G * f) + select_G;
@@ -159,6 +157,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
 
     private void initViews() {
         setContentView(R.layout.ac_main);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         findMusic = (TextView) findViewById(R.id.title_find_music);
         myFM = (TextView) findViewById(R.id.title_my_fm);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
@@ -170,8 +169,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
     }
 
 
-
-    private ViewPager.OnPageChangeListener myPageListener = new ViewPager.OnPageChangeListener(){
+    private ViewPager.OnPageChangeListener myPageListener = new ViewPager.OnPageChangeListener() {
         /**
          *
          * @param position 当前视图前面 一个view 的位置
@@ -180,7 +178,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
          */
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            if(positionOffsetPixels != 0) {
+            if (positionOffsetPixels != 0) {
                 findMusic.setTextColor(getNewColor(positionOffset));
                 myFM.setTextColor(getNewColor(1 - positionOffset));
             }
@@ -188,10 +186,10 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
 
         @Override
         public void onPageSelected(int i) {
-            if(i == 0){
+            if (i == 0) {
                 findMusic.setSelected(true);
                 myFM.setSelected(false);
-            }else{
+            } else {
                 findMusic.setSelected(false);
                 myFM.setSelected(true);
             }
@@ -212,22 +210,23 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
     }
 
     public void collectMusic() {
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
+        MusicType musicType = MusicManager.getInstance().getMusicType();
         if (songInfo == null || musicType == null)
             return;
         //收藏歌曲
         if (songInfo.like == 0) {
             new CollectSongTask(handler, songInfo, musicType).execute();
-            songInfo.like = -2;
         }
         //取消收藏
         if (songInfo.like == 1) {
             new DelCollectSongTask(handler, songInfo).execute();
-            songInfo.like = -1;
         }
     }
 
     public void delMusic() {
         nextMusic();
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
         if (songInfo != null) {
             new DelSongTask(handler, songInfo).execute();
         }
@@ -248,15 +247,14 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
     }
 
     public void updateMusicType(MusicType music) {
-        this.musicType = music;
         saveMusicType(music);
-        musicFragment.updateMusicType(musicType);
-        fmFragment.updateMusicType(musicType);
+        musicFragment.updateMusicType();
+        fmFragment.updateMusicType();
     }
 
-    private void saveMusicType(MusicType musicType){
-        SharedPreferences preferences=getSharedPreferences("musictype",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=preferences.edit();
+    private void saveMusicType(MusicType musicType) {
+        SharedPreferences preferences = getSharedPreferences("musictype", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putString("dim", musicType.getDim());
         editor.putInt("sid", musicType.getId());
         editor.putString("name", musicType.getName());
@@ -265,7 +263,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
 
     public void showMusicFragment() {
         viewPager.setCurrentItem(0);
-        if(!loadingDialog.isShowing())
+        if (!loadingDialog.isShowing())
             loadingDialog.show();
     }
 
@@ -297,11 +295,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
         weiboShareAPI.handleWeiboResponse(getIntent(), this);
     }
 
-    public MusicType getMusicType() {
-        return musicType;
-    }
-
-    private class FragmentAdapter extends FragmentPagerAdapter{
+    private class FragmentAdapter extends FragmentPagerAdapter {
 
         public FragmentAdapter(FragmentManager fm) {
             super(fm);
@@ -326,6 +320,10 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                drawerLayout.closeDrawers();
+                return true;
+            }
             moveTaskToBack(false);
             return true;
         }
@@ -336,6 +334,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             musicService = ((MusicService.LocalService) service).getService();
+            MusicManager.getInstance().setMusicService(musicService);
         }
 
         @Override
@@ -358,7 +357,7 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
         if (playerReceiver == null) {
             IntentFilter filter = new IntentFilter(
                     MessageWhat.PLAY_BROADCAST_ACTION_NAME);
-            playerReceiver = new PlayerReceiver();
+            playerReceiver = new PlayerReceiver(this);
             registerReceiver(playerReceiver, filter);
         }
     }
@@ -373,74 +372,125 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
         }
     }
 
-    class PlayerReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
+    //    class PlayerReceiver extends BroadcastReceiver {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            Bundle bundle = intent.getExtras();
+//
+//            int commend = bundle.getInt(MusicServiceDefine.PLAY_WHAT);
+//            if (commend <= 0) {
+//                Toast.makeText(MainActivity.this, "播放出错", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            switch (commend) {
+//                case MusicServiceDefine.ALBUN_NULL:
+//                    Toast.makeText(MainActivity.this, "电台没有音乐", Toast.LENGTH_SHORT).show();
+//                    break;
+//
+//                case MusicServiceDefine.MUSIC_CHANGE:
+//                    if (bundle.containsKey(MusicServiceDefine.PLAY_INFO)) {
+//                        SongInfo info = (SongInfo) bundle
+//                                .getSerializable(MusicServiceDefine.PLAY_INFO);
+//                        if (info != null) {
+//                            songInfo = info;
+//                            musicFragment.updateHeartMusic(songInfo.like == 1);
+//                            fmFragment.updateHeartMusic(songInfo.like == 1);
+//                            musicFragment.updateMusicName(songInfo.artist + "-" + songInfo.name);
+//                            musicFragment.updatePicInfo(songInfo.pic);
+//                            fmFragment.updatePicInfo(songInfo.pic);
+//                        }
+//
+//                        MusicType musicType = (MusicType) bundle.getSerializable(MusicServiceDefine.PLAY_PARAM1);
+//                        updateMusicType(musicType);
+//                    }
+//                    break;
+//
+//                case MusicServiceDefine.MUSIC_PREPARE:
+//                    int time1 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
+//                    musicFragment.playPrepare(time1);
+//                    fmFragment.playPrepare(time1);
+//                    break;
+//
+//                case MusicServiceDefine.MUSIC_PLAYING:
+//                    int time2 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
+//                    musicFragment.playTimeUpdate(time2);
+//                    fmFragment.playTimeUpdate(time2);
+//                    break;
+//
+//                case MusicServiceDefine.ACTIVITY_CLOSE:
+//                    break;
+//                case MusicServiceDefine.UPDATE_LIST_SUCCESS:
+//                    if(loadingDialog.isShowing())
+//                        loadingDialog.dismiss();
+//                    break;
+//                case MusicServiceDefine.UPDATE_LIST_NONE:
+//                    if(loadingDialog.isShowing())
+//                        loadingDialog.dismiss();
+//                    Toast.makeText(MainActivity.this,getString(R.string.no_music),Toast.LENGTH_SHORT).show();
+//                    break;
+//                case MusicServiceDefine.STOP_TO_NEXT:
+//                    //切换到下一首时，对当前播放歌曲界面处理
+//                    musicFragment.updatePicInfo(null);
+//                    fmFragment.updatePicInfo(null);
+//                    musicFragment.setProgress(0);
+//                    fmFragment.setProgress(0);
+//                    musicFragment.updateMusicState(true);
+//                    fmFragment.updateMusicState(true);
+//                    break;
+//            }
+//        }
+//    }
+    @Override
+    public void albumNull() {
+        Toast.makeText(MainActivity.this, "电台没有音乐", Toast.LENGTH_SHORT).show();
+    }
 
-            int commend = bundle.getInt(MusicServiceDefine.PLAY_WHAT);
-            if (commend <= 0) {
-                Toast.makeText(MainActivity.this, "播放出错", Toast.LENGTH_SHORT).show();
-                return;
-            }
+    @Override
+    public void musicChange() {
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
+        musicFragment.updateHeartMusic(songInfo.like == 1);
+        fmFragment.updateHeartMusic(songInfo.like == 1);
+        musicFragment.updateMusicName(songInfo.artist + "-" + songInfo.name);
+        musicFragment.updatePicInfo(songInfo.pic);
+        fmFragment.updatePicInfo(songInfo.pic);
+        MusicType musicType = MusicManager.getInstance().getMusicType();
+        updateMusicType(musicType);
+    }
 
-            switch (commend) {
-                case MusicServiceDefine.ALBUN_NULL:
-                    Toast.makeText(MainActivity.this, "电台没有音乐", Toast.LENGTH_SHORT).show();
-                    break;
+    @Override
+    public void musicPrepare(int time) {
+        musicFragment.playPrepare(time);
+        fmFragment.playPrepare(time);
+    }
 
-                case MusicServiceDefine.MUSIC_CHANGE:
-                    if (bundle.containsKey(MusicServiceDefine.PLAY_INFO)) {
-                        SongInfo info = (SongInfo) bundle
-                                .getSerializable(MusicServiceDefine.PLAY_INFO);
-                        if (info != null) {
-                            songInfo = info;
-                            musicFragment.updateHeartMusic(songInfo.like == 1);
-                            fmFragment.updateHeartMusic(songInfo.like == 1);
-                            musicFragment.updateMusicName(songInfo.artist + "-" + songInfo.name);
-                            musicFragment.updatePicInfo(songInfo.pic);
-                            fmFragment.updatePicInfo(songInfo.pic);
-                        }
+    @Override
+    public void musicPlaying(int time) {
+        musicFragment.playTimeUpdate(time);
+        fmFragment.playTimeUpdate(time);
+    }
 
-                        MusicType musicType = (MusicType) bundle.getSerializable(MusicServiceDefine.PLAY_PARAM1);
-                        updateMusicType(musicType);
-                    }
-                    break;
+    @Override
+    public void updateListSuccess() {
+        if (loadingDialog.isShowing())
+            loadingDialog.dismiss();
+    }
 
-                case MusicServiceDefine.MUSIC_PREPARE:
-                    int time1 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
-                    musicFragment.playPrepare(time1);
-                    fmFragment.playPrepare(time1);
-                    break;
+    @Override
+    public void updateListNone() {
+        if (loadingDialog.isShowing())
+            loadingDialog.dismiss();
+        Toast.makeText(MainActivity.this, getString(R.string.no_music), Toast.LENGTH_SHORT).show();
+    }
 
-                case MusicServiceDefine.MUSIC_PLAYING:
-                    int time2 = bundle.getInt(MusicServiceDefine.PLAY_PARAM1);
-                    musicFragment.playTimeUpdate(time2);
-                    fmFragment.playTimeUpdate(time2);
-                    break;
-
-                case MusicServiceDefine.ACTIVITY_CLOSE:
-                    break;
-                case MusicServiceDefine.UPDATE_LIST_SUCCESS:
-                    if(loadingDialog.isShowing())
-                        loadingDialog.dismiss();
-                    break;
-                case MusicServiceDefine.UPDATE_LIST_NONE:
-                    if(loadingDialog.isShowing())
-                        loadingDialog.dismiss();
-                    Toast.makeText(MainActivity.this,getString(R.string.no_music),Toast.LENGTH_SHORT).show();
-                    break;
-                case MusicServiceDefine.STOP_TO_NEXT:
-                    //切换到下一首时，对当前播放歌曲界面处理
-                    musicFragment.updatePicInfo(null);
-                    fmFragment.updatePicInfo(null);
-                    musicFragment.setProgress(0);
-                    fmFragment.setProgress(0);
-                    musicFragment.updateMusicState(true);
-                    fmFragment.updateMusicState(true);
-                    break;
-            }
-        }
+    @Override
+    public void stopToNext() {
+        musicFragment.updatePicInfo(null);
+        fmFragment.updatePicInfo(null);
+        musicFragment.setProgress(0);
+        fmFragment.setProgress(0);
+        musicFragment.updateMusicState(true);
+        fmFragment.updateMusicState(true);
     }
 
     public static class UIHandler extends Handler {
@@ -466,8 +516,8 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
             case ApiDefine.GET_COLLECT_SONG_SUCCESS:
                 SongInfo songTemp1 = (SongInfo) msg.obj;
                 Toast.makeText(MainActivity.this, songTemp1.name + " 收藏成功", Toast.LENGTH_SHORT).show();
-                if (songTemp1.id == songInfo.id) {
-                    songInfo.like = 1;
+                if (songTemp1.id == MusicManager.getInstance().getSongInfo().id) {
+                    MusicManager.getInstance().getSongInfo().like = 1;
                     musicFragment.updateHeartMusic(true);
                     fmFragment.updateHeartMusic(true);
 
@@ -481,13 +531,13 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
                 SongInfo songTemp2 = (SongInfo) msg.obj;
                 Toast.makeText(this, songTemp2.name + " 取消收藏成功", Toast.LENGTH_SHORT).show();
                 //如果当前在我的红心歌单，则切到下一首同时删除该曲目
-                if(musicType.getId() == MiyoUser.getInstance().getUserId()){
+                if (MusicManager.getInstance().getMusicType().getId() == MiyoUser.getInstance().getUserId()) {
                     nextMusic();
                     delLocateMusic(songTemp2);
 
                 }
-                if (songTemp2.id == songInfo.id) {
-                    songInfo.like = 0;
+                if (songTemp2.id == MusicManager.getInstance().getSongInfo().id) {
+                    MusicManager.getInstance().getSongInfo().like = 0;
                     musicFragment.updateHeartMusic(false);
                     fmFragment.updateHeartMusic(false);
                 }

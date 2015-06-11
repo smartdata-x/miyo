@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
 import com.miglab.miyo.R;
+import com.miglab.miyo.control.MusicManager;
 import com.miglab.miyo.entity.SongInfo;
 import com.miglab.miyo.third.share.*;
 import com.miglab.miyo.util.DisplayUtil;
@@ -76,7 +77,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
     }
 
     private void qqShare() {
-        SongInfo songInfo = ac.getSongInfo();
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
         if(songInfo == null)
             return;
         Share share = new Share2QQ(ac,songInfo);
@@ -84,7 +85,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
     }
 
     private void qqZoneShare() {
-        SongInfo songInfo = ac.getSongInfo();
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
         if(songInfo == null)
             return;
         Share share = new Share2QQZone(ac,songInfo);
@@ -92,7 +93,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
     }
 
     private void weixinShare() {
-        SongInfo songInfo = ac.getSongInfo();
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
         if(songInfo == null)
             return;
         Share2Weixin share = new Share2Weixin(ac,songInfo);
@@ -102,7 +103,7 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
     }
 
     private void friendsShare() {
-        SongInfo songInfo = ac.getSongInfo();
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
         if(songInfo == null)
             return;
         Share2Weixin share = new Share2Weixin(ac,songInfo);
@@ -112,13 +113,13 @@ public class SharePopwindow extends PopupWindow implements View.OnClickListener{
     }
 
     private void weiboShare() {
-        SongInfo songInfo = ac.getSongInfo();
+        SongInfo songInfo = MusicManager.getInstance().getSongInfo();
         if(songInfo == null)
             return;
         Intent i = new Intent(ac,WBShareActivity.class);
         i.putExtra("songInfo", songInfo);
         i.putExtra("bitmap",ac.getCurMusicBitmap());
-        i.putExtra("album", ac.getMusicType().getName());
+        i.putExtra("album", MusicManager.getInstance().getMusicType().getName());
         ac.startActivity(i);
 //        Share2Weibo share = new Share2Weibo(ac,songInfo);
 //        ac.setWeiboShareAPI(share.iWeiboShareAPI);

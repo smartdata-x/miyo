@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/control/MusicService.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/third/share/Share2Weibo.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/third/share/Share2Weixin.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/ui/FMFragment.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/ui/LoginActivity.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/ui/MusicFragment.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/ui/SharePopwindow.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/ui/MessageActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/miglab/miyo/ui/UserFragment.java" charset="UTF-8" />
   </component>
 </project>

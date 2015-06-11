@@ -16,6 +16,7 @@ import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
 
+import com.miglab.miyo.control.MusicManager;
 import com.miglab.miyo.entity.ChatMsgInfo;
 import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.net.GetWeatherTask;
@@ -100,7 +101,8 @@ public class MusicFragment extends PlayBaseFragment{
         icon_player.setVisibility(View.GONE);
     }
 
-    public void updateMusicType(MusicType musicType) {
+    public void updateMusicType() {
+        MusicType musicType = MusicManager.getInstance().getMusicType();
         tv_songType.setText(musicType.getName());
         new GetChatDataTask(handler,musicType).execute();
     }
@@ -113,11 +115,11 @@ public class MusicFragment extends PlayBaseFragment{
     public void updateMusicState(boolean bPause) {
         super.updateMusicState(bPause);
         if (bPause) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                anim.pause();
-            } else {
-                anim.cancel();
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                anim.pause();
+//            } else {
+//                anim.cancel();
+//            }
             icon_player.setVisibility(View.VISIBLE);
         } else {
             icon_player.setVisibility(View.GONE);

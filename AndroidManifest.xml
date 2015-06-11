@@ -82,6 +82,8 @@
                   android:exported="true"
                   android:launchMode="singleTop"
                   android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name=".ui.MessageActivity"/>
+        <activity android:name=".ui.TucaoActivity"/>
 
         <service
                 android:name="com.miglab.miyo.control.MusicService"

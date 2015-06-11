@@ -59,7 +59,7 @@ public class PlayBaseFragment extends BaseFragment implements View.OnClickListen
 
     private void initDisplayImageOptions() {
         options = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
+                .cacheInMemory(true)
                 .cacheOnDisk(false)
                 .considerExifParams(false)
                 .showImageForEmptyUri(R.drawable.music_default_cd)

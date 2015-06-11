@@ -10,6 +10,7 @@ import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.adapter.MusicTypeAdapter;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
+import com.miglab.miyo.control.MusicManager;
 import com.miglab.miyo.entity.MusicType;
 import com.miglab.miyo.net.GetMusicType;
 import org.json.JSONArray;
@@ -94,7 +95,8 @@ public class FMFragment extends PlayBaseFragment {
         });
     }
 
-    public void updateMusicType(MusicType musicType){
+    public void updateMusicType(){
+        MusicType musicType = MusicManager.getInstance().getMusicType();
         this.musicType = musicType;
         if(adapter != null){
             initPosition();
@@ -136,7 +138,7 @@ public class FMFragment extends PlayBaseFragment {
 
     private void initPosition() {
         if(musicType == null)
-            return;;
+            return;
         int pos = -1;
         if(list != null && list.size() > 0){
             for(MusicType m : list){

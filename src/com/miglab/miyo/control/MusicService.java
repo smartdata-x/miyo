@@ -42,6 +42,9 @@ public class MusicService extends Service implements AudioControllerListener{
     private AudioController audioController;
     private final LocalService localService = new LocalService();
 
+    public int getTotalTime() {
+        return totalTime;
+    }
 
 
     public class LocalService extends Binder {
