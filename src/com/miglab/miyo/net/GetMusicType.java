@@ -27,8 +27,12 @@ public class GetMusicType extends BaseTask{
     }
 
     @Override
-    protected boolean parseResult(JSONObject jresult) {
-        handler.sendMessage(handler.obtainMessage(ApiDefine.GET_MUSIC_TYPE_SUCCESS, jresult));
+    protected boolean preResult(JSONObject json) {
+        int status = json.optInt("status");
+        if(status == 1) {
+            JSONObject jresult = json.optJSONObject("result");
+            handler.sendMessage(handler.obtainMessage(ApiDefine.GET_MUSIC_TYPE_SUCCESS, jresult));
+        }
         return true;
     }
 }

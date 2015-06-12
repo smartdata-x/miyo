@@ -28,7 +28,8 @@ public class GetWeatherTask extends BaseTask {
     }
 
     @Override
-    protected boolean parseResult(JSONObject jresult) {
+    protected boolean preResult(JSONObject json) {
+        super.preResult(json);
         handler.sendMessage(handler.obtainMessage(ApiDefine.GET_WEATHER_SUCCESS, jresult));
         return true;
     }

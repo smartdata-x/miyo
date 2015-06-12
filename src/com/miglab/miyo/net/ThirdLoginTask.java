@@ -46,7 +46,8 @@ public class ThirdLoginTask extends BaseTask {
 	}
 
 	@Override
-	protected boolean parseResult(JSONObject jresult) {
+	protected boolean preResult(JSONObject json) {
+		super.preResult(json);
         MiyoUser user = MiyoUser.getInstance();
         user.loginSet(jresult.optJSONObject("userinfo"));
         handler.sendEmptyMessage(ApiDefine.GET_SUCCESS);

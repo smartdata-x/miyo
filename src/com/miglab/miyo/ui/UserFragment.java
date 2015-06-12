@@ -117,6 +117,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
                 },2000);
                 break;
             case R.id.ry_about:
+                startActivity(new Intent(ac,AboutActivity.class));
                 break;
         }
     }

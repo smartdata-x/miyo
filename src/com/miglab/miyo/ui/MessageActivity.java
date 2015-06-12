@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,16 +22,20 @@ import com.miglab.miyo.control.MusicManager;
 import com.miglab.miyo.control.MusicService;
 import com.miglab.miyo.control.PlayerReceiver;
 import com.miglab.miyo.entity.MusicType;
+import com.miglab.miyo.entity.PushMessageInfo;
 import com.miglab.miyo.entity.SongInfo;
 import com.miglab.miyo.net.CollectSongTask;
 import com.miglab.miyo.net.DelCollectSongTask;
 import com.miglab.miyo.net.DelSongTask;
+import com.miglab.miyo.net.GetMessageTask;
 import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
 import com.miglab.miyo.third.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.miglab.miyo.ui.widget.RoundImageView;
 import com.miglab.miyo.ui.widget.RoundProgressBar;
 import com.miglab.miyo.util.DisplayUtil;
+
+import java.util.List;
 
 /**
  * Created by fanglei
@@ -49,6 +52,7 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
     protected ObjectAnimator anim;
     private DisplayImageOptions options;
     private PlayerReceiver playerReceiver = null;
+    private List<PushMessageInfo> list;
     @Override
     protected void init() {
         setContentView(R.layout.ac_message);
@@ -57,6 +61,11 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         initAnim();
         registerPlayerReceiver();
         initMusicPre();
+        initMessage();
+    }
+
+    private void initMessage() {
+        new GetMessageTask(uiHandler).execute();
     }
 
     private void initMusicPre() {
@@ -73,7 +82,7 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         iv_heart = (ImageView) findViewById(R.id.heart_music);
         parent = (RelativeLayout) findViewById(R.id.parent);
         listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(new MessageAdapter(this));
+//        listView.setAdapter(new MessageAdapter(this));
         DisplayUtil.setViewListener(vRoot, this);
     }
 
@@ -309,6 +318,12 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
                     updateHeartMusic(false);
                 }
                 break;
+            case ApiDefine.GET_MESSAGE_SUCCESS:
+                list = (List<PushMessageInfo>) msg.obj;
+                listView.setAdapter(new MessageAdapter(this,list));
+                break;
         }
     }
+
+
 }

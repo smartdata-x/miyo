@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/root"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/app_theme"
+              android:fitsSystemWindows="true">
+    <include layout="@layout/ly_common_title"/>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#ebebeb">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/refresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/bottom"
+                >
+            <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@null"
+                    android:cacheColorHint="@color/transparent"
+                    android:scrollbarStyle="outsideOverlay"
+                    android:listSelector="@null">
+
+            </ListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+                android:id="@+id/bottom"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:text="加入讨论"
+                android:gravity="center"
+                android:textColor="@color/text_grey_color"
+                android:background="@color/white"/>
+    </RelativeLayout>
+</LinearLayout>

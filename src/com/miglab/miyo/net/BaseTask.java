@@ -10,7 +10,7 @@ import org.json.JSONObject;
 //todo
 public class BaseTask extends AsyncTask<Void, Void, Void> {
 	protected Handler handler;
-
+	protected JSONObject jresult;
 	protected void init(Handler handler) {
 		this.handler = handler;
 	}
@@ -36,18 +36,6 @@ public class BaseTask extends AsyncTask<Void, Void, Void> {
 			try {
 				JSONObject json = new JSONObject(request);
 				preResult(json);
-				if (json != null) {
-					code = json.optInt("status");
-					if (code == 1) {
-						JSONObject jresult = json.optJSONObject("result");
-						if (jresult != null && parseResult(jresult)) {
-							return null;
-						}
-					}else if(code != 1){
-
-					}
-				}
-
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -71,11 +59,8 @@ public class BaseTask extends AsyncTask<Void, Void, Void> {
 		return false;
 	}
 
-	protected boolean parseResult(JSONObject jresult) {
-		return false;
-	}
-
-	protected boolean preResult(JSONObject jresult) {
+	protected boolean preResult(JSONObject json) {
+		jresult = json.optJSONObject("result");
 		return false;
 	}
 

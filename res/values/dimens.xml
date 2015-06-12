@@ -77,4 +77,5 @@
     <dimen name="message_head_width">60dp</dimen>
     <dimen name="message_head_margin">10dp</dimen>
     <dimen name="message_space">15dp</dimen>
+    <dimen name="about_bottom_text_space">14dp</dimen>
 </resources>

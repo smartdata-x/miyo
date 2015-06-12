@@ -5,29 +5,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.R;
-import com.miglab.miyo.control.MusicManager;
 import com.miglab.miyo.entity.PushMessageInfo;
 import com.miglab.miyo.third.universalimageloader.core.DisplayImageOptions;
 import com.miglab.miyo.third.universalimageloader.core.ImageLoader;
+import com.miglab.miyo.ui.widget.RoundImageView;
 
 import java.util.List;
 
 /**
  * Created by fanglei
  * Email: 412552696@qq.com
- * Date: 2015/6/11.
+ * Date: 2015/6/12.
  */
-public class MessageAdapter extends BaseAdapter {
-    private Activity ac;
+public class ChatListAdapter extends BaseAdapter {
     private List<PushMessageInfo> list;
+    private Activity ac;
+    private LayoutInflater mInflater;
     private DisplayImageOptions options;
 
-    public MessageAdapter(Activity ac,List<PushMessageInfo> list){
+    public ChatListAdapter(Activity ac, List<PushMessageInfo> list) {
         this.ac = ac;
         this.list = list;
+        mInflater = LayoutInflater.from(ac);
         initDisplayImageOptions();
     }
 
@@ -39,51 +41,48 @@ public class MessageAdapter extends BaseAdapter {
                 .showImageForEmptyUri(R.drawable.user_default)
                 .build();
     }
+
     @Override
     public int getCount() {
-        return list.size();
+        return 10;
     }
 
     @Override
     public Object getItem(int position) {
-        return list.get(position);
+        return null;
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        boolean isMe = position%2 == 0;
+        ViewHolder viewHolder = null;
         if(convertView == null || convertView.getTag() == null) {
-            holder = new ViewHolder();
-            convertView = holder.parent;
-            convertView.setTag(holder);
-        }else{
-            holder = (ViewHolder) convertView.getTag();
+            if(isMe) {
+                convertView = mInflater.inflate(R.layout.ly_chatlist_item_right, null);
+            } else {
+                convertView = mInflater.inflate(R.layout.ly_chatlist_item_left, null);
+            }
+            viewHolder = new ViewHolder();
+            viewHolder.tv_name = (TextView) convertView.findViewById(R.id.user_name);
+            viewHolder.tv_msg = (TextView) convertView.findViewById(R.id.user_msg);
+            viewHolder.iv_head = (RoundImageView) convertView.findViewById(R.id.user_icon);
         }
-        PushMessageInfo info = list.get(position);
-        if(info != null) {
-            holder.tv_msg.setText(info.detail.getMsg());
-            holder.tv_name.setText(info.userInfo.getNickname());
-            ImageLoader.getInstance().displayImage(info.userInfo.getHead(),holder.iv_head);
+        if(isMe) {
+            ImageLoader.getInstance().displayImage(MiyoUser.getInstance().getHeadUrl(),viewHolder.iv_head);
+            viewHolder.tv_name.setText(MiyoUser.getInstance().getNickname());
         }
         return convertView;
     }
 
-    private class ViewHolder {
-        public View parent;
+    static class ViewHolder {
         public TextView tv_name;
         public TextView tv_msg;
-        public ImageView iv_head;
-        public ViewHolder() {
-            parent = LayoutInflater.from(ac).inflate(R.layout.ly_message_item,null);
-            tv_name = (TextView) parent.findViewById(R.id.user_name);
-            tv_msg = (TextView) parent.findViewById(R.id.msg_content);
-            iv_head = (ImageView) parent.findViewById(R.id.head_icon);
-            parent.setTag(this);
-        }
+        public RoundImageView iv_head;
+        public boolean isComMsg = true;
     }
 }

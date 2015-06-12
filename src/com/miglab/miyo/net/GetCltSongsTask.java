@@ -27,7 +27,8 @@ public class GetCltSongsTask extends BaseTask {
 	}
 
 	@Override
-	protected boolean parseResult(JSONObject jresult) {
+	protected boolean preResult(JSONObject json) {
+		super.preResult(json);
 		ArrayList<SongInfo> list = new ArrayList<SongInfo>();
 		JSONArray array = jresult.optJSONArray("song");
 		if(array != null && array.length() > 0){

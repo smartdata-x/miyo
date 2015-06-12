@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+        android:clickable="true">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp">
+        <com.miglab.miyo.ui.widget.RoundImageView
+                android:id="@+id/user_icon"
+                android:layout_width="@dimen/message_head_width"
+                android:layout_height="@dimen/message_head_width"
+                android:layout_centerVertical="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/user_default"/>
+        <TextView
+                android:id="@+id/user_name"
+                style="@style/chat_list_item_name_style"
+                android:layout_marginLeft="10dp"
+                android:text="逗比1"
+                android:layout_toRightOf="@id/user_icon"/>
+
+        <TextView
+                android:id="@+id/user_msg"
+                style="@style/chat_list_item_name_style"
+                android:text="逗比1"
+                android:layout_toRightOf="@id/user_icon"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/user_name"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_chat_normal"/>
+    </RelativeLayout>
+
+</LinearLayout>

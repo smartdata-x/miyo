@@ -42,4 +42,8 @@
 
     <!-- 分享 -->
     <string name="weibo_share_music_template">分享一首[%1$s]单曲，&lt;%2$s&gt;（来自@%3$s）（#听对的音乐遇见对的人#）试听下载地址</string>
+    <string name="share_weixin">分享微信</string>
+    <string name="two_dimension_code">二维码</string>
+    <string name="question">常见问题</string>
+    <string name="company_copyright">Copyright 2013-2015 Miglab Team 版权所有</string>
 </resources>

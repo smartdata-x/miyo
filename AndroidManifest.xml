@@ -44,6 +44,9 @@
 
 
         <activity android:name=".ui.LoginActivity"/>
+        <activity android:name=".ui.MessageActivity"/>
+        <activity android:name=".ui.TucaoActivity"/>
+        <activity android:name=".ui.ChatActivity" />
 
         <!-- qq -->
         <activity android:name="com.tencent.connect.common.AssistActivity"
@@ -82,9 +85,7 @@
                   android:exported="true"
                   android:launchMode="singleTop"
                   android:theme="@android:style/Theme.Translucent"/>
-        <activity android:name=".ui.MessageActivity"/>
-        <activity android:name=".ui.TucaoActivity"/>
-
+        <activity android:name=".ui.AboutActivity"/>
         <service
                 android:name="com.miglab.miyo.control.MusicService"
                 android:enabled="true" />

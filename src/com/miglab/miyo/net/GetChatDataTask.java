@@ -33,7 +33,8 @@ public class GetChatDataTask extends BaseTask{
     }
 
     @Override
-    protected boolean parseResult(JSONObject jresult) {
+    protected boolean preResult(JSONObject json) {
+        super.preResult(json);
         List<ChatMsgInfo> list = (List<ChatMsgInfo>) BaseEntity.initWithsJsonObjects(ChatMsgInfo.class, jresult.optJSONArray("barrage"));
         handler.sendMessage(handler.obtainMessage(ApiDefine.GET_CHAT_SUCCESS, list));
         return true;

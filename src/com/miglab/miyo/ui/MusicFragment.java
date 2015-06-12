@@ -1,5 +1,6 @@
 package com.miglab.miyo.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -73,14 +74,6 @@ public class MusicFragment extends PlayBaseFragment{
         tv_address = (TextView) vRoot.findViewById(R.id.address);
         tv_chat = (TextView) vRoot.findViewById(R.id.chat);
         cd_palyer = (ImageView) vRoot.findViewById(R.id.cd_palyer);
-//        cd_palyer.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                SharePopwindow p = new SharePopwindow(mainActivity);
-//                p.showAtLocation(vRoot, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-//                return true;
-//            }
-//        });
     }
 
     @Override
@@ -89,6 +82,9 @@ public class MusicFragment extends PlayBaseFragment{
             case  R.id.share:
                 SharePopwindow p = new SharePopwindow(mainActivity);
                 p.showAtLocation(vRoot, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                break;
+            case R.id.chat:
+                startActivity(new Intent(ac,ChatActivity.class));
                 break;
         }
         super.onClick(v);
@@ -115,11 +111,6 @@ public class MusicFragment extends PlayBaseFragment{
     public void updateMusicState(boolean bPause) {
         super.updateMusicState(bPause);
         if (bPause) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                anim.pause();
-//            } else {
-//                anim.cancel();
-//            }
             icon_player.setVisibility(View.VISIBLE);
         } else {
             icon_player.setVisibility(View.GONE);

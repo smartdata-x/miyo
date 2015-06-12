@@ -39,7 +39,7 @@ public class RecordCurMusicTask extends BaseTask{
     }
 
     @Override
-    protected boolean parseResult(JSONObject jresult) {
-        return super.parseResult(jresult);
+    protected boolean preResult(JSONObject json) {
+        return super.preResult(json);
     }
 }

@@ -22,4 +22,6 @@
     <color name="bg_my_fm_item">#30ffffff</color>
     <color name="login_text_press">#66000000</color>
     <color name="bg_left_drawer">#383a53</color>
+    <color name="bg_color">#efeff4</color>
+    <color name="about_bottom_text_color">#556076</color>
 </resources>
