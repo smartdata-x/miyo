@@ -24,4 +24,6 @@
     <color name="bg_left_drawer">#383a53</color>
     <color name="bg_color">#efeff4</color>
     <color name="about_bottom_text_color">#556076</color>
+    <color name="emoticon_bar_btn_select">#d9d9d9</color>
+    <color name="emoticon_bar_btn_nomal">@color/white</color>
 </resources>

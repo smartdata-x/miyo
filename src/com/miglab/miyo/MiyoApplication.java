@@ -34,7 +34,7 @@ public class MiyoApplication extends Application {
         initImageLoader(getApplicationContext());
         instance = this;
         locationUtil = new LocationUtil(this);
-        Crashlytics.start(this);
+  //      Crashlytics.start(this);
     }
 
     public LocationUtil getLocationUtil(){

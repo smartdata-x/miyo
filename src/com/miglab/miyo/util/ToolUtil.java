@@ -1,5 +1,10 @@
 package com.miglab.miyo.util;
 
+import android.app.Activity;
+import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
 import java.security.MessageDigest;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -48,4 +53,6 @@ public class ToolUtil {
         }
         return md5Str;
     }
+
+
 }

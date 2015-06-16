@@ -1,52 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.miglab.miyo"
-    android:versionCode="1"
-    android:versionName="1.0" >
+          package="com.miglab.miyo"
+          android:versionCode="1"
+          android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="22" />
+            android:minSdkVersion="11"
+            android:targetSdkVersion="22"/>
     
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!-- 获取手机imei -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:name=".MiyoApplication"
-        android:allowBackup="true"
-        android:icon="@drawable/logo"
-        android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar">
+            android:name=".MiyoApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/logo"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar">
         <activity
-            android:name=".ui.StartActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                android:name=".ui.StartActivity"
+                android:label="@string/app_name">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".ui.MainActivity"
                   android:launchMode="singleTask"
-                  android:screenOrientation="portrait"/>
-        <intent-filter>
-            <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+                  android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
 
         <activity android:name=".ui.LoginActivity"/>
         <activity android:name=".ui.MessageActivity"/>
         <activity android:name=".ui.TucaoActivity"/>
-        <activity android:name=".ui.ChatActivity" />
+        <activity android:name=".ui.ChatActivity"/>
+        <activity android:name=".ui.TestChatActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <!-- qq -->
         <activity android:name="com.tencent.connect.common.AssistActivity"
@@ -56,12 +60,12 @@
         <activity
                 android:name="com.tencent.tauth.AuthActivity"
                 android:noHistory="true"
-                android:launchMode="singleTask" >
+                android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="tencent100525100" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="tencent100525100"/>
             </intent-filter>
         </activity>
         <!-- weibo -->
@@ -69,14 +73,14 @@
                   android:launchMode="singleTask"
                   android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
                   android:configChanges="keyboardHidden|orientation"
                   android:windowSoftInputMode="adjustResize"
-                  android:exported="false" >
+                  android:exported="false">
         </activity>
         <service android:name="com.sina.weibo.sdk.net.DownloadService"
                  android:exported="false"/>
@@ -88,10 +92,10 @@
         <activity android:name=".ui.AboutActivity"/>
         <service
                 android:name="com.miglab.miyo.control.MusicService"
-                android:enabled="true" />
+                android:enabled="true"/>
 
         <meta-data
                 android:name="com.crashlytics.ApiKey"
-                android:value="13b0dd85b007ad78249b02fc26fa3972dff8da79" />
+                android:value="13b0dd85b007ad78249b02fc26fa3972dff8da79"/>
     </application>
 </manifest>

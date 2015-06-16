@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+    <include
+            android:id="@+id/view_spit1"
+            layout="@layout/diver" />
+
+    <com.miglab.miyo.ui.widget.EmoticonViewPager
+        android:id="@+id/view_epv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view_eiv"
+        android:layout_below="@+id/view_spit1"
+        android:orientation="vertical"/>
+
+    <com.miglab.miyo.ui.widget.EmotionIndicatorView
+        android:id="@+id/view_eiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/view_spit2"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"/>
+
+
+    <include
+            android:id="@+id/view_spit2"
+            layout="@layout/diver" />
+
+    <com.miglab.miyo.ui.widget.EmoticonBarView
+        android:id="@+id/view_etv"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"/>
+</RelativeLayout>
