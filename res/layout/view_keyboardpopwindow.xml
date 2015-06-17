@@ -5,16 +5,18 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
-    <include
+    <ImageView
             android:id="@+id/view_spit1"
-            layout="@layout/diver" />
+            android:layout_height="@dimen/diver_height"
+            android:layout_width="match_parent"
+            android:background="@color/diver_color1"/>
 
     <com.miglab.miyo.ui.widget.EmoticonViewPager
         android:id="@+id/view_epv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/view_eiv"
         android:layout_below="@+id/view_spit1"
+        android:layout_above="@+id/view_eiv"
         android:orientation="vertical"/>
 
     <com.miglab.miyo.ui.widget.EmotionIndicatorView
@@ -27,9 +29,12 @@
         android:paddingBottom="10dp"/>
 
 
-    <include
+    <ImageView
             android:id="@+id/view_spit2"
-            layout="@layout/diver" />
+            android:layout_above="@+id/view_etv"
+            android:layout_height="@dimen/diver_height"
+            android:layout_width="match_parent"
+            android:background="@color/diver_color1"/>
 
     <com.miglab.miyo.ui.widget.EmoticonBarView
         android:id="@+id/view_etv"

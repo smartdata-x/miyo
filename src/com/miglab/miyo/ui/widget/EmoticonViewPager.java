@@ -6,9 +6,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import com.miglab.miyo.adapter.EmoticonAdapter;
@@ -44,11 +45,15 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
     public EmoticonViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
+        mHeight = DisplayUtil.getDisplayHeightPixels(context)/2;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        if(h == 0) {
+            return ;
+        }
         mHeight = h;
         EmoticonViewPager.this.post(new Runnable() {
             @Override
@@ -93,7 +98,7 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
                             if (mOnEmoticonViewPagerListener != null) {
                                 mOnEmoticonViewPagerListener.emoticonsViewPagerCountChanged(size);
                             }
-                            //ÉÏÒ»Ò³
+                            //ä¸Šä¸€é¡µ
                             if (mOldPagePosition - end >= size) {
                                 if (position - end >= 0) {
                                     if (mOnEmoticonViewPagerListener != null) {
@@ -108,7 +113,7 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
                                 break;
                             }
 
-                            // ÏÂÒ»Ò³
+                            // ä¸‹ä¸€é¡µ
                             if (mOldPagePosition - end < 0) {
                                 if (mOnEmoticonViewPagerListener != null) {
                                     mOnEmoticonViewPagerListener.playTo(0);
@@ -120,7 +125,7 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
                                 }
                                 break;
                             }
-                            // ±¾Ò³ÇÐ»»
+                            // æœ¬é¡µåˆ‡æ¢
                             if (mOnEmoticonViewPagerListener != null) {
                                 mOnEmoticonViewPagerListener.playBy(mOldPagePosition - end, position - end);
                             }
@@ -140,11 +145,9 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
         }
 
         int screenWidth = DisplayUtil.getDisplayWidthPixels(mContext);
-        int maxPagerHeight = mHeight;
 
         mEmoticonViews.clear();
         mEmoticonsViewPagerAdapter.notifyDataSetChanged();
-
         for (EmoticonPageInfo info : mEmoticonPageInfoList) {
             List<Emoticon> emoticonList = info.getEmoticonList();
             if (emoticonList != null) {
@@ -164,7 +167,8 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
                 gridParams.addRule(RelativeLayout.CENTER_VERTICAL);
                 int itemHeight = Math.min(
                         (screenWidth - (info.getRow() - 1) * DisplayUtil.dp2px(mContext, info.getHorizontalSpacing())) / info.getRow(),
-                        (maxPagerHeight - (info.getLine() - 1) * DisplayUtil.dp2px(mContext, info.getVerticalSpacing())) / info.getLine());
+                        (mHeight - (info.getLine() - 1) * DisplayUtil.dp2px(mContext, info.getVerticalSpacing())) / info.getLine());
+                Log.e("itemheight",":" + itemHeight);
                 for (int i = 0; i < pageCount; i++) {
                     RelativeLayout rl = new RelativeLayout(mContext);
                     GridView gridView = new GridView(mContext);
@@ -176,7 +180,6 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
                     gridView.setHorizontalSpacing(DisplayUtil.dp2px(mContext, info.getHorizontalSpacing()));
                     gridView.setVerticalSpacing(DisplayUtil.dp2px(mContext, info.getVerticalSpacing()));
                     gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-                    gridView.setGravity(Gravity.CENTER);
                     gridView.setVerticalScrollBarEnabled(false);
 
                     List<Emoticon> list = new ArrayList<Emoticon>();
@@ -184,13 +187,13 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
                         list.add(emoticonList.get(j));
                     }
 
-                    // É¾³ý°´Å¥
+                    // åˆ é™¤æŒ‰é’®
                     if (info.isShowDelBtn()) {
                         int count = info.getLine() * info.getRow();
                         while (list.size() < count - 1) {
                             list.add(null);
                         }
-                        list.add(new Emoticon(Emoticon.FACE_TYPE_DEL, "drawable://icon_del", null));
+                        list.add(new Emoticon(Emoticon.FACE_TYPE_DEL, "assets://icon_del.png", null));
                     } else {
                         int count = info.getLine() * info.getRow();
                         while (list.size() < count) {
@@ -277,14 +280,13 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+                 public Object instantiateItem(ViewGroup container, int position) {
             container.addView(mEmoticonViews.get(position));
             return mEmoticonViews.get(position);
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
             container.removeView((View) object);
         }
     }

@@ -22,7 +22,7 @@ import java.util.List;
  * Date: 2015/6/16.
  */
 public class EmoticonAdapter extends BaseAdapter {
-
+    public static final int EMOTICON_HEIGHT = 48; //表情图片大小48*48
     private LayoutInflater inflater;
     private Context mContext;
 
@@ -95,6 +95,8 @@ public class EmoticonAdapter extends BaseAdapter {
     public void setHeight(int height, int padding) {
         mItemHeight = height;
         mImgHeight = mItemHeight - padding;
+        if(mImgHeight > EMOTICON_HEIGHT)
+            mImgHeight = EMOTICON_HEIGHT;
         notifyDataSetChanged();
     }
 

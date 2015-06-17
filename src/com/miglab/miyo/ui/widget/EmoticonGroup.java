@@ -20,7 +20,6 @@ import com.miglab.miyo.util.DisplayUtil;
  */
 public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListener,IEmoticonKeyboard{
     public static int FUNC_CHILLDVIEW_EMOTICON = 0;
-    public static int FUNC_CHILLDVIEW_APPS = 1;
     public int mChildViewPosition = -1;
 
     private EmoticonViewPager mEmoticonViewPager;
@@ -89,7 +88,7 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
                     et_chat.setFocusableInTouchMode(true);
                     et_chat.requestFocus();
 
-                    // É¾³ý
+                    // åˆ é™¤
                     if (emoticon.eventType == Emoticon.FACE_TYPE_DEL) {
                         int action = KeyEvent.ACTION_DOWN;
                         int code = KeyEvent.KEYCODE_DEL;
@@ -97,7 +96,7 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
                         et_chat.onKeyDown(KeyEvent.KEYCODE_DEL, event);
                         return;
                     }
-                    // ÓÃ»§×Ô¶¨Òå
+                    // ç”¨æˆ·è‡ªå®šä¹‰
                     else if (emoticon.eventType == Emoticon.FACE_TYPE_USERDEF) {
                         return;
                     }
@@ -120,6 +119,13 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
             @Override
             public void onPageChangeTo(int position) {
                 mEmoticonBarView.setBarBtnSelect(position);
+            }
+        });
+
+        mEmoticonBarView.setOnToolBarItemClickListener(new EmoticonBarView.OnEmoticonBarClickListener() {
+            @Override
+            public void onEmoticonBarItemClick(int position) {
+                mEmoticonViewPager.setPageSelect(position);
             }
         });
         et_chat.setOnTouchListener(new View.OnTouchListener() {
@@ -162,7 +168,6 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
                 if (TextUtils.isEmpty(str)) {
                         btn_send.setBackgroundResource(R.drawable.btn_send_bg_disable);
                 }
-                // -> ·¢ËÍ
                 else {
                         btn_send.setBackgroundResource(R.drawable.btn_send_bg);
                 }
@@ -206,7 +211,8 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
     }
 
     public void add(View view){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
         ly_foot_func.addView(view, params);
     }
 

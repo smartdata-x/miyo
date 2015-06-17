@@ -1,9 +1,11 @@
 package com.miglab.miyo.util;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import com.miglab.miyo.entity.Emoticon;
 import com.miglab.miyo.entity.EmoticonPageInfo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,20 +109,28 @@ public class EmoticonUtil {
             "emoticon_88.png",
             "emoticon_89.png"
     };
-    public static List<EmoticonPageInfo> getEmoticonPageInfoList() {
-            List<EmoticonPageInfo> list = new ArrayList<>();
-            List<Emoticon> emoticonList = new ArrayList<>();
-            for(int i=0; i<faceString.length; i++){
-                    String s = faceString[i];
-                    Emoticon emoticon = new Emoticon(Emoticon.FACE_TYPE_NOMAL,"drawable://" + s,getEmoticonKey(s));
-                    emoticonList.add(emoticon);
-            }
-            EmoticonPageInfo info = new EmoticonPageInfo("经典",3,7,"drawable://icon_emoji","逗比", true, 3, 5, 5, emoticonList);
-            list.add(info);
-            return list;
-    }
+
 
         private static String getEmoticonKey(String s) {
                 return "[\\" + s.substring(s.indexOf("_")+1,s.indexOf(".")) + "]";
+        }
+
+        public static List<EmoticonPageInfo> getEmoticonPageInfoListFromAsset(Context con) {
+                List<EmoticonPageInfo> list = new ArrayList<>();
+                List<Emoticon> emoticonList = new ArrayList<>();
+                AssetManager assetManager = con.getAssets();
+                try {
+                       String[] faceString =  assetManager.list("face");
+                        for(int i=0; i<faceString.length; i++){
+                                String s = faceString[i];
+                                Emoticon emoticon = new Emoticon(Emoticon.FACE_TYPE_NOMAL,"assets://face/" + s,getEmoticonKey(s));
+                                emoticonList.add(emoticon);
+                        }
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+                EmoticonPageInfo info = new EmoticonPageInfo("经典",3,7,"assets://icon_emoji.png","逗比", true, 3, 5, 5, emoticonList);
+                list.add(info);
+                return list;
         }
 }

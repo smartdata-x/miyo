@@ -3,7 +3,9 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/white">
+              android:fitsSystemWindows="true"
+              android:background="@color/app_theme">
+    <include layout="@layout/ly_common_title"/>
     <com.miglab.miyo.ui.widget.EmoticonGroup
             android:id="@+id/emoticon_group"
             android:layout_width="match_parent"
@@ -12,6 +14,7 @@
         <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:background="@color/white"
                 android:orientation="vertical">
 
             <ListView

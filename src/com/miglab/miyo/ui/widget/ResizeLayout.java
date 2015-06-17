@@ -50,13 +50,13 @@ public class ResizeLayout extends RelativeLayout {
             int softHeight = mMaxParentHeight - newh;
              /*
              newh         oldh
-             500            max         -> µ¯Æğ                softKeyboard = max - 500
-             600            500         -> ËõĞ¡                softKeyboard = max - 600
-             500            600         -> À­Éì               softKeyboard = max - 500
-             max           500         -> ¹Ø±Õ               softKeyboard = 0
+             500            max         -> å¼¹èµ·                softKeyboard = max - 500
+             600            500         -> ç¼©å°                softKeyboard = max - 600
+             500            600         -> æ‹‰ä¼¸               softKeyboard = max - 500
+             max           500         -> å…³é—­               softKeyboard = 0
              */
             /**
-             * µ¯³öÈí¼üÅÌ
+             * å¼¹å‡ºè½¯é”®ç›˜
              */
             if (oldh == mMaxParentHeight) {
                 if (mListener != null) {
@@ -64,7 +64,7 @@ public class ResizeLayout extends RelativeLayout {
                 }
             }
             /**
-             * Òş²ØÈí¼üÅÌ
+             * éšè—è½¯é”®ç›˜
              */
             else if (newh == mMaxParentHeight) {
                 if (mListener != null) {
@@ -72,7 +72,7 @@ public class ResizeLayout extends RelativeLayout {
                 }
             }
             /**
-             * µ÷ÕûÈí¼üÅÌ¸ß¶È
+             * è°ƒæ•´è½¯é”®ç›˜é«˜åº¦
              */
             else {
                 if (mListener != null) {
@@ -107,13 +107,13 @@ public class ResizeLayout extends RelativeLayout {
 
     public interface OnResizeListener {
 
-        /** Èí¼üÅÌµ¯Æğ */
+        /** è½¯é”®ç›˜å¼¹èµ· */
         void OnSoftPop(int height);
 
-        /** Èí¼üÅÌ¹Ø±Õ */
+        /** è½¯é”®ç›˜å…³é—­ */
         void OnSoftClose(int height);
 
-        /** Èí¼üÅÌ¸ß¶È¸Ä±ä */
+        /** è½¯é”®ç›˜é«˜åº¦æ”¹å˜ */
         void OnSoftChanegHeight(int height);
     }
 }

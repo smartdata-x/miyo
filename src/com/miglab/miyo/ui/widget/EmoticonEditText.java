@@ -3,10 +3,15 @@ package com.miglab.miyo.ui.widget;
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 import com.miglab.miyo.entity.Emoticon;
+import com.miglab.miyo.util.EmoticonUtil;
 
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by fanglei
@@ -20,8 +25,7 @@ public class EmoticonEditText extends EditText {
     private int mItemWidth;
     private int mFontHeight;
 
-    private Map<String,Emoticon> faceMap = null;
-
+    private List<Emoticon> emoticonList = null;
     public EmoticonEditText(Context context) {
         super(context);
     }
@@ -29,14 +33,36 @@ public class EmoticonEditText extends EditText {
     public EmoticonEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        mFontHeight = getFontHeight();
+        mItemHeight = mFontHeight;
+        mItemWidth = mFontHeight;
 
-        if(faceMap == null) {
 
-        }
+
+
     }
 
     public EmoticonEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    @Override
+    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        Log.e("text", ":" + text);
+        Log.e("start",":" + start);
+        Log.e("lengthBefore",":" + lengthBefore);
+        Log.e("lengthAfter", ":" + lengthAfter);
+        if(lengthAfter > 0) {
+            int end = start + lengthAfter;
+            String key = text.toString().substring(start, end);
+            Pattern pattern = Pattern.compile("\\[\\\\\\d+\\]");
+            Log.e("key", ":" + key);
+            Matcher matcher = pattern.matcher(key);
+            boolean b = matcher.find();
+            Log.e("find", ":" + b);
+
+        }
     }
 
     @Override
