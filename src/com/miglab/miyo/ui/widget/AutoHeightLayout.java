@@ -15,15 +15,15 @@ import com.miglab.miyo.util.DisplayUtil;
  */
 public class AutoHeightLayout extends ResizeLayout implements ResizeLayout.OnResizeListener {
     private static final int ID_CHILD = 1;
-    public static final int KEYBOARD_STATE_NONE = 100;
-    public static final int KEYBOARD_STATE_FUNC = 102;
-    public static final int KEYBOARD_STATE_BOTH = 103;
+    public static final int EMOTICON_STATE_NONE = 100;
+    public static final int EMOTICON_STATE_FUNC = 102;
+    public static final int EMOTICON_STATE_BOTH = 103;
 
     protected Context mContext;
     protected int mAutoHeightLayoutId;
     protected int mAutoViewHeight;
     protected View mAutoHeightLayoutView;
-    protected int mKeyboardState = KEYBOARD_STATE_NONE;
+    protected int mKeyboardState = EMOTICON_STATE_NONE;
 
     public AutoHeightLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,7 +87,7 @@ public class AutoHeightLayout extends ResizeLayout implements ResizeLayout.OnRes
                 }
             }
         });
-        mKeyboardState = KEYBOARD_STATE_NONE ;
+        mKeyboardState = EMOTICON_STATE_NONE;
     }
 
     public void showAutoView(){
@@ -95,12 +95,12 @@ public class AutoHeightLayout extends ResizeLayout implements ResizeLayout.OnRes
             mAutoHeightLayoutView.setVisibility(VISIBLE);
             setAutoViewHeight(DisplayUtil.dp2px(mContext, mAutoViewHeight));
         }
-        mKeyboardState = mKeyboardState == KEYBOARD_STATE_NONE ? KEYBOARD_STATE_FUNC : KEYBOARD_STATE_BOTH ;
+        mKeyboardState = mKeyboardState == EMOTICON_STATE_NONE ? EMOTICON_STATE_FUNC : EMOTICON_STATE_BOTH;
     }
 
     @Override
     public void OnSoftPop(final int height) {
-        mKeyboardState = KEYBOARD_STATE_BOTH;
+        mKeyboardState = EMOTICON_STATE_BOTH;
         post(new Runnable() {
             @Override
             public void run() {
@@ -111,7 +111,7 @@ public class AutoHeightLayout extends ResizeLayout implements ResizeLayout.OnRes
 
     @Override
     public void OnSoftClose(int height) {
-        mKeyboardState = mKeyboardState == KEYBOARD_STATE_BOTH ? KEYBOARD_STATE_FUNC : KEYBOARD_STATE_NONE ;
+        mKeyboardState = mKeyboardState == EMOTICON_STATE_BOTH ? EMOTICON_STATE_FUNC : EMOTICON_STATE_NONE;
     }
 
     @Override

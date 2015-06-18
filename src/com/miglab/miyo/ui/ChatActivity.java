@@ -8,13 +8,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.*;
 import com.miglab.miyo.R;
 import com.miglab.miyo.adapter.ChatListAdapter;
-import com.miglab.miyo.entity.PushMessageInfo;
+import com.miglab.miyo.entity.SocChatMsg;
 import com.miglab.miyo.ui.widget.EmoticonGroup;
 import com.miglab.miyo.ui.widget.EmoticonKeyboardBuilder;
 import com.miglab.miyo.util.EmoticonUtil;
@@ -27,10 +28,9 @@ import java.util.*;
  * Email: 412552696@qq.com
  * Date: 2015/6/12.
  */
-public class ChatActivity extends FragmentActivity implements View.OnClickListener{
+public class ChatActivity extends FragmentActivity implements View.OnClickListener,EmoticonGroup.KeyBoardBarViewListener {
     private ListView chatListView;
     private SwipeRefreshLayout swipeRefreshLayout;
-
     private TextView tv_joinChat;
     private TextView tv_title;
     private ImageView iv_back;
@@ -38,6 +38,9 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
     private EmoticonGroup emoticonGroup;
 
     private RightFragment rightFragment;
+
+    private ChatListAdapter chatListAdapter;
+    private int curSelection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +99,8 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
         iv_back.setOnClickListener(this);
         tv_joinChat.setOnClickListener(this);
         initEmoticon();
-
-        chatListView.setAdapter(new ChatListAdapter(this, new ArrayList<PushMessageInfo>()));
+        chatListAdapter = new ChatListAdapter(this, new ArrayList<SocChatMsg>());
+        chatListView.setAdapter(chatListAdapter);
     }
 
     private void initEmoticon() {
@@ -106,6 +109,7 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
                 .setEmoticonPageInfoList(EmoticonUtil.getEmoticonPageInfoListFromAsset(this))
                 .build();
         emoticonGroup.setBuilder(builder);
+        emoticonGroup.setOnKeyBoardBarViewListener(this);
     }
 
     @Override
@@ -120,6 +124,25 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
                 finish();
                 break;
         }
+    }
+
+    @Override
+    public void OnKeyBoardStateChange(int state, int height) {
+
+    }
+
+    //todo 发送消息
+    @Override
+    public void OnSendBtnClick(String msg) {
+        if(!TextUtils.isEmpty(msg)){
+            SocChatMsg socChatMsg = new SocChatMsg();
+            socChatMsg.setMsg(msg);
+            socChatMsg.setIsMe(true);
+            chatListAdapter.addData(socChatMsg, true, false);
+            curSelection = chatListAdapter.getCount();
+            chatListView.setSelection(curSelection);
+        }
+        emoticonGroup.clearEditText();
     }
 
     public static class UIHandler extends Handler {

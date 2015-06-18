@@ -4,7 +4,7 @@ import android.os.Handler;
 import com.miglab.miyo.MiyoUser;
 import com.miglab.miyo.constant.ApiDefine;
 import com.miglab.miyo.entity.BaseEntity;
-import com.miglab.miyo.entity.ChatMsgInfo;
+import com.miglab.miyo.entity.SimpleMsgInfo;
 import com.miglab.miyo.entity.MusicType;
 import org.json.JSONObject;
 
@@ -35,7 +35,7 @@ public class GetChatDataTask extends BaseTask{
     @Override
     protected boolean preResult(JSONObject json) {
         super.preResult(json);
-        List<ChatMsgInfo> list = (List<ChatMsgInfo>) BaseEntity.initWithsJsonObjects(ChatMsgInfo.class, jresult.optJSONArray("barrage"));
+        List<SimpleMsgInfo> list = (List<SimpleMsgInfo>) BaseEntity.initWithsJsonObjects(SimpleMsgInfo.class, jresult.optJSONArray("barrage"));
         handler.sendMessage(handler.obtainMessage(ApiDefine.GET_CHAT_SUCCESS, list));
         return true;
     }

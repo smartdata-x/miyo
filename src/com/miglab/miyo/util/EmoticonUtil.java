@@ -2,10 +2,13 @@ package com.miglab.miyo.util;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import com.miglab.miyo.entity.Emoticon;
 import com.miglab.miyo.entity.EmoticonPageInfo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,5 +135,24 @@ public class EmoticonUtil {
                 EmoticonPageInfo info = new EmoticonPageInfo("经典",3,7,"assets://icon_emoji.png","逗比", true, 3, 5, 5, emoticonList);
                 list.add(info);
                 return list;
+        }
+
+        public static String getIconPath(String key) {
+                String name = key.replace("[\\", "emoticon_").replace("]",".png");
+                return "face/" + name;
+        }
+
+        public static Bitmap getBitmap(Context con, String key) {
+                Bitmap bitmap = null;
+                String path = getIconPath(key);
+                AssetManager asset = con.getAssets();
+                InputStream is;
+                try {
+                    is = asset.open(path);
+                    bitmap = BitmapFactory.decodeStream(is);
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+                return bitmap;
         }
 }

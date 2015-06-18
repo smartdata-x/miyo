@@ -59,7 +59,7 @@ public class ResizeLayout extends RelativeLayout {
              * 弹出软键盘
              */
             if (oldh == mMaxParentHeight) {
-                if (mListener != null) {
+                if (mListener != null & softHeight > 0) {
                     mListener.OnSoftPop(softHeight);
                 }
             }

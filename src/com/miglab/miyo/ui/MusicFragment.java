@@ -3,7 +3,6 @@ package com.miglab.miyo.ui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
@@ -12,18 +11,14 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.miglab.miyo.MiyoApplication;
 import com.miglab.miyo.R;
 import com.miglab.miyo.constant.ApiDefine;
 
 import com.miglab.miyo.control.MusicManager;
-import com.miglab.miyo.entity.ChatMsgInfo;
+import com.miglab.miyo.entity.SimpleMsgInfo;
 import com.miglab.miyo.entity.MusicType;
-import com.miglab.miyo.net.GetWeatherTask;
 
 import com.miglab.miyo.net.GetChatDataTask;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +39,7 @@ public class MusicFragment extends PlayBaseFragment{
     private TextView tv_address;
     private TextView tv_chat;
 
-    private List<ChatMsgInfo> list = new ArrayList<ChatMsgInfo>();
+    private List<SimpleMsgInfo> list = new ArrayList<SimpleMsgInfo>();
     private Animation animation;
 
     @Override
@@ -128,12 +123,12 @@ public class MusicFragment extends PlayBaseFragment{
                 if(list != null && list.size() > 0) {
                     list.clear();
                 }
-                list.addAll((List < ChatMsgInfo >) msg.obj);
+                list.addAll((List <SimpleMsgInfo>) msg.obj);
                 StringBuffer chat = new StringBuffer();
-                for(ChatMsgInfo chatMsgInfo: list){
-                    chat.append(chatMsgInfo.getNickname());
+                for(SimpleMsgInfo simpleMsgInfo : list){
+                    chat.append(simpleMsgInfo.getNickname());
                     chat.append("： ");
-                    chat.append(chatMsgInfo.getMsg());
+                    chat.append(simpleMsgInfo.getMsg());
                     chat.append("        ");
                 }
                 tv_chat.setText(chat);

@@ -1,7 +1,12 @@
 package com.miglab.miyo.ui.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.EditText;
@@ -20,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class EmoticonEditText extends EditText {
 
-    private Context context;
+    private Context mContext;
     private int mItemHeight;
     private int mItemWidth;
     private int mFontHeight;
@@ -32,7 +37,7 @@ public class EmoticonEditText extends EditText {
 
     public EmoticonEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
+        this.mContext = context;
         mFontHeight = getFontHeight();
         mItemHeight = mFontHeight;
         mItemWidth = mFontHeight;
@@ -49,19 +54,23 @@ public class EmoticonEditText extends EditText {
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        Log.e("text", ":" + text);
-        Log.e("start",":" + start);
-        Log.e("lengthBefore",":" + lengthBefore);
-        Log.e("lengthAfter", ":" + lengthAfter);
         if(lengthAfter > 0) {
             int end = start + lengthAfter;
             String key = text.toString().substring(start, end);
             Pattern pattern = Pattern.compile("\\[\\\\\\d+\\]");
-            Log.e("key", ":" + key);
             Matcher matcher = pattern.matcher(key);
-            boolean b = matcher.find();
-            Log.e("find", ":" + b);
-
+            if(matcher.find()) {
+                Bitmap bitmap = EmoticonUtil.getBitmap(mContext, key);
+                if(bitmap != null){
+                    Drawable drawable = new BitmapDrawable(mContext.getResources(), bitmap);
+                    drawable.setBounds(0, 0, mItemHeight, mItemWidth);
+                    ImageSpan imageSpan = new ImageSpan(drawable);
+                    getText().setSpan(imageSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                }
+            }
+        }
+        if(onTextChangedInterface != null){
+            onTextChangedInterface.onTextChanged(text);
         }
     }
 

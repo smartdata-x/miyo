@@ -5,7 +5,7 @@ package com.miglab.miyo.entity;
  * Email: 412552696@qq.com
  * Date: 2015/5/19.
  */
-public class ChatMsgInfo extends BaseEntity{
+public class SimpleMsgInfo extends BaseEntity{
     private String msg;
     private Integer msgid;
     private String nickname;

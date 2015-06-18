@@ -357,6 +357,16 @@ public class DisplayUtil {
         inputManager.showSoftInput(et, 0);
     }
 
+    public static void openSoftKeyboard(Context con) {
+        try {
+            InputMethodManager imm = (InputMethodManager) con.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(((Activity) con).getCurrentFocus(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * πÿ±’»Ìº¸≈Ã
      */

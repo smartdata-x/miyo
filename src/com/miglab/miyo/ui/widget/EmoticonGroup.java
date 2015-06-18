@@ -31,6 +31,7 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
     private LinearLayout ly_foot_func;
     private ImageView btn_face;
     private Button btn_send;
+    boolean isCloseEmoticon = true;
 
     private KeyBoardBarViewListener mKeyBoardBarViewListener;
 
@@ -166,10 +167,9 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
             public void onTextChanged(CharSequence arg0) {
                 String str = arg0.toString();
                 if (TextUtils.isEmpty(str)) {
-                        btn_send.setBackgroundResource(R.drawable.btn_send_bg_disable);
-                }
-                else {
-                        btn_send.setBackgroundResource(R.drawable.btn_send_bg);
+                    btn_send.setBackgroundResource(R.drawable.btn_send_bg_disable);
+                } else {
+                    btn_send.setBackgroundResource(R.drawable.btn_send_bg);
                 }
             }
         });
@@ -281,17 +281,20 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
         int id = v.getId();
         if (id == R.id.btn_face) {
             switch (mKeyboardState){
-                case KEYBOARD_STATE_NONE:
-                case KEYBOARD_STATE_BOTH:
+                case EMOTICON_STATE_NONE:
+                case EMOTICON_STATE_BOTH:
                     show(FUNC_CHILLDVIEW_EMOTICON);
                     btn_face.setImageResource(R.drawable.icon_face_pop);
                     showAutoView();
+                    isCloseEmoticon = false;
                     DisplayUtil.closeSoftKeyboard(mContext);
                     break;
-                case KEYBOARD_STATE_FUNC:
+                case EMOTICON_STATE_FUNC:
                     if(mChildViewPosition == FUNC_CHILLDVIEW_EMOTICON){
                         btn_face.setImageResource(R.drawable.icon_face_nomal);
+                        setEditableState(true);
                         DisplayUtil.openSoftKeyboard(et_chat);
+                        mKeyboardState = EMOTICON_STATE_BOTH;
                     }
                     else {
                         show(FUNC_CHILLDVIEW_EMOTICON);
@@ -324,6 +327,12 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
     @Override
     public void OnSoftClose(int height) {
         super.OnSoftClose(height);
+        if(!isCloseEmoticon)
+            isCloseEmoticon = true;
+        else {
+            hideAutoView();
+            mKeyboardState = EMOTICON_STATE_NONE;
+        }
         if(mKeyBoardBarViewListener != null){
             mKeyBoardBarViewListener.OnKeyBoardStateChange(mKeyboardState,height);
         }
@@ -333,7 +342,7 @@ public class EmoticonGroup extends AutoHeightLayout implements View.OnClickListe
     public void OnSoftChanegHeight(int height) {
         super.OnSoftChanegHeight(height);
         if(mKeyBoardBarViewListener != null){
-            mKeyBoardBarViewListener.OnKeyBoardStateChange(mKeyboardState,height);
+            mKeyBoardBarViewListener.OnKeyBoardStateChange(mKeyboardState, height);
         }
     }
 
