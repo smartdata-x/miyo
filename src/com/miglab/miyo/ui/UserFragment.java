@@ -136,4 +136,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
                 break;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initUserInfo();
+    }
 }

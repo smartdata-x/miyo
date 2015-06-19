@@ -28,7 +28,11 @@
         <activity
                 android:name=".ui.StartActivity"
                 android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
 
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".ui.MainActivity"
                   android:launchMode="singleTask"
@@ -43,12 +47,9 @@
         <activity android:name=".ui.LoginActivity"/>
         <activity android:name=".ui.MessageActivity"/>
         <activity android:name=".ui.TucaoActivity"/>
-        <activity android:name=".ui.ChatActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+        <activity android:name=".ui.ChatActivity"
+                  android:windowSoftInputMode="adjustResize">
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
                 </activity>
         <activity android:name=".ui.TestChatActivity"
                 android:windowSoftInputMode="adjustResize">

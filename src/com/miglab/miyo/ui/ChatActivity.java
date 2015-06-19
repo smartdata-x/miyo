@@ -16,6 +16,7 @@ import android.widget.*;
 import com.miglab.miyo.R;
 import com.miglab.miyo.adapter.ChatListAdapter;
 import com.miglab.miyo.entity.SocChatMsg;
+import com.miglab.miyo.ui.widget.AutoHeightLayout;
 import com.miglab.miyo.ui.widget.EmoticonGroup;
 import com.miglab.miyo.ui.widget.EmoticonKeyboardBuilder;
 import com.miglab.miyo.util.EmoticonUtil;
@@ -82,6 +83,18 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
 
             }
         });
+        chatListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if(scrollState == SCROLL_STATE_TOUCH_SCROLL)
+                    emoticonGroup.hideAutoView();
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
     private void initViews() {
@@ -128,7 +141,14 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void OnKeyBoardStateChange(int state, int height) {
-
+        if(height > 0 || state == AutoHeightLayout.EMOTICON_STATE_FUNC) {
+            chatListView.post(new Runnable() {
+                @Override
+                public void run() {
+                    chatListView.setSelection(chatListView.getBottom());
+                }
+            });
+        }
     }
 
     //todo 发送消息
@@ -139,8 +159,7 @@ public class ChatActivity extends FragmentActivity implements View.OnClickListen
             socChatMsg.setMsg(msg);
             socChatMsg.setIsMe(true);
             chatListAdapter.addData(socChatMsg, true, false);
-            curSelection = chatListAdapter.getCount();
-            chatListView.setSelection(curSelection);
+            chatListView.setSelection(chatListView.getBottom());
         }
         emoticonGroup.clearEditText();
     }

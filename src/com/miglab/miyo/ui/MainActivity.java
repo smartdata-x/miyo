@@ -78,6 +78,8 @@ public class MainActivity extends FragmentActivity implements IWeiboHandler.Resp
         registerPlayerReceiver();
     }
 
+
+
     private void initProgressDlg() {
         loadingDialog = new LoadingDialog(this);
         loadingDialog.setMessage("加载中");

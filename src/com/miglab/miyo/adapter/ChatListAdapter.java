@@ -49,8 +49,8 @@ public class ChatListAdapter extends BaseAdapter {
 
     private void initDisplayImageOptions() {
         options = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
-                .cacheOnDisk(false)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
                 .considerExifParams(false)
                 .showImageForEmptyUri(R.drawable.user_default)
                 .build();
@@ -107,7 +107,7 @@ public class ChatListAdapter extends BaseAdapter {
                 fontHeight = getFontHeight(viewHolder.tv_msg);
         }
         if(socChatMsg.isMe()) {
-            ImageLoader.getInstance().displayImage(MiyoUser.getInstance().getHeadUrl(),viewHolder.iv_head);
+            ImageLoader.getInstance().displayImage(MiyoUser.getInstance().getHeadUrl(),viewHolder.iv_head,options);
             viewHolder.tv_name.setText(MiyoUser.getInstance().getNickname());
         }
         viewHolder.tv_msg.setText(matchEmoticon(socChatMsg.getMsg()));
