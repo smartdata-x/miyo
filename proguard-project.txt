@@ -60,6 +60,10 @@
   public static final android.os.Parcelable$Creator *;
 }
 
+-keep class * implements java.io.Serializable {
+ *;
+}
+
 -keep class android.support.**
 -keepclassmembers class android.support.** { *; }
 -keep enum android.support.**

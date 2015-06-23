@@ -119,8 +119,8 @@ public class EmoticonUtil {
         }
 
         public static List<EmoticonPageInfo> getEmoticonPageInfoListFromAsset(Context con) {
-                List<EmoticonPageInfo> list = new ArrayList<>();
-                List<Emoticon> emoticonList = new ArrayList<>();
+                List<EmoticonPageInfo> list = new ArrayList<EmoticonPageInfo>();
+                List<Emoticon> emoticonList = new ArrayList<Emoticon>();
                 AssetManager assetManager = con.getAssets();
                 try {
                        String[] faceString =  assetManager.list("face");

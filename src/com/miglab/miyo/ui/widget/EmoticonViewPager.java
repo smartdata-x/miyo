@@ -33,7 +33,7 @@ public class EmoticonViewPager extends ViewPager implements IView,IEmoticonKeybo
     private int mOldPagePosition = -1;
 
     private List<EmoticonPageInfo> mEmoticonPageInfoList;
-    private List<View> mEmoticonViews = new ArrayList<>();
+    private List<View> mEmoticonViews = new ArrayList<View>();
     private EmoticonViewPagerAdapter mEmoticonsViewPagerAdapter;
     private OnEmoticonViewPagerListener mOnEmoticonViewPagerListener;
     private List<IView> mIViewListeners;

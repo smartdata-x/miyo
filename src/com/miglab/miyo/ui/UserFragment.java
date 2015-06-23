@@ -30,6 +30,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
     private ImageView iv_genderIcon;
     private ImageView iv_weatherIcon;
     private ImageView iv_headClick;
+    private DisplayImageOptions options;
     @Override
     protected void setLayout() {
         resourceID = R.layout.fm_user;
@@ -49,7 +50,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
         iv_headClick = (ImageView) vRoot.findViewById(R.id.user_photo_click);
         iv_headClick.setOnClickListener(this);
         DisplayUtil.setGropListener(vRoot, this);
-        initHeadIcon();
+        initOption();
         initUserInfo();
         initWeather();
     }
@@ -62,16 +63,18 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
             iv_genderIcon.setImageResource(R.drawable.woman_icon);
         tv_name.setText(user.getNickname());
         tv_address.setText(user.getLocation());
+        String url = MiyoUser.getInstance().getHeadUrl();
+        ImageLoader.getInstance().displayImage(url, iv_head, options);
     }
 
-    private void initHeadIcon() {
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
+    private void initOption() {
+        options = new DisplayImageOptions.Builder()
                 .cacheInMemory(false)
                 .cacheOnDisk(true)
                 .considerExifParams(false)
+                .showImageForEmptyUri(R.drawable.view_bg)
+                .showImageOnFail(R.drawable.view_bg)
                 .build();
-        String url = MiyoUser.getInstance().getHeadUrl();
-        ImageLoader.getInstance().displayImage(url, iv_head, options, null);
     }
 
     private void initWeather() {
