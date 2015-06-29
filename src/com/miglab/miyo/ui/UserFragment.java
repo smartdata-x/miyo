@@ -131,11 +131,13 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
         switch (msg.what) {
             case ApiDefine.GET_WEATHER_SUCCESS:
                 JSONObject jResult = (JSONObject) msg.obj;
-                String weather = jResult.optString("weather");
-                String temp = jResult.optString("temp");
-                String address = jResult.optString("city");
-                weather.replace("-", "_");
-                displayWeather(weather.toLowerCase(), temp, address);
+                if(jResult != null) {
+                    String weather = jResult.optString("weather");
+                    String temp = jResult.optString("temp");
+                    String address = jResult.optString("city");
+                    weather.replace("-", "_");
+                    displayWeather(weather.toLowerCase(), temp, address);
+                }
                 break;
         }
     }

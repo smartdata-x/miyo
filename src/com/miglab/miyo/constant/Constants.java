@@ -13,5 +13,5 @@ public interface Constants {
     String WEIBO_SCOPE = "";
     String GET_WEIBO_USERINFO = "https://api.weibo.com/2/users/show.json";
     String WEIBO_KEY_ACCESS_TOKEN = "access_token";
-    String MIYO_JUMP_URL = "http://fir.im/iimiyo";
+    String MIYO_JUMP_URL = "http://fir.im/3jsm";
 }

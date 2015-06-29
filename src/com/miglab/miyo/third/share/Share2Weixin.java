@@ -2,13 +2,11 @@ package com.miglab.miyo.third.share;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import com.miglab.miyo.R;
 import com.miglab.miyo.constant.Constants;
 import com.miglab.miyo.entity.SongInfo;
-import com.miglab.miyo.ui.MainActivity;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXMusicObject;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.*;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
@@ -56,11 +54,29 @@ public class Share2Weixin extends Share {
         msg.title = title;
         msg.description = summary;
 
-        Bitmap thumb = ((MainActivity)ac).getCurMusicBitmap();
+        Bitmap thumb = bitmap;
         msg.thumbData = bmpToByteArray(thumb, false);
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("music");
+        req.message = msg;
+        req.scene = this.scene;
+        wxApi.sendReq(req);
+    }
+
+    public void shareApp() {
+        IWXAPI wxApi = WXAPIFactory.createWXAPI(ac, Constants.WEIXIN_APP_ID, true);
+        wxApi.registerApp(Constants.WEIXIN_APP_ID);
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = Constants.MIYO_JUMP_URL;
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = ac.getResources().getString(R.string.app_name);
+        msg.description = ac.getResources().getString(R.string.app_intro);
+        Bitmap thumb = BitmapFactory.decodeResource(ac.getResources(), R.drawable.logo);
+        msg.thumbData = bmpToByteArray(thumb, true);
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = buildTransaction("webpage");
         req.message = msg;
         req.scene = this.scene;
         wxApi.sendReq(req);

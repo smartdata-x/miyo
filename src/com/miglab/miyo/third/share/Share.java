@@ -23,11 +23,13 @@ public class Share {
     protected Activity ac;
     public Share(Activity ac, SongInfo songInfo) {
         this.ac = ac;
-        this.title = songInfo.name;
-        this.summary = songInfo.artist;
-        this.url = songInfo.url;
-        this.imgURL = songInfo.pic;
-        this.appName =  ac.getString(R.string.app_name);
+        if(songInfo != null) {
+            this.title = songInfo.name;
+            this.summary = songInfo.artist;
+            this.url = songInfo.url;
+            this.imgURL = songInfo.pic;
+            this.appName = ac.getString(R.string.app_name);
+        }
     }
 
     public void share(){
